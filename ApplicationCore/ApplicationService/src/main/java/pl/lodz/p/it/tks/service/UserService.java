@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.repository.impl.RentRepository;
 import pl.lodz.p.it.tks.repository.impl.UserRepository;
 
-;
-
 
 @AllArgsConstructor
 @NoArgsConstructor
