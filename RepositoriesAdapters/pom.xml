@@ -43,6 +43,12 @@
             <artifactId>jakarta.jakartaee-web-api</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>pl.lodz.p.it.tks</groupId>
+            <artifactId>ApplicationPorts</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

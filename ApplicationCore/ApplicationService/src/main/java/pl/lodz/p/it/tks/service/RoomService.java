@@ -12,6 +12,7 @@ import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
 import pl.lodz.p.it.tks.exception.room.UpdateRoomException;
 import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.Room;
+import pl.lodz.p.it.tks.out.AddRoomPort;
 import pl.lodz.p.it.tks.repository.impl.RentRepository;
 import pl.lodz.p.it.tks.repository.impl.RoomRepository;
 
@@ -23,6 +24,9 @@ import java.util.Optional;
 @NoArgsConstructor
 @RequestScoped
 public class RoomService {
+
+    @Inject
+    private AddRoomPort addRoomPort;
 
     @Inject
     private RoomRepository roomRepository;
@@ -42,7 +46,7 @@ public class RoomService {
     public Room addRoom(CreateRoomDTO dto) throws CreateRoomException {
         try {
             Room room = new Room(dto.getRoomNumber(), dto.getPrice(), dto.getSize());
-            return roomRepository.add(room);
+            return addRoomPort.addRoom(room);
         } catch (Exception e) {
             throw new CreateRoomException();
         }

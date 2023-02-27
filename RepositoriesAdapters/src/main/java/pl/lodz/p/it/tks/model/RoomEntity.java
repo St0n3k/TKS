@@ -44,4 +44,14 @@ public class RoomEntity extends AbstractEntity {
         this.price = price;
         this.size = size;
     }
+
+    public RoomEntity(Room room) {
+        this.roomNumber = room.getRoomNumber();
+        this.price = room.getPrice();
+        this.size = room.getSize();
+    }
+
+    public Room mapToRoom(){
+        return new Room(this.getId(), this.getRoomNumber(), this.getPrice(), this.getSize());
+    }
 }

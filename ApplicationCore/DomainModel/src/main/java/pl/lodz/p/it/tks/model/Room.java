@@ -28,4 +28,11 @@ public class Room {
         this.price = price;
         this.size = size;
     }
+
+    public Room(Long id, int roomNumber, double price, int size) {
+        this.id = id;
+        this.roomNumber = roomNumber;
+        this.price = price;
+        this.size = size;
+    }
 }

@@ -5,21 +5,22 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>pl.lodz.p.it.tks</groupId>
-        <artifactId>Guesthouse</artifactId>
+        <artifactId>ApplicationCore</artifactId>
         <version>1.0</version>
     </parent>
 
-    <artifactId>ApplicationPorts</artifactId>
+    <artifactId>ApplicationService</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>pl.lodz.p.it.tks</groupId>
-            <artifactId>DomainModel</artifactId>
+            <artifactId>ApplicationPorts</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
