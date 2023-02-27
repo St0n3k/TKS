@@ -82,7 +82,7 @@ public class RentEntity extends AbstractEntity {
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "room_id")
-    private RoomEntity roomEntity;
+    private RoomEntity room;
 
     public RentEntity(LocalDateTime beginTime, LocalDateTime endTime, boolean board, double finalCost, ClientEntity client,
                       RoomEntity roomEntity) {
@@ -91,7 +91,7 @@ public class RentEntity extends AbstractEntity {
         this.board = board;
         this.finalCost = finalCost;
         this.client = client;
-        this.roomEntity = roomEntity;
+        this.room = roomEntity;
     }
 
     @AssertTrue

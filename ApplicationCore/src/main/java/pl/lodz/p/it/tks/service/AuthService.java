@@ -1,4 +1,4 @@
-package pl.lodz.p.it.tks.manager;
+package pl.lodz.p.it.tks.service;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -18,7 +18,7 @@ import java.util.Objects;
 
 
 @RequestScoped
-public class AuthManager {
+public class AuthService {
     @Inject
     private JwtProvider jwtProvider;
 

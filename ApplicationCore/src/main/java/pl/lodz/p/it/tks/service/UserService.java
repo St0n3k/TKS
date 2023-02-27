@@ -1,4 +1,4 @@
-package pl.lodz.p.it.tks.manager;
+package pl.lodz.p.it.tks.service;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
-public class UserManager {
+public class UserService {
 
     @Inject
     private UserRepository userRepository;

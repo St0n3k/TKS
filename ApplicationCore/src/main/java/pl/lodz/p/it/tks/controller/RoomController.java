@@ -20,11 +20,11 @@ import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
 import pl.lodz.p.it.tks.exception.room.UpdateRoomException;
 import pl.lodz.p.it.tks.exception.user.InactiveUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
-import pl.lodz.p.it.tks.manager.RentManager;
-import pl.lodz.p.it.tks.manager.RoomManager;
 import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.model.user.User;
+import pl.lodz.p.it.tks.service.RentService;
+import pl.lodz.p.it.tks.service.RoomService;
 
 import java.security.Principal;
 import java.util.List;
@@ -37,17 +37,17 @@ public class RoomController {
     private SecurityContext securityContext;
 
     @Inject
-    private RoomManager roomManager;
+    private RoomService roomService;
 
     @Inject
-    private RentManager rentManager;
+    private RentService rentService;
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Response addRoom(@Valid CreateRoomDTO dto) throws CreateRoomException {
-        Room room = roomManager.addRoom(dto);
+        Room room = roomService.addRoom(dto);
         return Response.status(Response.Status.CREATED).entity(room).build();
     }
 
@@ -55,7 +55,7 @@ public class RoomController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRoomById(@PathParam("id") Long id) throws RoomNotFoundException {
-        Room room = roomManager.getRoomById(id);
+        Room room = roomService.getRoomById(id);
         return Response.status(Response.Status.OK).entity(room).build();
     }
 
@@ -75,7 +75,7 @@ public class RoomController {
                     rentRoomForSelfDTO.isBoard(),
                     clientID,
                     roomID);
-            Rent rent = rentManager.rentRoom(createRentDTO);
+            Rent rent = rentService.rentRoom(createRentDTO);
             return Response.status(Response.Status.CREATED).entity(rent).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
@@ -94,7 +94,7 @@ public class RoomController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllRooms() {
-        List<Room> rooms = roomManager.getAllRooms();
+        List<Room> rooms = roomService.getAllRooms();
         return Response.status(Response.Status.OK).entity(rooms).build();
     }
 
@@ -102,7 +102,7 @@ public class RoomController {
     @Path("/search/{number}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRoomByNumber(@PathParam("number") Integer number) throws RoomNotFoundException {
-        Room room = roomManager.getRoomByNumber(number);
+        Room room = roomService.getRoomByNumber(number);
         return Response.status(Response.Status.OK).entity(room).build();
     }
 
@@ -120,7 +120,7 @@ public class RoomController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllRentsOfRoom(@PathParam("roomId") Long roomId,
                                       @QueryParam("past") Boolean past) throws RoomNotFoundException {
-        List<Rent> rents = roomManager.getAllRentsOfRoom(roomId, past);
+        List<Rent> rents = roomService.getAllRentsOfRoom(roomId, past);
         return Response.status(Response.Status.OK).entity(rents).build();
     }
 
@@ -138,7 +138,7 @@ public class RoomController {
     @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Response updateRoom(@PathParam("id") Long id,
                                @Valid UpdateRoomDTO updateRoomDTO) throws RoomNotFoundException, UpdateRoomException {
-        Room room = roomManager.updateRoom(id, updateRoomDTO);
+        Room room = roomService.updateRoom(id, updateRoomDTO);
         return Response.status(Response.Status.OK).entity(room).build();
     }
 
@@ -156,7 +156,7 @@ public class RoomController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Response removeRoom(@PathParam("id") Long id) throws RoomHasActiveReservationsException {
-        roomManager.removeRoom(id);
+        roomService.removeRoom(id);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 }

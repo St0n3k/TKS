@@ -1,4 +1,4 @@
-package pl.lodz.p.it.tks.manager;
+package pl.lodz.p.it.tks.service;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -32,7 +32,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
-public class RentManager {
+public class RentService {
 
     @Inject
     private UserRepository userRepository;

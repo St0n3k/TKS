@@ -13,14 +13,14 @@ import pl.lodz.p.it.tks.exception.InvalidInputException;
 import pl.lodz.p.it.tks.exception.user.AuthenticationException;
 import pl.lodz.p.it.tks.exception.user.InactiveUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
-import pl.lodz.p.it.tks.manager.AuthManager;
+import pl.lodz.p.it.tks.service.AuthService;
 
 @RequestScoped
 @Path("/")
 public class AuthController {
 
     @Inject
-    private AuthManager authManager;
+    private AuthService authService;
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -28,7 +28,7 @@ public class AuthController {
     @Path("/login")
     public LoginResponse login(@Valid LoginDTO loginDTO)
             throws AuthenticationException, InactiveUserException {
-        return authManager.login(loginDTO.getUsername(), loginDTO.getPassword());
+        return authService.login(loginDTO.getUsername(), loginDTO.getPassword());
     }
 
     @PUT
@@ -37,7 +37,7 @@ public class AuthController {
     @Path("/changePassword")
     public Response changePassword(@Valid ChangePasswordDTO dto)
             throws UserNotFoundException, InvalidInputException {
-        authManager.changePassword(dto.getOldPassword(), dto.getNewPassword());
+        authService.changePassword(dto.getOldPassword(), dto.getNewPassword());
         return Response.ok().build();
     }
 }
