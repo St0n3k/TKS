@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "room")
 @NamedQueries({
     @NamedQuery(name = "Room.getAll",
                 query = "SELECT r FROM RoomEntity r"),

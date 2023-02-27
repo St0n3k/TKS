@@ -12,20 +12,19 @@ import pl.lodz.p.it.tks.model.user.ClientEntity;
 
 import java.time.LocalDateTime;
 
-// TODO if possible, refactor to use single query with addidtional parameter
-
 @Entity
+@Table(name = "rent")
 @NamedQueries({
     @NamedQuery(name = "Rent.getAll",
                 query = "SELECT r FROM RentEntity r"),
     @NamedQuery(name = "Rent.getByRoomId",
-                query = "SELECT r FROM RentEntity r WHERE r.roomEntity.id = :roomId"),
+                query = "SELECT r FROM RentEntity r WHERE r.room.id = :roomId"),
     @NamedQuery(name = "Rent.getByClientPersonalId",
                 query = "SELECT r FROM RentEntity r WHERE r.client.personalId = :personalId"),
     @NamedQuery(name = "Rent.getRentsColliding",
                 query = """
                     SELECT r FROM RentEntity r
-                    WHERE r.roomEntity.roomNumber = :roomNumber
+                    WHERE r.room.roomNumber = :roomNumber
                           AND ((:beginDate BETWEEN r.beginTime AND r.endTime)
                           OR (:endDate BETWEEN r.beginTime AND r.endTime)
                           OR (r.beginTime between :beginDate and :endDate)
@@ -37,9 +36,9 @@ import java.time.LocalDateTime;
     @NamedQuery(name = "Rent.getByClientId",
                 query = "SELECT r FROM RentEntity r WHERE r.client.id = :id"),
     @NamedQuery(name = "Rent.getPastRentsByRoom",
-                query = "SELECT r from RentEntity r WHERE (r.endTime < CURRENT_TIMESTAMP) AND r.roomEntity.id = :id"),
+                query = "SELECT r from RentEntity r WHERE (r.endTime < CURRENT_TIMESTAMP) AND r.room.id = :id"),
     @NamedQuery(name = "Rent.getActiveRentsByRoom",
-                query = "SELECT r from RentEntity r WHERE (r.endTime > CURRENT_TIMESTAMP) AND r.roomEntity.id = :id"),
+                query = "SELECT r from RentEntity r WHERE (r.endTime > CURRENT_TIMESTAMP) AND r.room.id = :id"),
     @NamedQuery(name = "Rent.getPastRentsByClient",
                 query = "SELECT r from RentEntity r WHERE (r.endTime < CURRENT_TIMESTAMP) AND r.client.id = :id"),
     @NamedQuery(name = "Rent.getActiveRentsByClient",
