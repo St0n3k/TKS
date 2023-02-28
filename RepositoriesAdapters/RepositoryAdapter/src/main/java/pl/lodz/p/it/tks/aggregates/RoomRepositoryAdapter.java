@@ -9,6 +9,7 @@ import pl.lodz.p.it.tks.out.RoomCommandPort;
 import pl.lodz.p.it.tks.repository.impl.RoomRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -19,8 +20,18 @@ public class RoomRepositoryAdapter implements RoomQueryPort, RoomCommandPort {
 
     @Override
     public Room addRoom(Room room) {
-        RoomEntity roomEntity = roomRepository.add(new RoomEntity(room));
-        return roomEntity.mapToRoom();
+        return roomRepository.add(new RoomEntity(room)).mapToRoom();
+    }
+
+    @Override
+    public Optional<Room> updateRoom(Room room) {
+        return roomRepository.update(new RoomEntity(room))
+                .map(RoomEntity::mapToRoom);
+    }
+
+    @Override
+    public void removeRoom(Room room) {
+        roomRepository.remove(new RoomEntity(room));
     }
 
     @Override
@@ -29,5 +40,20 @@ public class RoomRepositoryAdapter implements RoomQueryPort, RoomCommandPort {
                 .stream()
                 .map(RoomEntity::mapToRoom)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Room> getById(Long id) {
+        return roomRepository.getById(id).map(RoomEntity::mapToRoom);
+    }
+
+    @Override
+    public Optional<Room> getByNumber(int number) {
+        return roomRepository.getByRoomNumber(number).map(RoomEntity::mapToRoom);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return roomRepository.existsById(id);
     }
 }

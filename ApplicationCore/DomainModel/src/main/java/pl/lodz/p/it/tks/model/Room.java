@@ -1,7 +1,5 @@
 package pl.lodz.p.it.tks.model;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,25 +9,19 @@ public class Room {
 
     private Long id;
 
-    @NotNull
-    @Min(value = 1)
-    private int roomNumber;
+    private Integer roomNumber;
 
-    @NotNull
-    @Min(value = 1)
-    private double price;
+    private Double price;
 
-    @NotNull
-    @Min(value = 1)
-    private int size;
+    private Integer size;
 
-    public Room(int roomNumber, double price, int size) {
+    public Room(Integer roomNumber, Double price, Integer size) {
         this.roomNumber = roomNumber;
         this.price = price;
         this.size = size;
     }
 
-    public Room(Long id, int roomNumber, double price, int size) {
+    public Room(Long id, Integer roomNumber, Double price, Integer size) {
         this.id = id;
         this.roomNumber = roomNumber;
         this.price = price;

@@ -4,13 +4,22 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import pl.lodz.p.it.tks.dto.CreateRoomDTO;
+import pl.lodz.p.it.tks.dto.UpdateRoomDTO;
 import pl.lodz.p.it.tks.exception.room.CreateRoomException;
+import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
+import pl.lodz.p.it.tks.exception.room.UpdateRoomException;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.service.RentService;
 import pl.lodz.p.it.tks.service.RoomService;
@@ -40,13 +49,13 @@ public class RoomController {
         return Response.status(Response.Status.CREATED).entity(room).build();
     }
 
-//    @GET
-//    @Path("/{id}")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getRoomById(@PathParam("id") Long id) throws RoomNotFoundException {
-//        Room room = roomService.getRoomById(id);
-//        return Response.status(Response.Status.OK).entity(room).build();
-//    }
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRoomById(@PathParam("id") Long id) throws RoomNotFoundException {
+        Room room = roomService.getRoomById(id);
+        return Response.status(Response.Status.OK).entity(room).build();
+    }
 //
 //    @POST
 //    @Path("/{id}")
@@ -86,14 +95,14 @@ public class RoomController {
         List<Room> rooms = roomService.getAllRooms();
         return Response.status(Response.Status.OK).entity(rooms).build();
     }
-//
-//    @GET
-//    @Path("/search/{number}")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getRoomByNumber(@PathParam("number") Integer number) throws RoomNotFoundException {
-//        Room room = roomService.getRoomByNumber(number);
-//        return Response.status(Response.Status.OK).entity(room).build();
-//    }
+
+    @GET
+    @Path("/search/{number}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRoomByNumber(@PathParam("number") Integer number) throws RoomNotFoundException {
+        Room room = roomService.getRoomByNumber(number);
+        return Response.status(Response.Status.OK).entity(room).build();
+    }
 //
 //
 //    /**
@@ -114,22 +123,22 @@ public class RoomController {
 //    }
 //
 //
-//    /**
-//     * Endpoint which is used to update room properties
-//     *
-//     * @param id            id of room to be updated
-//     * @param updateRoomDTO object containing new properties of existing room
-//     */
-//    @PUT
-//    @Path("/{id}")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @RolesAllowed({"ADMIN", "EMPLOYEE"})
-//    public Response updateRoom(@PathParam("id") Long id,
-//                               @Valid UpdateRoomDTO updateRoomDTO) throws RoomNotFoundException, UpdateRoomException {
-//        Room room = roomService.updateRoom(id, updateRoomDTO);
-//        return Response.status(Response.Status.OK).entity(room).build();
-//    }
+    /**
+     * Endpoint which is used to update room properties
+     *
+     * @param id            id of room to be updated
+     * @param dto object containing new properties of existing room
+     */
+    @PUT
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
+    public Response updateRoom(@PathParam("id") Long id,
+                               @Valid UpdateRoomDTO dto) throws RoomNotFoundException, UpdateRoomException {
+        Room room = roomService.updateRoom(id, new Room(dto.getRoomNumber(), dto.getPrice(), dto.getSize()));
+        return Response.status(Response.Status.OK).entity(room).build();
+    }
 //
 //
 //    /**

@@ -5,6 +5,8 @@ import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.exception.room.CreateRoomException;
+import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
+import pl.lodz.p.it.tks.exception.room.UpdateRoomException;
 import pl.lodz.p.it.tks.in.RoomQueryPort;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.out.RoomCommandPort;
@@ -54,27 +56,17 @@ public class RoomService {
     }
 
 
-//    public Room getRoomById(Long id) throws RoomNotFoundException {
-//        Optional<Room> optionalRoom = roomRepository.getById(id);
-//
-//        if (optionalRoom.isEmpty()) {
-//            throw new RoomNotFoundException();
-//        }
-//        return optionalRoom.get();
-//    }
-//
-//
-//
-//
-//    public Room getRoomByNumber(Integer number) throws RoomNotFoundException {
-//        Optional<Room> optionalRoom = roomRepository.getByRoomNumber(number);
-//        if (optionalRoom.isEmpty()) {
-//            throw new RoomNotFoundException();
-//        }
-//        return optionalRoom.get();
-//    }
-//
-//
+    public Room getRoomById(Long id) throws RoomNotFoundException {
+        return roomQueryPort.getById(id)
+                .orElseThrow(RoomNotFoundException::new);
+    }
+
+
+    public Room getRoomByNumber(int number) throws RoomNotFoundException {
+        return roomQueryPort.getByNumber(number)
+                .orElseThrow(RoomNotFoundException::new);
+    }
+
 //    /**
 //     * Endpoint which returns list of rents of given room
 //     *
@@ -98,39 +90,28 @@ public class RoomService {
 //    }
 //
 //
-//    /**
-//     * Endpoint which is used to update room properties
-//     *
-//     * @param id id of room to be updated
-//     * @param updateRoomDTO object containing new properties of existing room
-//     */
-//    public Room updateRoom(Long id, UpdateRoomDTO updateRoomDTO) throws RoomNotFoundException, UpdateRoomException {
-//        Optional<Room> optionalRoom = roomRepository.getById(id);
-//
-//        if (optionalRoom.isEmpty()) {
-//            throw new RoomNotFoundException();
-//        }
-//        Room existingRoom = optionalRoom.get();
-//        Double newPrice = updateRoomDTO.getPrice();
-//        Integer newNumber = updateRoomDTO.getRoomNumber();
-//        Integer newSize = updateRoomDTO.getSize();
-//
-//        existingRoom.setPrice(newPrice == null ? existingRoom.getPrice() : newPrice);
-//        existingRoom.setSize(newSize == null ? existingRoom.getSize() : newSize);
-//        existingRoom.setRoomNumber(newNumber == null ? existingRoom.getRoomNumber() : newNumber);
-//
-//        Optional<Room> updatedRoom;
-//        try {
-//            updatedRoom = roomRepository.update(existingRoom);
-//        } catch (Exception e) {
-//            throw new UpdateRoomException();
-//        }
-//
-//        if (updatedRoom.isEmpty()) {
-//            throw new UpdateRoomException();
-//        }
-//        return updatedRoom.get();
-//    }
+    /**
+     * Endpoint which is used to update room properties
+     *
+     * @param id id of room to be updated
+     * @param room object containing new properties of existing room
+     */
+    //TODO not working properly due to version field
+    public Room updateRoom(Long id, Room room) throws RoomNotFoundException, UpdateRoomException {
+        Room existingRoom = roomQueryPort.getById(id)
+                .orElseThrow(RoomNotFoundException::new);
+
+        existingRoom.setPrice(room.getPrice() == null ? existingRoom.getPrice() : room.getPrice());
+        existingRoom.setSize(room.getSize() == null ? existingRoom.getSize() : room.getSize());
+        existingRoom.setRoomNumber(room.getRoomNumber() == null ? existingRoom.getRoomNumber() : room.getRoomNumber());
+
+        try {
+            return roomCommandPort.updateRoom(existingRoom)
+                    .orElseThrow(UpdateRoomException::new);
+        } catch (Exception e) {
+            throw new UpdateRoomException();
+        }
+    }
 //
 //
 //    /**
@@ -142,12 +123,7 @@ public class RoomService {
 //     * 409(CONFLICT) if there are current or future rents for room with given id
 //     */
 //    public void removeRoom(Long id) throws RoomHasActiveReservationsException {
-//        Optional<Room> roomOptional = roomRepository.getById(id);
-//
-//        if (roomOptional.isEmpty()) {
-//            return;
-//        }
-//        Room room = roomOptional.get();
+//        Optional<Room> optionalRoom = roomQueryPort.getRoomById(id);
 //
 //        List<Rent> rentsForRoom = rentRepository.findByRoomAndStatus(room.getId(), false);
 //        if (rentsForRoom.isEmpty()) {

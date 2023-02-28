@@ -1,8 +1,14 @@
 package pl.lodz.p.it.tks.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,17 +31,14 @@ public class RoomEntity extends AbstractEntity {
     @Column(name = "room_id")
     private Long id;
 
-    @NotNull
     @Column(name = "room_number", unique = true)
     @Min(value = 1)
     private int roomNumber;
 
-    @NotNull
     @Column
     @Min(value = 1)
     private double price;
 
-    @NotNull
     @Column
     @Min(value = 1)
     private int size;
@@ -47,6 +50,7 @@ public class RoomEntity extends AbstractEntity {
     }
 
     public RoomEntity(Room room) {
+        this.id = room.getId();
         this.roomNumber = room.getRoomNumber();
         this.price = room.getPrice();
         this.size = room.getSize();
