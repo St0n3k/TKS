@@ -2,14 +2,14 @@ package pl.lodz.p.it.tks.controller;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import pl.lodz.p.it.tks.command.RentCommandService;
+import pl.lodz.p.it.tks.service.RentService;
 
 @RequestScoped
 //@Path("/rents")
 public class RentController {
 
     @Inject
-    private RentCommandService rentCommandService;
+    private RentService rentService;
 
 
 

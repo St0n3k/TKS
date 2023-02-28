@@ -1,15 +1,13 @@
-package pl.lodz.p.it.tks.query;
+package pl.lodz.p.it.tks.service;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.exception.room.CreateRoomException;
-import pl.lodz.p.it.tks.in.GetAllRoomsPort;
+import pl.lodz.p.it.tks.in.RoomQueryPort;
 import pl.lodz.p.it.tks.model.Room;
-import pl.lodz.p.it.tks.out.AddRoomPort;
-import pl.lodz.p.it.tks.repository.impl.RentRepository;
-import pl.lodz.p.it.tks.repository.impl.RoomRepository;
+import pl.lodz.p.it.tks.out.RoomCommandPort;
 
 import java.util.List;
 
@@ -17,10 +15,43 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
-public class RoomQueryService {
+public class RoomService {
 
     @Inject
-    private GetAllRoomsPort getAllRoomsPort;
+    private RoomQueryPort roomQueryPort;
+
+    @Inject
+    private RoomCommandPort roomCommandPort;
+
+
+    /**
+     * Method used to save room to database, room number has to be unique, otherwise method will throw exception
+     *
+     * @param room room to be saved
+     * @return status code
+     * 201(CREATED) if room was successfully saved,
+     * 409(CONFLICT) if room was not saved due to constraints(room id / room number)
+     */
+    public Room addRoom(Room room) throws CreateRoomException {
+        try {
+            return roomCommandPort.addRoom(room);
+        } catch (Exception e) {
+            throw new CreateRoomException();
+        }
+    }
+
+    /**
+     * Method used to get all saved rooms if param number is not set,
+     * otherwise it will return room with given room number
+     *
+     * @return status code
+     * 200(OK) and list of all rooms
+     * 200(OK) if number parameter was set and room was found
+     * 404(NOT_FOUND) if number parameter was set, but room was not found
+     */
+    public List<Room> getAllRooms() {
+        return roomQueryPort.getAllRooms();
+    }
 
 
 //    public Room getRoomById(Long id) throws RoomNotFoundException {
@@ -33,18 +64,6 @@ public class RoomQueryService {
 //    }
 //
 //
-    /**
-     * Endpoint which is used to get all saved rooms if param number is not set,
-     * otherwise it will return room with given room number
-     *
-     * @return status code
-     * 200(OK) and list of all rooms
-     * 200(OK) if number parameter was set and room was found
-     * 404(NOT_FOUND) if number parameter was set, but room was not found
-     */
-    public List<Room> getAllRooms() {
-        return getAllRoomsPort.getAllRooms();
-    }
 //
 //
 //    public Room getRoomByNumber(Integer number) throws RoomNotFoundException {

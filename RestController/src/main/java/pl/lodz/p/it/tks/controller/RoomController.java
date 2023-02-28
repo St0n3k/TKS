@@ -12,9 +12,8 @@ import jakarta.ws.rs.core.SecurityContext;
 import pl.lodz.p.it.tks.dto.CreateRoomDTO;
 import pl.lodz.p.it.tks.exception.room.CreateRoomException;
 import pl.lodz.p.it.tks.model.Room;
-import pl.lodz.p.it.tks.query.RoomQueryService;
-import pl.lodz.p.it.tks.command.RentCommandService;
-import pl.lodz.p.it.tks.command.RoomCommandService;
+import pl.lodz.p.it.tks.service.RentService;
+import pl.lodz.p.it.tks.service.RoomService;
 
 import java.util.List;
 
@@ -26,13 +25,10 @@ public class RoomController {
     private SecurityContext securityContext;
 
     @Inject
-    private RoomCommandService roomCommandService;
+    private RoomService roomService;
 
     @Inject
-    private RoomQueryService roomQueryService;
-
-    @Inject
-    private RentCommandService rentCommandService;
+    private RentService rentService;
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -40,7 +36,7 @@ public class RoomController {
     @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Response addRoom(@Valid CreateRoomDTO dto) throws CreateRoomException {
         Room room = new Room(dto.getRoomNumber(), dto.getPrice(), dto.getSize());
-        room = roomCommandService.addRoom(room);
+        room = roomService.addRoom(room);
         return Response.status(Response.Status.CREATED).entity(room).build();
     }
 
@@ -87,7 +83,7 @@ public class RoomController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllRooms() {
-        List<Room> rooms = roomQueryService.getAllRooms();
+        List<Room> rooms = roomService.getAllRooms();
         return Response.status(Response.Status.OK).entity(rooms).build();
     }
 //

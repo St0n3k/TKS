@@ -3,13 +3,13 @@ package pl.lodz.p.it.tks.controller;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import pl.lodz.p.it.tks.security.SignProvider;
-import pl.lodz.p.it.tks.command.UserCommandService;
+import pl.lodz.p.it.tks.service.UserService;
 
 @RequestScoped
 //@Path("/users")
 public class UserController {
     @Inject
-    private UserCommandService userCommandService;
+    private UserService userService;
 
     @Inject
     private SignProvider signProvider;

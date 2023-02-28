@@ -1,4 +1,4 @@
-package pl.lodz.p.it.tks.command;
+package pl.lodz.p.it.tks.service;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -14,7 +14,7 @@ import pl.lodz.p.it.tks.repository.impl.UserRepository;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
-public class RentCommandService {
+public class RentService {
 
     @Inject
     private UserRepository userRepository;

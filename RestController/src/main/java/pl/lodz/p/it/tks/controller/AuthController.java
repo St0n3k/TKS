@@ -12,14 +12,14 @@ import pl.lodz.p.it.tks.dto.LoginDTO;
 import pl.lodz.p.it.tks.dto.LoginResponse;
 import pl.lodz.p.it.tks.exception.user.AuthenticationException;
 import pl.lodz.p.it.tks.exception.user.InactiveUserException;
-import pl.lodz.p.it.tks.command.AuthCommandService;
+import pl.lodz.p.it.tks.service.AuthService;
 
 @RequestScoped
 @Path("/")
 public class AuthController {
 
     @Inject
-    private AuthCommandService authCommandService;
+    private AuthService authService;
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -27,7 +27,7 @@ public class AuthController {
     @Path("/login")
     public LoginResponse login(@Valid LoginDTO loginDTO)
             throws AuthenticationException, InactiveUserException {
-        String jwt = authCommandService.login(loginDTO.getUsername(), loginDTO.getPassword());
+        String jwt = authService.login(loginDTO.getUsername(), loginDTO.getPassword());
         return new LoginResponse(jwt);
     }
 

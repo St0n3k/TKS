@@ -2,17 +2,17 @@ package pl.lodz.p.it.tks.aggregates;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import pl.lodz.p.it.tks.in.GetAllRoomsPort;
+import pl.lodz.p.it.tks.in.RoomQueryPort;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.model.RoomEntity;
-import pl.lodz.p.it.tks.out.AddRoomPort;
+import pl.lodz.p.it.tks.out.RoomCommandPort;
 import pl.lodz.p.it.tks.repository.impl.RoomRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class RoomRepositoryAdapter implements AddRoomPort, GetAllRoomsPort {
+public class RoomRepositoryAdapter implements RoomQueryPort, RoomCommandPort {
 
     @Inject
     private RoomRepository roomRepository;
