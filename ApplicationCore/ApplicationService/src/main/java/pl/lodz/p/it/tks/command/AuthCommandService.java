@@ -1,10 +1,9 @@
-package pl.lodz.p.it.tks.service;
+package pl.lodz.p.it.tks.command;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.SecurityContext;
-import pl.lodz.p.it.tks.dto.LoginResponse;
 import pl.lodz.p.it.tks.exception.user.AuthenticationException;
 import pl.lodz.p.it.tks.exception.user.InactiveUserException;
 import pl.lodz.p.it.tks.repository.impl.UserRepository;
@@ -12,7 +11,7 @@ import pl.lodz.p.it.tks.security.JwtProvider;
 
 
 @RequestScoped
-public class AuthService {
+public class AuthCommandService {
     @Inject
     private JwtProvider jwtProvider;
 
@@ -22,7 +21,7 @@ public class AuthService {
     @Inject
     private UserRepository userRepository;
 
-    public LoginResponse login(String username, String password)
+    public String login(String username, String password)
             throws AuthenticationException, InactiveUserException {
 //        User user = userRepository.getUserByUsername(username)
 //                .orElseThrow(AuthenticationException::new);
@@ -39,8 +38,7 @@ public class AuthService {
 //        return new LoginResponse(jwt);
 
         //FIXME odkomentowac wyzej i usunac to ponizej
-        String jwt = jwtProvider.generateJWT("123", "ADMIN");
-        return new LoginResponse(jwt);
+        return jwtProvider.generateJWT("123", "ADMIN");
     }
 
 //    public void changePassword(String oldPassword, String newPassword) throws UserNotFoundException, InvalidInputException {

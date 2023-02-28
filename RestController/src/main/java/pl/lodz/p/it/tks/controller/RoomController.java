@@ -4,10 +4,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -15,8 +12,11 @@ import jakarta.ws.rs.core.SecurityContext;
 import pl.lodz.p.it.tks.dto.CreateRoomDTO;
 import pl.lodz.p.it.tks.exception.room.CreateRoomException;
 import pl.lodz.p.it.tks.model.Room;
-import pl.lodz.p.it.tks.service.RentService;
-import pl.lodz.p.it.tks.service.RoomService;
+import pl.lodz.p.it.tks.query.RoomQueryService;
+import pl.lodz.p.it.tks.command.RentCommandService;
+import pl.lodz.p.it.tks.command.RoomCommandService;
+
+import java.util.List;
 
 @RequestScoped
 @Path("/rooms")
@@ -26,17 +26,21 @@ public class RoomController {
     private SecurityContext securityContext;
 
     @Inject
-    private RoomService roomService;
+    private RoomCommandService roomCommandService;
 
     @Inject
-    private RentService rentService;
+    private RoomQueryService roomQueryService;
+
+    @Inject
+    private RentCommandService rentCommandService;
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Response addRoom(@Valid CreateRoomDTO dto) throws CreateRoomException {
-        Room room = roomService.addRoom(dto);
+        Room room = new Room(dto.getRoomNumber(), dto.getPrice(), dto.getSize());
+        room = roomCommandService.addRoom(room);
         return Response.status(Response.Status.CREATED).entity(room).build();
     }
 
@@ -71,21 +75,21 @@ public class RoomController {
 //    }
 //
 //
-//    /**
-//     * Endpoint which is used to get all saved rooms if param number is not set,
-//     * otherwise it will return room with given room number
-//     *
-//     * @return status code
-//     * 200(OK) and list of all rooms
-//     * 200(OK) if number parameter was set and room was found
-//     * 404(NOT_FOUND) if number parameter was set, but room was not found
-//     */
-//    @GET
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getAllRooms() {
-//        List<Room> rooms = roomService.getAllRooms();
-//        return Response.status(Response.Status.OK).entity(rooms).build();
-//    }
+    /**
+     * Endpoint which is used to get all saved rooms if param number is not set,
+     * otherwise it will return room with given room number
+     *
+     * @return status code
+     * 200(OK) and list of all rooms
+     * 200(OK) if number parameter was set and room was found
+     * 404(NOT_FOUND) if number parameter was set, but room was not found
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllRooms() {
+        List<Room> rooms = roomQueryService.getAllRooms();
+        return Response.status(Response.Status.OK).entity(rooms).build();
+    }
 //
 //    @GET
 //    @Path("/search/{number}")
