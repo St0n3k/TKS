@@ -2,7 +2,6 @@ package pl.lodz.p.it.tks.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.json.bind.annotation.JsonbTransient;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.model.AbstractModel;
@@ -13,16 +12,13 @@ import java.security.Principal;
 @NoArgsConstructor
 public abstract class User extends AbstractModel implements Principal {
 
-    @NotNull
+
     private String username;
 
-    @NotNull
     private boolean active = true;
 
-    @NotNull
     private String role = "CLIENT";
 
-    @NotNull
     @JsonbTransient
     private String password;
 

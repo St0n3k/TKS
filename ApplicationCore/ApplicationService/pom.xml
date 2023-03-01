@@ -11,36 +11,24 @@
 
     <artifactId>ApplicationService</artifactId>
 
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <dependencies>
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-web-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>pl.lodz.p.it.tks</groupId>
             <artifactId>ApplicationPorts</artifactId>
-            <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>pl.lodz.p.it.tks</groupId>
             <artifactId>RepositoryAdapter</artifactId>
-            <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>pl.lodz.p.it.tks</groupId>
             <artifactId>Security</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-<!--            //FIXME usunac jak zrobimy porty-->
-        <dependency>
-            <groupId>pl.lodz.p.it.tks</groupId>
-            <artifactId>Repository</artifactId>
-            <version>1.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
