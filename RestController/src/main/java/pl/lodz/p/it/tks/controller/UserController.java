@@ -22,14 +22,17 @@ import pl.lodz.p.it.tks.dto.RegisterClientDTO;
 import pl.lodz.p.it.tks.dto.RegisterEmployeeDTO;
 import pl.lodz.p.it.tks.exception.user.CreateUserException;
 import pl.lodz.p.it.tks.exception.user.UpdateUserException;
+import pl.lodz.p.it.tks.exception.security.JwsException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.model.Address;
 import pl.lodz.p.it.tks.model.user.Admin;
 import pl.lodz.p.it.tks.model.user.Client;
 import pl.lodz.p.it.tks.model.user.Employee;
 import pl.lodz.p.it.tks.model.user.User;
-import pl.lodz.p.it.tks.security.SignProvider;
+import pl.lodz.p.it.tks.out.JwsCommandPort;
 import pl.lodz.p.it.tks.service.UserService;
+
+import java.util.List;
 
 @RequestScoped
 @Path("/users")
@@ -38,7 +41,7 @@ public class UserController {
     private UserService userService;
 
     @Inject
-    private SignProvider signProvider;
+    private JwsCommandPort jwsCommandPort;
 
     /**
      * Endpoint which is used to register new client,
@@ -113,13 +116,13 @@ public class UserController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-    public Response getUserById(@PathParam("id") Long id) throws UserNotFoundException, JOSEException {
+    public Response getUserById(@PathParam("id") Long id) throws UserNotFoundException, JwsException {
         User user = userService.getUserById(id);
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("id", id);
 
-        String ifMatch = signProvider.sign(jsonObject.toString());
+        String ifMatch = jwsCommandPort.sign(jsonObject.toString());
         return Response.status(Response.Status.OK).entity(user).tag(ifMatch).build();
     }
 

@@ -4,13 +4,14 @@ package pl.lodz.p.it.tks.security;
 import io.jsonwebtoken.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.servlet.http.HttpServletRequest;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import pl.lodz.p.it.tks.exception.security.JwtException;
+import pl.lodz.p.it.tks.out.JwtCommandPort;
 
 import java.util.Date;
 
 @ApplicationScoped
-public class JwtProvider {
+public class JwtProvider implements JwtCommandPort {
 
     @Inject
     @ConfigProperty(name = "pl.lodz.pas.security.jwt.secret")
@@ -33,10 +34,14 @@ public class JwtProvider {
 
     }
 
-    public Jws<Claims> parseJWT(String jwt) throws SignatureException {
-        return Jwts.parser()
-                   .setSigningKey(SECRET)
-                   .parseClaimsJws(jwt);
+    private Jws<Claims> parseJWT(String jwt) throws JwtException {
+        try{
+            return Jwts.parser()
+                    .setSigningKey(SECRET)
+                    .parseClaimsJws(jwt);
+        } catch (SignatureException e) {
+            throw new JwtException();
+        }
     }
 
     public boolean validateToken(String jwt) {
@@ -48,14 +53,14 @@ public class JwtProvider {
         }
     }
 
-    public String getToken(HttpServletRequest request) {
+    @Override
+    public String getSubject(String jwt) throws JwtException {
+        return parseJWT(jwt).getBody().getSubject();
+    }
 
-        String authHeader = request.getHeader("Authorization");
-
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            return authHeader.replace("Bearer ", "");
-        }
-        return null;
+    @Override
+    public String getRole(String jwt) throws JwtException {
+        return parseJWT(jwt).getBody().get("role", String.class);
     }
 
 
