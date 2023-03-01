@@ -1,6 +1,7 @@
 package pl.lodz.p.it.tks.model.user;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.model.AddressEntity;
 
 @Entity
+@DiscriminatorValue("Client")
 @Data
 @NoArgsConstructor
 public class ClientEntity extends UserEntity {
@@ -39,4 +41,25 @@ public class ClientEntity extends UserEntity {
         this.address = address;
         this.setRole("CLIENT");
     }
+
+    public ClientEntity(Client client) {
+        super(client.getUsername(), client.getPassword());
+        this.setId(client.getId());
+        this.firstName = client.getFirstName();
+        this.lastName = client.getLastName();
+        this.personalId = client.getPersonalId();
+        this.address = new AddressEntity(client.getAddress());
+        this.setRole("CLIENT");
+    }
+
+    public Client mapToClient(){
+        return new Client(this.getId(), this.getUsername(),
+                this.getFirstName(),
+                this.getLastName(),
+                this.getPersonalId(),
+                this.getAddress().mapToAddress(),
+                this.getPassword());
+    }
+
+
 }

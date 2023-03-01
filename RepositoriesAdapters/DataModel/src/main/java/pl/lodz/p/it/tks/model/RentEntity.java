@@ -93,6 +93,26 @@ public class RentEntity extends AbstractEntity {
         this.room = roomEntity;
     }
 
+    public RentEntity(Rent rent) {
+        this.id = rent.getId();
+        this.beginTime = rent.getBeginTime();
+        this.endTime = rent.getEndTime();
+        this.board = rent.isBoard();
+        this.finalCost = rent.getFinalCost();
+        this.client = new ClientEntity(rent.getClient());
+        this.room = new RoomEntity(rent.getRoom());
+    }
+
+    public Rent mapToRent(){
+        return new Rent(this.getId(),
+                this.getBeginTime(),
+                this.getEndTime(),
+                this.isBoard(),
+                this.getFinalCost(),
+                this.getClient().mapToClient(),
+                this.getRoom().mapToRoom());
+    }
+
     @AssertTrue
     private boolean isEndDateAfterBeginDate() {
         return endTime.isAfter(beginTime);

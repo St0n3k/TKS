@@ -47,6 +47,17 @@ public class Rent {
         this.room = room;
     }
 
+    public Rent(Long id, LocalDateTime beginTime, LocalDateTime endTime, boolean board, double finalCost, Client client,
+                Room room) {
+        this.id = id;
+        this.beginTime = beginTime;
+        this.endTime = endTime;
+        this.board = board;
+        this.finalCost = finalCost;
+        this.client = client;
+        this.room = room;
+    }
+
     @AssertTrue
     private boolean isEndDateAfterBeginDate() {
         return endTime.isAfter(beginTime);

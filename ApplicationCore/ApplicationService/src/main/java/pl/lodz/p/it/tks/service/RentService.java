@@ -6,9 +6,15 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.SecurityContext;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import pl.lodz.p.it.tks.repository.impl.RentRepository;
+import pl.lodz.p.it.tks.exception.rent.RentNotFoundException;
+import pl.lodz.p.it.tks.in.RentQueryPort;
+import pl.lodz.p.it.tks.model.Rent;
+import pl.lodz.p.it.tks.out.RentCommandPort;
 import pl.lodz.p.it.tks.repository.impl.RoomRepository;
 import pl.lodz.p.it.tks.repository.impl.UserRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 
 @AllArgsConstructor
@@ -21,7 +27,10 @@ public class RentService {
     @Inject
     private RoomRepository roomRepository;
     @Inject
-    private RentRepository rentRepository;
+    private RentQueryPort rentQueryPort;
+
+    @Inject
+    private RentCommandPort rentCommandPort;
 
     @Context
     private SecurityContext securityContext;
@@ -75,29 +84,29 @@ public class RentService {
 //    }
 //
 //
-//    /**
-//     * Method used to find rent by id
-//     *
-//     * @param id id of rent
-//     * @return rent
-//     * @throws RentNotFoundException if rent with given id was not found
-//     */
-//    public Rent getRentById(Long id) throws RentNotFoundException {
-//        Optional<Rent> optionalRent = rentRepository.getById(id);
-//
-//        if (optionalRent.isEmpty()) {
-//            throw new RentNotFoundException();
-//        }
-//        return optionalRent.get();
-//    }
-//
-//
-//    /**
-//     * @return list of all rents in the database
-//     */
-//    public List<Rent> getAllRents() {
-//        return rentRepository.getAll();
-//    }
+    /**
+     * Method used to find rent by id
+     *
+     * @param id id of rent
+     * @return rent
+     * @throws RentNotFoundException if rent with given id was not found
+     */
+    public Rent getRentById(Long id) throws RentNotFoundException {
+        Optional<Rent> optionalRent = rentQueryPort.getById(id);
+
+        if (optionalRent.isEmpty()) {
+            throw new RentNotFoundException();
+        }
+        return optionalRent.get();
+    }
+
+
+    /**
+     * @return list of all rents in the database
+     */
+    public List<Rent> getAllRents() {
+        return rentQueryPort.getAll();
+    }
 //
 //
 //    /**

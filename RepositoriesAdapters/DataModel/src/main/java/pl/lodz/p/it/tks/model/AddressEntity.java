@@ -30,4 +30,14 @@ public class AddressEntity {
         this.street = street;
         this.houseNumber = houseNumber;
     }
+
+    public AddressEntity(Address address) {
+        this.city = address.getCity();
+        this.street = address.getStreet();
+        this.houseNumber = address.getHouseNumber();
+    }
+
+    public Address mapToAddress(){
+        return new Address(this.getCity(), this.getStreet(), this.getHouseNumber());
+    }
 }

@@ -1,11 +1,22 @@
 package pl.lodz.p.it.tks.controller;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import pl.lodz.p.it.tks.exception.rent.RentNotFoundException;
+import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.service.RentService;
 
+import java.util.List;
+
 @RequestScoped
-//@Path("/rents")
+@Path("/rents")
 public class RentController {
 
     @Inject
@@ -33,21 +44,21 @@ public class RentController {
 //        return Response.status(Response.Status.CREATED).entity(rent).build();
 //    }
 //
-//    @GET
-//    @Path("/{id}")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getRentById(@PathParam("id") Long id) throws RentNotFoundException {
-//        Rent rent = rentService.getRentById(id);
-//        return Response.status(Response.Status.OK).entity(rent).build();
-//    }
-//
-//    @GET
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @RolesAllowed({"EMPLOYEE", "ADMIN"})
-//    public Response getAllRents() {
-//        List<Rent> rents = rentService.getAllRents();
-//        return Response.status(Response.Status.OK).entity(rents).build();
-//    }
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRentById(@PathParam("id") Long id) throws RentNotFoundException {
+        Rent rent = rentService.getRentById(id);
+        return Response.status(Response.Status.OK).entity(rent).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"EMPLOYEE", "ADMIN"})
+    public Response getAllRents() {
+        List<Rent> rents = rentService.getAllRents();
+        return Response.status(Response.Status.OK).entity(rents).build();
+    }
 //
 //
 //    /**
