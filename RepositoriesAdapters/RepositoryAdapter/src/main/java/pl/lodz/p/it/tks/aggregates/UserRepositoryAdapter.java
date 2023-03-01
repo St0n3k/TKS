@@ -1,20 +1,15 @@
 package pl.lodz.p.it.tks.aggregates;
 
-import java.util.List;
-import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import pl.lodz.p.it.tks.in.UserQueryPort;
-import pl.lodz.p.it.tks.model.user.Admin;
-import pl.lodz.p.it.tks.model.user.AdminEntity;
-import pl.lodz.p.it.tks.model.user.Client;
-import pl.lodz.p.it.tks.model.user.ClientEntity;
-import pl.lodz.p.it.tks.model.user.Employee;
-import pl.lodz.p.it.tks.model.user.EmployeeEntity;
-import pl.lodz.p.it.tks.model.user.User;
-import pl.lodz.p.it.tks.model.user.UserEntity;
-import pl.lodz.p.it.tks.out.UserCommandPort;
+import pl.lodz.p.it.tks.infrastructure.UserCommandPort;
+import pl.lodz.p.it.tks.infrastructure.UserQueryPort;
+import pl.lodz.p.it.tks.model.user.*;
 import pl.lodz.p.it.tks.repository.UserRepository;
+
+import java.util.List;
+import java.util.Optional;
+
 
 @ApplicationScoped
 public class UserRepositoryAdapter implements UserCommandPort, UserQueryPort {

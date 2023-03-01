@@ -17,7 +17,7 @@ import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
 import pl.lodz.p.it.tks.exception.user.InactiveUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.model.Rent;
-import pl.lodz.p.it.tks.service.RentService;
+import pl.lodz.p.it.tks.ui.RentUseCase;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import java.util.List;
 public class RentController {
 
     @Inject
-    private RentService rentService;
+    private RentUseCase rentUseCase;
 
 
 
@@ -53,7 +53,7 @@ public class RentController {
                 null,
                 null
         );
-        Rent rent = rentService.rentRoom(fromDTO,
+        Rent rent = rentUseCase.rentRoom(fromDTO,
                 createRentDTO.getClientId(),
                 createRentDTO.getRoomId());
         return Response.status(Response.Status.CREATED).entity(rent).build();
@@ -63,7 +63,7 @@ public class RentController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRentById(@PathParam("id") Long id) throws RentNotFoundException {
-        Rent rent = rentService.getRentById(id);
+        Rent rent = rentUseCase.getRentById(id);
         return Response.status(Response.Status.OK).entity(rent).build();
     }
 
@@ -71,7 +71,7 @@ public class RentController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"EMPLOYEE", "ADMIN"})
     public Response getAllRents() {
-        List<Rent> rents = rentService.getAllRents();
+        List<Rent> rents = rentUseCase.getAllRents();
         return Response.status(Response.Status.OK).entity(rents).build();
     }
 
@@ -89,7 +89,7 @@ public class RentController {
     @RolesAllowed({"EMPLOYEE", "ADMIN"})
     public Response updateRentBoard(@PathParam("id") Long id, @Valid UpdateRentBoardDTO dto)
         throws InvalidInputException, RentNotFoundException {
-        Rent rent = rentService.updateRentBoard(id, dto.getBoard());
+        Rent rent = rentUseCase.updateRentBoard(id, dto.getBoard());
         return Response.status(Response.Status.OK).entity(rent).build();
     }
 
@@ -103,7 +103,7 @@ public class RentController {
     @Path("/{id}")
     @RolesAllowed({"EMPLOYEE", "ADMIN"})
     public Response removeRent(@PathParam("id") Long rentId) throws RemoveRentException {
-        rentService.removeRent(rentId);
+        rentUseCase.removeRent(rentId);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 }

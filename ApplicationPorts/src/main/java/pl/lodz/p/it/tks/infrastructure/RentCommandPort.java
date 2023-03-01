@@ -1,4 +1,4 @@
-package pl.lodz.p.it.tks.out;
+package pl.lodz.p.it.tks.infrastructure;
 
 import pl.lodz.p.it.tks.model.Rent;
 

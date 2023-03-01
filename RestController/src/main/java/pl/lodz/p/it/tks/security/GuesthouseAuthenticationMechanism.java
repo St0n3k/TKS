@@ -8,9 +8,9 @@ import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageCont
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import pl.lodz.p.it.tks.exception.security.JwtException;
-import pl.lodz.p.it.tks.in.UserQueryPort;
+import pl.lodz.p.it.tks.infrastructure.JwtCommandPort;
+import pl.lodz.p.it.tks.infrastructure.UserQueryPort;
 import pl.lodz.p.it.tks.model.user.User;
-import pl.lodz.p.it.tks.out.JwtCommandPort;
 
 import java.util.Collections;
 import java.util.HashSet;

@@ -1,7 +1,8 @@
-package pl.lodz.p.it.tks.out;
+package pl.lodz.p.it.tks.infrastructure;
+
+import pl.lodz.p.it.tks.model.user.User;
 
 import java.util.Optional;
-import pl.lodz.p.it.tks.model.user.User;
 
 public interface UserCommandPort {
     User add(User user);

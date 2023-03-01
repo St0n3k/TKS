@@ -11,14 +11,14 @@ import pl.lodz.p.it.tks.exception.rent.RentNotFoundException;
 import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
 import pl.lodz.p.it.tks.exception.user.InactiveUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
-import pl.lodz.p.it.tks.in.RentQueryPort;
-import pl.lodz.p.it.tks.in.RoomQueryPort;
-import pl.lodz.p.it.tks.in.UserQueryPort;
+import pl.lodz.p.it.tks.infrastructure.RentCommandPort;
+import pl.lodz.p.it.tks.infrastructure.RentQueryPort;
+import pl.lodz.p.it.tks.infrastructure.RoomQueryPort;
+import pl.lodz.p.it.tks.infrastructure.UserQueryPort;
 import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.model.user.Client;
 import pl.lodz.p.it.tks.model.user.User;
-import pl.lodz.p.it.tks.out.RentCommandPort;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -29,7 +29,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
-public class RentService {
+public class RentService implements pl.lodz.p.it.tks.ui.RentUseCase {
 
 
     @Inject
@@ -51,6 +51,7 @@ public class RentService {
      * @throws RoomNotFoundException if room was not found
      * @throws InactiveUserException if user is inactive
      */
+    @Override
     public Rent rentRoom(Rent tempRent, Long clientId, Long roomId) throws
             UserNotFoundException,
             RoomNotFoundException,
@@ -94,6 +95,7 @@ public class RentService {
      * @return rent
      * @throws RentNotFoundException if rent with given id was not found
      */
+    @Override
     public Rent getRentById(Long id) throws RentNotFoundException {
         Optional<Rent> optionalRent = rentQueryPort.getById(id);
 
@@ -107,6 +109,7 @@ public class RentService {
     /**
      * @return list of all rents in the database
      */
+    @Override
     public List<Rent> getAllRents() {
         return rentQueryPort.getAll();
     }
@@ -121,6 +124,7 @@ public class RentService {
      * @throws InvalidInputException if user input is invalid
      * @throws RentNotFoundException if rent with given id does not exist
      */
+    @Override
     public Rent updateRentBoard(Long id, Boolean board) throws InvalidInputException, RentNotFoundException {
         if (board == null) {
             throw new InvalidInputException();
@@ -155,6 +159,7 @@ public class RentService {
      * @param rentId id of the rent to be removed
      * @return void
      */
+    @Override
     public void removeRent(Long rentId) throws RemoveRentException {
         Optional<Rent> optionalRent = rentQueryPort.getById(rentId);
         if (optionalRent.isEmpty()) {

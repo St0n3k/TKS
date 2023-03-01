@@ -13,7 +13,6 @@ import pl.lodz.p.it.tks.exception.room.CreateRoomException;
 import pl.lodz.p.it.tks.exception.room.RoomHasActiveReservationsException;
 import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
 import pl.lodz.p.it.tks.exception.room.UpdateRoomException;
-import pl.lodz.p.it.tks.exception.security.JwsException;
 import pl.lodz.p.it.tks.exception.user.*;
 
 @Provider
@@ -44,10 +43,6 @@ public class CustomExceptionMapper implements ExceptionMapper<BaseApplicationExc
         if (e.getClass() == InactiveUserException.class
                 || e.getClass() == AuthenticationException.class) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-
-        if (e.getClass() == JwsException.class) {
-            return Response.status(418).build();
         }
 
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

@@ -8,17 +8,18 @@ import pl.lodz.p.it.tks.exception.InvalidInputException;
 import pl.lodz.p.it.tks.exception.user.AuthenticationException;
 import pl.lodz.p.it.tks.exception.user.InactiveUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
-import pl.lodz.p.it.tks.in.UserQueryPort;
+import pl.lodz.p.it.tks.infrastructure.JwtCommandPort;
+import pl.lodz.p.it.tks.infrastructure.UserCommandPort;
+import pl.lodz.p.it.tks.infrastructure.UserQueryPort;
 import pl.lodz.p.it.tks.model.user.User;
-import pl.lodz.p.it.tks.out.JwtCommandPort;
-import pl.lodz.p.it.tks.out.UserCommandPort;
+import pl.lodz.p.it.tks.ui.AuthUseCase;
 
 import java.security.Principal;
 import java.util.Objects;
 
 
 @RequestScoped
-public class AuthService {
+public class AuthService implements AuthUseCase {
     @Inject
     private JwtCommandPort jwtCommandPort;
 

@@ -8,11 +8,12 @@ import pl.lodz.p.it.tks.exception.room.CreateRoomException;
 import pl.lodz.p.it.tks.exception.room.RoomHasActiveReservationsException;
 import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
 import pl.lodz.p.it.tks.exception.room.UpdateRoomException;
-import pl.lodz.p.it.tks.in.RentQueryPort;
-import pl.lodz.p.it.tks.in.RoomQueryPort;
+import pl.lodz.p.it.tks.infrastructure.RentQueryPort;
+import pl.lodz.p.it.tks.infrastructure.RoomCommandPort;
+import pl.lodz.p.it.tks.infrastructure.RoomQueryPort;
 import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.Room;
-import pl.lodz.p.it.tks.out.RoomCommandPort;
+import pl.lodz.p.it.tks.ui.RoomUseCase;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +22,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
-public class RoomService {
+public class RoomService implements RoomUseCase {
 
     @Inject
     private RoomQueryPort roomQueryPort;
@@ -41,6 +42,7 @@ public class RoomService {
      * 201(CREATED) if room was successfully saved,
      * 409(CONFLICT) if room was not saved due to constraints(room id / room number)
      */
+    @Override
     public Room addRoom(Room room) throws CreateRoomException {
         try {
             return roomCommandPort.addRoom(room);
@@ -58,17 +60,20 @@ public class RoomService {
      * 200(OK) if number parameter was set and room was found
      * 404(NOT_FOUND) if number parameter was set, but room was not found
      */
+    @Override
     public List<Room> getAllRooms() {
         return roomQueryPort.getAllRooms();
     }
 
 
+    @Override
     public Room getRoomById(Long id) throws RoomNotFoundException {
         return roomQueryPort.getById(id)
                 .orElseThrow(RoomNotFoundException::new);
     }
 
 
+    @Override
     public Room getRoomByNumber(int number) throws RoomNotFoundException {
         return roomQueryPort.getByNumber(number)
                 .orElseThrow(RoomNotFoundException::new);
@@ -82,6 +87,7 @@ public class RoomService {
      * If this parameter is not set, the result of the method will be list of all rents of given room
      * @return list of rents that meet given criteria
      */
+    @Override
     public List<Rent> getAllRentsOfRoom(Long roomId, Boolean past) throws RoomNotFoundException {
         if (!roomQueryPort.existsById(roomId)) {
             throw new RoomNotFoundException();
@@ -103,6 +109,7 @@ public class RoomService {
      * @param id id of room to be updated
      * @param room object containing new properties of existing room
      */
+    @Override
     public Room updateRoom(Long id, Room room) throws RoomNotFoundException, UpdateRoomException {
         Room existingRoom = roomQueryPort.getById(id)
                 .orElseThrow(RoomNotFoundException::new);
@@ -128,6 +135,7 @@ public class RoomService {
      * 204(NO_CONTENT) if room was removed or was not found
      * 409(CONFLICT) if there are current or future rents for room with given id
      */
+    @Override
     public void removeRoom(Long id) throws RoomHasActiveReservationsException {
         Optional<Room> optionalRoom = roomQueryPort.getById(id);
         if (optionalRoom.isEmpty()) {

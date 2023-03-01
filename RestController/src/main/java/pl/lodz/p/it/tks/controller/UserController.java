@@ -1,20 +1,10 @@
 package pl.lodz.p.it.tks.controller;
 
-import java.util.List;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.shaded.gson.JsonObject;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.tks.dto.RegisterAdminDTO;
@@ -22,15 +12,13 @@ import pl.lodz.p.it.tks.dto.RegisterClientDTO;
 import pl.lodz.p.it.tks.dto.RegisterEmployeeDTO;
 import pl.lodz.p.it.tks.exception.user.CreateUserException;
 import pl.lodz.p.it.tks.exception.user.UpdateUserException;
-import pl.lodz.p.it.tks.exception.security.JwsException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.model.Address;
 import pl.lodz.p.it.tks.model.user.Admin;
 import pl.lodz.p.it.tks.model.user.Client;
 import pl.lodz.p.it.tks.model.user.Employee;
 import pl.lodz.p.it.tks.model.user.User;
-import pl.lodz.p.it.tks.out.JwsCommandPort;
-import pl.lodz.p.it.tks.service.UserService;
+import pl.lodz.p.it.tks.ui.UserUseCase;
 
 import java.util.List;
 
@@ -38,10 +26,7 @@ import java.util.List;
 @Path("/users")
 public class UserController {
     @Inject
-    private UserService userService;
-
-    @Inject
-    private JwsCommandPort jwsCommandPort;
+    private UserUseCase userUseCase;
 
     /**
      * Endpoint which is used to register new client,
@@ -67,7 +52,7 @@ public class UserController {
                                    address,
                                    rcDTO.getPassword());
 
-        Client registeredClient = userService.registerClient(client);
+        Client registeredClient = userUseCase.registerClient(client);
         return Response.status(Response.Status.CREATED)
                        .entity(registeredClient)
                        .build();
@@ -94,7 +79,7 @@ public class UserController {
                                          reDTO.getLastName(),
                                          reDTO.getPassword());
 
-        Employee registeredEmployee = userService.registerEmployee(employee);
+        Employee registeredEmployee = userUseCase.registerEmployee(employee);
         return Response.status(Response.Status.CREATED).entity(registeredEmployee).build();
     }
 
@@ -105,33 +90,28 @@ public class UserController {
     @RolesAllowed({ "ADMIN" })
     public Response registerAdmin(@Valid RegisterAdminDTO raDto) throws CreateUserException {
         Admin admin = new Admin(raDto.getUsername(), raDto.getPassword());
-        Admin registeredAdmin = userService.registerAdmin(admin);
+        Admin registeredAdmin = userUseCase.registerAdmin(admin);
         return Response.status(Response.Status.CREATED)
                        .entity(registeredAdmin)
                        .build();
     }
 
 
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-    public Response getUserById(@PathParam("id") Long id) throws UserNotFoundException, JwsException {
-        User user = userService.getUserById(id);
-
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("id", id);
-
-        String ifMatch = jwsCommandPort.sign(jsonObject.toString());
-        return Response.status(Response.Status.OK).entity(user).tag(ifMatch).build();
-    }
+   @GET
+   @Path("/{id}")
+   @Produces(MediaType.APPLICATION_JSON)
+   @RolesAllowed({"ADMIN", "EMPLOYEE"})
+   public Response getUserById(@PathParam("id") Long id) throws UserNotFoundException {
+       User user = userUseCase.getUserById(id);
+       return Response.status(Response.Status.OK).entity(user).build();
+   }
 
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response getAllUsers(@QueryParam("username") String username) {
-        List<User> users = userService.getAllUsers(username);
+        List<User> users = userUseCase.getAllUsers(username);
         return Response.status(Response.Status.OK).entity(users).build();
     }
 
@@ -139,7 +119,7 @@ public class UserController {
     @Path("/clients")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllClients(@QueryParam("username") String username) {
-        List<Client> clients = userService.getClients(username);
+        List<Client> clients = userUseCase.getClients(username);
         return Response.status(Response.Status.OK).entity(clients).build();
     }
 
@@ -148,7 +128,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN" })
     public Response getAllEmployees() {
-        List<Employee> employee = userService.getEmployees();
+        List<Employee> employee = userUseCase.getEmployees();
         return Response.status(Response.Status.OK).entity(employee).build();
     }
 
@@ -157,7 +137,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN" })
     public Response getAllAdmins() {
-        List<Admin> admins = userService.getAdmins();
+        List<Admin> admins = userUseCase.getAdmins();
         return Response.status(Response.Status.OK).entity(admins).build();
     }
 
@@ -166,7 +146,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN" })
     public Response getUserByUsername(@PathParam("username") String username) throws UserNotFoundException {
-        User user = userService.getUserByUsername(username);
+        User user = userUseCase.getUserByUsername(username);
         return Response.status(Response.Status.OK).entity(user).build();
     }
 
@@ -231,7 +211,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response activateUser(@PathParam("id") Long id) throws UserNotFoundException, UpdateUserException {
-        User user = userService.activateUser(id);
+        User user = userUseCase.activateUser(id);
         return Response.status(Response.Status.OK).entity(user).build();
     }
 
@@ -249,7 +229,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response deactivateUser(@PathParam("id") Long id) throws UserNotFoundException, UpdateUserException {
-        User user = userService.deactivateUser(id);
+        User user = userUseCase.deactivateUser(id);
         return Response.status(Response.Status.OK).entity(user).build();
     }
 }

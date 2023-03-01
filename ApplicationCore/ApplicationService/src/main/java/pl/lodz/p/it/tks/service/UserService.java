@@ -1,8 +1,5 @@
 package pl.lodz.p.it.tks.service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
@@ -10,18 +7,22 @@ import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.exception.user.CreateUserException;
 import pl.lodz.p.it.tks.exception.user.UpdateUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
-import pl.lodz.p.it.tks.in.UserQueryPort;
+import pl.lodz.p.it.tks.infrastructure.UserCommandPort;
+import pl.lodz.p.it.tks.infrastructure.UserQueryPort;
 import pl.lodz.p.it.tks.model.user.Admin;
 import pl.lodz.p.it.tks.model.user.Client;
 import pl.lodz.p.it.tks.model.user.Employee;
 import pl.lodz.p.it.tks.model.user.User;
-import pl.lodz.p.it.tks.out.UserCommandPort;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
-public class UserService {
+public class UserService implements pl.lodz.p.it.tks.ui.UserUseCase {
 
     @Inject
     private UserQueryPort userQueryPort;
@@ -33,6 +34,7 @@ public class UserService {
     // private RentRepository rentRepository;
 
 
+   @Override
    public Client registerClient(Client client) throws CreateUserException {
        try {
            client = (Client) userCommandPort.add(client);
@@ -43,6 +45,7 @@ public class UserService {
    }
 
 
+   @Override
    public Employee registerEmployee(Employee employee) throws CreateUserException {
        employee = (Employee) userCommandPort.add(employee);
 
@@ -52,6 +55,7 @@ public class UserService {
        return employee;
    }
 
+   @Override
    public Admin registerAdmin(Admin admin) throws CreateUserException {
 
        admin = (Admin) userCommandPort.add(admin);
@@ -62,6 +66,7 @@ public class UserService {
        return admin;
    }
 
+   @Override
    public User getUserById(Long id) throws UserNotFoundException {
        Optional<User> optionalUser = userQueryPort.getById(id);
 
@@ -71,6 +76,7 @@ public class UserService {
        return optionalUser.get();
    }
 
+   @Override
    public List<User> getAllUsers(String username) {
        List<User> users;
        if (username == null) {
@@ -81,6 +87,7 @@ public class UserService {
        return users;
    }
 
+   @Override
    public User getUserByUsername(String username) throws UserNotFoundException {
        Optional<User> optionalUser = userQueryPort.getUserByUsername(username);
 
@@ -90,6 +97,7 @@ public class UserService {
        return optionalUser.get();
    }
 
+   @Override
    public List<Client> getClients(String username) {
        if (username != null) {
            return userQueryPort.getUsersByRoleAndMatchingUsername("CLIENT", username)
@@ -102,6 +110,7 @@ public class UserService {
                            .collect(Collectors.toList());
    }
 
+   @Override
    public List<Employee> getEmployees() {
        return userQueryPort.getUsersByRole("EMPLOYEE")
                            .stream()
@@ -109,6 +118,7 @@ public class UserService {
                            .collect(Collectors.toList());
    }
 
+   @Override
    public List<Admin> getAdmins() {
        return userQueryPort.getUsersByRole("ADMIN")
                            .stream()
@@ -191,6 +201,7 @@ public class UserService {
 //     // return optionalUser.orElseThrow(UpdateUserException::new);
 // }
 
+@Override
 public User activateUser(Long id) throws UserNotFoundException, UpdateUserException {
     Optional<User> optionalUser = userQueryPort.getById(id);
 
@@ -208,6 +219,7 @@ public User activateUser(Long id) throws UserNotFoundException, UpdateUserExcept
     return user;
 }
 
+@Override
 public User deactivateUser(Long id) throws UpdateUserException, UserNotFoundException {
     Optional<User> optionalUser = userQueryPort.getById(id);
 

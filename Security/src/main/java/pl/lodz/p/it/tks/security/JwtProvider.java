@@ -6,7 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import pl.lodz.p.it.tks.exception.security.JwtException;
-import pl.lodz.p.it.tks.out.JwtCommandPort;
+import pl.lodz.p.it.tks.infrastructure.JwtCommandPort;
 
 import java.util.Date;
 
