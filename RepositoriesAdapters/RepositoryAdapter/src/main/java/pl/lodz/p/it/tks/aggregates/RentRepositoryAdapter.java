@@ -60,4 +60,24 @@ public class RentRepositoryAdapter implements RentQueryPort, RentCommandPort {
     public List<Rent> findByClientAndStatus(Long clientId, boolean past) {
         return rentRepository.findByClientAndStatus(clientId, past).stream().map(RentEntity::mapToRent).collect(Collectors.toList());
     }
+
+    @Override
+    public Rent add(Rent rent) {
+        return rentRepository.add(new RentEntity(rent)).mapToRent();
+    }
+
+    @Override
+    public void remove(Rent rent) {
+        rentRepository.remove(new RentEntity(rent));
+    }
+
+    @Override
+    public Optional<Rent> update(Rent rent) {
+        return rentRepository.update(new RentEntity(rent)).map(RentEntity::mapToRent);
+    }
+
+    @Override
+    public boolean removeById(Long rentId) {
+        return rentRepository.removeById(rentId);
+    }
 }

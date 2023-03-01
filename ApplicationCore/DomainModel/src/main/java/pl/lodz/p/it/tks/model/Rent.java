@@ -13,9 +13,7 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class Rent {
-
-    private Long id;
+public class Rent extends AbstractModel{
 
     @NotNull
     @Future
@@ -48,8 +46,8 @@ public class Rent {
     }
 
     public Rent(Long id, LocalDateTime beginTime, LocalDateTime endTime, boolean board, double finalCost, Client client,
-                Room room) {
-        this.id = id;
+                Room room, long version) {
+        super(id, version);
         this.beginTime = beginTime;
         this.endTime = endTime;
         this.board = board;

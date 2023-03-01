@@ -101,6 +101,7 @@ public class RentEntity extends AbstractEntity {
         this.finalCost = rent.getFinalCost();
         this.client = new ClientEntity(rent.getClient());
         this.room = new RoomEntity(rent.getRoom());
+        this.setVersion(rent.getVersion());
     }
 
     public Rent mapToRent(){
@@ -110,7 +111,8 @@ public class RentEntity extends AbstractEntity {
                 this.isBoard(),
                 this.getFinalCost(),
                 this.getClient().mapToClient(),
-                this.getRoom().mapToRoom());
+                this.getRoom().mapToRoom(),
+                this.getVersion());
     }
 
     @AssertTrue
