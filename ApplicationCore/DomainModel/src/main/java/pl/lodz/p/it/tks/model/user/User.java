@@ -1,17 +1,14 @@
 package pl.lodz.p.it.tks.model.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.security.Principal;
 import jakarta.json.bind.annotation.JsonbTransient;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.model.AbstractModel;
 
-import java.security.Principal;
-
 @Data
 @NoArgsConstructor
 public abstract class User extends AbstractModel implements Principal {
-
 
     private String username;
 
@@ -23,44 +20,30 @@ public abstract class User extends AbstractModel implements Principal {
     private String password;
 
     @Override
-    @JsonIgnore
+    @JsonbTransient
     public String getName() {
         return getUsername();
     }
 
-    public User(String username, String password) {
+    public User(String username, String password, String role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
-    public User(Long id, String username, String password) {
+    public User(Long id, String username, boolean active, String role, String password) {
         super(id);
         this.username = username;
-        this.password = password;
-    }
-
-    public User(String username, String role, String password) {
-        this.username = username;
+        this.active = active;
         this.role = role;
         this.password = password;
     }
 
-    public User(Long id, String username, String role, String password) {
-        super(id);
-        this.username = username;
-        this.role = role;
-        this.password = password;
-    }
-
-    public User(Long id, long version, String username, String role, String password) {
+    public User(Long id, long version, String username, boolean active, String role, String password) {
         super(id, version);
         this.username = username;
+        this.active = active;
         this.role = role;
         this.password = password;
-    }
-
-    public User(Long id, long version, String username, String role, String password, boolean active) {
-        this(id, version, username, role, password);
-        this.active = active;
     }
 }

@@ -1,6 +1,16 @@
 package pl.lodz.p.it.tks.model.user;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -53,29 +63,20 @@ public abstract class UserEntity extends AbstractEntity {
     @Column(name = "password")
     private String password;
 
-    public UserEntity(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    public UserEntity(Long id, String username, String password) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-    }
-
-    public UserEntity(Long id, String username, String password, long version) {
-        super(version);
-        this.id = id;
-        this.username = username;
-        this.password = password;
-    }
-
-    public UserEntity(long version, Long id, String username, boolean active, String password) {
+    public UserEntity(long version, Long id, String username, boolean active, String role, String password) {
         super(version);
         this.id = id;
         this.username = username;
         this.active = active;
+        this.role = role;
+        this.password = password;
+    }
+
+    public UserEntity(Long id, String username, boolean active, String role, String password) {
+        this.id = id;
+        this.username = username;
+        this.active = active;
+        this.role = role;
         this.password = password;
     }
 

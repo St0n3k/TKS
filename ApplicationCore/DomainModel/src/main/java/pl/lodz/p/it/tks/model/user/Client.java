@@ -16,19 +16,44 @@ public class Client extends User {
 
     private Address address;
 
-
-    public Client(String username, String firstName, String lastName, String personalId, Address address,
-                  String password) {
-        super(username, password);
+    public Client(String username,
+                  String password,
+                  String firstName,
+                  String lastName,
+                  String personalId,
+                  Address address) {
+        super(username, password, "CLIENT");
         this.firstName = firstName;
         this.lastName = lastName;
         this.personalId = personalId;
         this.address = address;
     }
 
-    public Client(Long id, String username, String firstName, String lastName, String personalId, Address address,
-                  String password, boolean active, long version) {
-        super(id, version, username, "CLIENT", password, active);
+    public Client(Long id,
+                  String username,
+                  boolean active,
+                  String password,
+                  String firstName,
+                  String lastName,
+                  String personalId,
+                  Address address) {
+        super(id, username, active, "CLIENT", password);
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.personalId = personalId;
+        this.address = address;
+    }
+
+    public Client(Long id,
+                  long version,
+                  String username,
+                  boolean active,
+                  String password,
+                  String firstName,
+                  String lastName,
+                  String personalId,
+                  Address address) {
+        super(id, version, username, active, "CLIENT", password);
         this.firstName = firstName;
         this.lastName = lastName;
         this.personalId = personalId;

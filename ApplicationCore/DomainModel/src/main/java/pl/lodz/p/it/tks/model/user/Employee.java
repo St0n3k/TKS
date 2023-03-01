@@ -11,15 +11,19 @@ public class Employee extends User {
 
     private String lastName;
 
-
     public Employee(String username, String firstName, String lastName, String password) {
-        super(username, "EMPLOYEE", password);
+        super(username, password, "EMPLOYEE");
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public Employee(Long id, String username, String firstName, String lastName, String password) {
-        super(id, username, "EMPLOYEE", password);
+    public Employee(Long id,
+                    String username,
+                    boolean active,
+                    String password,
+                    String firstName,
+                    String lastName) {
+        super(id, username, active, "EMPLOYEE", password);
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -27,12 +31,11 @@ public class Employee extends User {
     public Employee(Long id,
                     long version,
                     String username,
-                    String role,
-                    String password,
                     boolean active,
+                    String password,
                     String firstName,
                     String lastName) {
-        super(id, version, username, role, password, active);
+        super(id, version, username, active, "EMPLOYEE", password);
         this.firstName = firstName;
         this.lastName = lastName;
     }

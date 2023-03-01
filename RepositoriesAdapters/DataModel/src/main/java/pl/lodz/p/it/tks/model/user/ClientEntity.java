@@ -31,47 +31,63 @@ public class ClientEntity extends UserEntity {
     @Embedded
     private AddressEntity address;
 
+    public ClientEntity(Client client) {
+        this(client.getVersion(),
+             client.getId(),
+             client.getUsername(),
+             client.isActive(),
+             client.getPassword(),
+             client.getFirstName(),
+             client.getLastName(),
+             client.getPersonalId(),
+             new AddressEntity(client.getAddress()));
+    }
 
-    public ClientEntity(String username, String firstName, String lastName, String personalId, AddressEntity address,
-                        String password) {
-        super(username, password);
+    public ClientEntity(long version,
+                        Long id,
+                        String username,
+                        boolean active,
+                        String password,
+                        String firstName,
+                        String lastName,
+                        String personalId,
+                        AddressEntity address) {
+        super(version, id, username, active, "CLIENT", password);
         this.firstName = firstName;
         this.lastName = lastName;
         this.personalId = personalId;
         this.address = address;
-        this.setRole("CLIENT");
     }
 
-    public ClientEntity(Client client) {
-        super(client.getVersion(), client.getId(), client.getUsername(), client.isActive(), client.getPassword());
-        this.firstName = client.getFirstName();
-        this.lastName = client.getLastName();
-        this.personalId = client.getPersonalId();
-        this.address = new AddressEntity(client.getAddress());
-        this.setRole("CLIENT");
-    }
-
-    public Client mapToClient() {
-        return new Client(this.getId(), this.getUsername(),
-                          this.getFirstName(),
-                          this.getLastName(),
-                          this.getPersonalId(),
-                          this.getAddress().mapToAddress(),
-                          this.getPassword(),
-                          this.isActive(),
-                          this.getVersion());
+    public ClientEntity(Long id,
+                        String username,
+                        boolean active,
+                        String password,
+                        String firstName,
+                        String lastName,
+                        String personalId,
+                        AddressEntity address) {
+        super(id, username, active, "CLIENT", password);
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.personalId = personalId;
+        this.address = address;
     }
 
     @Override
     public User mapToUser() {
         return new Client(this.getId(),
+                          this.getVersion(),
                           this.getUsername(),
+                          this.isActive(),
+                          this.getPassword(),
                           this.firstName,
                           this.lastName,
                           this.personalId,
-                          this.address.mapToAddress(),
-                          this.getPassword(),
-                          this.isActive(),
-                          this.getVersion());
+                          this.address.mapToAddress());
+    }
+
+    public Client mapToClient() {
+        return (Client) this.mapToUser();
     }
 }

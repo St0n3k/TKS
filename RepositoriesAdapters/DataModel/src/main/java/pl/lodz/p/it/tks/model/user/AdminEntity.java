@@ -9,17 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdminEntity extends UserEntity {
 
-    public AdminEntity(String username, String password) {
-        super(username, password);
-        this.setRole("ADMIN");
-    }
-
-    public AdminEntity(Long id, String username, String password, long version) {
-        super(id, username, password, version);
-    }
-
     public AdminEntity(long version, Long id, String username, boolean active, String password) {
-        super(version, id, username, active, password);
+        super(version, id, username, active, "ADMIN", password);
+    }
+
+    public AdminEntity(Long id, String username, boolean active, String password) {
+        super(id, username, active, "ADMIN", password);
     }
 
     @Override
@@ -27,8 +22,7 @@ public class AdminEntity extends UserEntity {
         return new Admin(this.getId(),
                          this.getVersion(),
                          this.getUsername(),
-                         this.getRole(),
-                         this.getPassword(),
-                         this.isActive());
+                         this.isActive(),
+                         this.getPassword());
     }
 }

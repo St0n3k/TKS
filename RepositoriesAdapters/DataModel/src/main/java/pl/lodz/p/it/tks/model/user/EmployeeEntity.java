@@ -21,37 +21,6 @@ public class EmployeeEntity extends UserEntity {
     @Column(name = "last_name")
     private String lastName;
 
-
-    public EmployeeEntity(String username, String firstName, String lastName, String password) {
-        super(username, password);
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.setRole("EMPLOYEE");
-    }
-
-    @Override
-    public User mapToUser() {
-        return new Employee(this.getId(),
-                            this.getVersion(),
-                            this.getUsername(),
-                            this.getRole(),
-                            this.getPassword(),
-                            this.isActive(),
-                            this.firstName,
-                            this.lastName);
-    }
-
-    public EmployeeEntity(Long id,
-                          String username,
-                          String password,
-                          long version,
-                          String firstName,
-                          String lastName) {
-        super(id, username, password, version);
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
     public EmployeeEntity(long version,
                           Long id,
                           String username,
@@ -59,8 +28,30 @@ public class EmployeeEntity extends UserEntity {
                           String password,
                           String firstName,
                           String lastName) {
-        super(version, id, username, active, password);
+        super(version, id, username, active, "EMPLOYEE", password);
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public EmployeeEntity(Long id,
+                          String username,
+                          boolean active,
+                          String password,
+                          String firstName,
+                          String lastName) {
+        super(id, username, active, "EMPLOYEE", password);
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    @Override
+    public User mapToUser() {
+        return new Employee(this.getId(),
+                            this.getVersion(),
+                            this.getUsername(),
+                            this.isActive(),
+                            this.getPassword(),
+                            this.firstName,
+                            this.lastName);
     }
 }

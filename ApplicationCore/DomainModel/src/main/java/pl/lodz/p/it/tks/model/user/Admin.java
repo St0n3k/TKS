@@ -6,19 +6,14 @@ import lombok.NoArgsConstructor;
 public class Admin extends User {
 
     public Admin(String username, String password) {
-        super(username, "ADMIN", password);
+        super(username, password, "ADMIN");
     }
 
-    public Admin(Long id, String username, String password) {
-        super(id, username, "ADMIN", password);
+    public Admin(Long id, String username, boolean active, String password) {
+        super(id, username, active, "ADMIN", password);
     }
 
-    public Admin(Long id,
-                 long version,
-                 String username,
-                 String role,
-                 String password,
-                 boolean active) {
-        super(id, version, username, role, password, active);
+    public Admin(Long id, long version, String username, boolean active, String password) {
+        super(id, version, username, active, "ADMIN", password);
     }
 }
