@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -32,15 +31,12 @@ public class RoomEntity extends AbstractEntity {
     private Long id;
 
     @Column(name = "room_number", unique = true)
-    @Min(value = 1)
     private int roomNumber;
 
     @Column
-    @Min(value = 1)
     private double price;
 
     @Column
-    @Min(value = 1)
     private int size;
 
     public RoomEntity(int roomNumber, double price, int size) {
@@ -54,9 +50,10 @@ public class RoomEntity extends AbstractEntity {
         this.roomNumber = room.getRoomNumber();
         this.price = room.getPrice();
         this.size = room.getSize();
+        this.setVersion(room.getVersion());
     }
 
     public Room mapToRoom(){
-        return new Room(this.getId(), this.getRoomNumber(), this.getPrice(), this.getSize());
+        return new Room(this.getId(), this.getRoomNumber(), this.getPrice(), this.getSize(), this.getVersion());
     }
 }

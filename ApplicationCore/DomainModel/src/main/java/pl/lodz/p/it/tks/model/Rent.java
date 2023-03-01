@@ -9,7 +9,6 @@ import pl.lodz.p.it.tks.model.user.Client;
 
 import java.time.LocalDateTime;
 
-// TODO if possible, refactor to use single query with addidtional parameter
 
 @Data
 @NoArgsConstructor

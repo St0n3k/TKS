@@ -5,25 +5,35 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import pl.lodz.p.it.tks.dto.CreateRoomDTO;
+import pl.lodz.p.it.tks.dto.RentRoomForSelfDTO;
 import pl.lodz.p.it.tks.dto.UpdateRoomDTO;
+import pl.lodz.p.it.tks.exception.rent.CreateRentException;
 import pl.lodz.p.it.tks.exception.room.CreateRoomException;
+import pl.lodz.p.it.tks.exception.room.RoomHasActiveReservationsException;
 import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
 import pl.lodz.p.it.tks.exception.room.UpdateRoomException;
+import pl.lodz.p.it.tks.exception.user.InactiveUserException;
+import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
+import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.Room;
+import pl.lodz.p.it.tks.model.user.User;
 import pl.lodz.p.it.tks.service.RentService;
 import pl.lodz.p.it.tks.service.RoomService;
 
+import java.security.Principal;
 import java.util.List;
 
 @RequestScoped
@@ -56,30 +66,26 @@ public class RoomController {
         Room room = roomService.getRoomById(id);
         return Response.status(Response.Status.OK).entity(room).build();
     }
-//
-//    @POST
-//    @Path("/{id}")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @RolesAllowed({"CLIENT"})
-//    public Response rentRoomForSelf(@PathParam("id") Long roomID, @Valid RentRoomForSelfDTO rentRoomForSelfDTO)
-//            throws UserNotFoundException, RoomNotFoundException, InactiveUserException, CreateRentException {
-//        Principal principal = securityContext.getUserPrincipal();
-//        if (principal instanceof User user) {
-//            Long clientID = user.getId();
-//            CreateRentDTO createRentDTO = new CreateRentDTO(
-//                    rentRoomForSelfDTO.getBeginTime(),
-//                    rentRoomForSelfDTO.getEndTime(),
-//                    rentRoomForSelfDTO.isBoard(),
-//                    clientID,
-//                    roomID);
-//            Rent rent = rentService.rentRoom(createRentDTO);
-//            return Response.status(Response.Status.CREATED).entity(rent).build();
-//        }
-//        return Response.status(Response.Status.BAD_REQUEST).build();
-//    }
-//
-//
+
+    @POST
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"CLIENT"})
+    public Response rentRoomForSelf(@PathParam("id") Long roomID, @Valid RentRoomForSelfDTO dto)
+            throws UserNotFoundException, RoomNotFoundException, InactiveUserException, CreateRentException {
+        Principal principal = securityContext.getUserPrincipal();
+        if (principal instanceof User user) {
+            Long clientID = user.getId();
+            Rent rent = new Rent(dto.getBeginTime(), dto.getEndTime(), dto.isBoard(), 0, null, null);
+
+            rent = rentService.rentRoom(rent, clientID, roomID);
+            return Response.status(Response.Status.CREATED).entity(rent).build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+
     /**
      * Endpoint which is used to get all saved rooms if param number is not set,
      * otherwise it will return room with given room number
@@ -103,26 +109,26 @@ public class RoomController {
         Room room = roomService.getRoomByNumber(number);
         return Response.status(Response.Status.OK).entity(room).build();
     }
-//
-//
-//    /**
-//     * Endpoint which returns list of rents of given room
-//     *
-//     * @param roomId room id
-//     * @param past   flag which indicates if the result will be list of past rents or future rents.
-//     *               If this parameter is not set, the result of the method will be list of all rents of given room
-//     * @return list of rents that meet given criteria
-//     */
-//    @GET
-//    @Path("/{roomId}/rents")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getAllRentsOfRoom(@PathParam("roomId") Long roomId,
-//                                      @QueryParam("past") Boolean past) throws RoomNotFoundException {
-//        List<Rent> rents = roomService.getAllRentsOfRoom(roomId, past);
-//        return Response.status(Response.Status.OK).entity(rents).build();
-//    }
-//
-//
+
+
+    /**
+     * Endpoint which returns list of rents of given room
+     *
+     * @param roomId room id
+     * @param past   flag which indicates if the result will be list of past rents or future rents.
+     *               If this parameter is not set, the result of the method will be list of all rents of given room
+     * @return list of rents that meet given criteria
+     */
+    @GET
+    @Path("/{roomId}/rents")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllRentsOfRoom(@PathParam("roomId") Long roomId,
+                                      @QueryParam("past") Boolean past) throws RoomNotFoundException {
+        List<Rent> rents = roomService.getAllRentsOfRoom(roomId, past);
+        return Response.status(Response.Status.OK).entity(rents).build();
+    }
+
+
     /**
      * Endpoint which is used to update room properties
      *
@@ -139,22 +145,22 @@ public class RoomController {
         Room room = roomService.updateRoom(id, new Room(dto.getRoomNumber(), dto.getPrice(), dto.getSize()));
         return Response.status(Response.Status.OK).entity(room).build();
     }
-//
-//
-//    /**
-//     * Endpoint for removing room from database. Room can be removed only if there are no current or future rents
-//     *
-//     * @param id id of the room to be removed
-//     * @return status code
-//     * 204(NO_CONTENT) if room was removed or was not found
-//     * 409(CONFLICT) if there are current or future rents for room with given id
-//     */
-//    @DELETE
-//    @Path("/{id}")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @RolesAllowed({"ADMIN", "EMPLOYEE"})
-//    public Response removeRoom(@PathParam("id") Long id) throws RoomHasActiveReservationsException {
-//        roomService.removeRoom(id);
-//        return Response.status(Response.Status.NO_CONTENT).build();
-//    }
+
+
+    /**
+     * Endpoint for removing room from database. Room can be removed only if there are no current or future rents
+     *
+     * @param id id of the room to be removed
+     * @return status code
+     * 204(NO_CONTENT) if room was removed or was not found
+     * 409(CONFLICT) if there are current or future rents for room with given id
+     */
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
+    public Response removeRoom(@PathParam("id") Long id) throws RoomHasActiveReservationsException {
+        roomService.removeRoom(id);
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
 }

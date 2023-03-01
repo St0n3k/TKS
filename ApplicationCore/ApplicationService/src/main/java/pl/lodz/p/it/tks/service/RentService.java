@@ -80,8 +80,7 @@ public class RentService {
                              finalCost, client, room);
 
         try{
-            Rent created = rentCommandPort.add(rent); //synchronized method
-            return created;
+            return rentCommandPort.add(rent);
         } catch (Exception e) {
             throw new CreateRentException();
         }

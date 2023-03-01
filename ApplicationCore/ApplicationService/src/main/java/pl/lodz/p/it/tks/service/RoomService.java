@@ -5,13 +5,17 @@ import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.exception.room.CreateRoomException;
+import pl.lodz.p.it.tks.exception.room.RoomHasActiveReservationsException;
 import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
 import pl.lodz.p.it.tks.exception.room.UpdateRoomException;
+import pl.lodz.p.it.tks.in.RentQueryPort;
 import pl.lodz.p.it.tks.in.RoomQueryPort;
+import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.out.RoomCommandPort;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @AllArgsConstructor
@@ -24,6 +28,9 @@ public class RoomService {
 
     @Inject
     private RoomCommandPort roomCommandPort;
+
+    @Inject
+    private RentQueryPort rentQueryPort;
 
 
     /**
@@ -67,36 +74,35 @@ public class RoomService {
                 .orElseThrow(RoomNotFoundException::new);
     }
 
-//    /**
-//     * Endpoint which returns list of rents of given room
-//     *
-//     * @param roomId room id
-//     * @param past flag which indicates if the result will be list of past rents or future rents.
-//     * If this parameter is not set, the result of the method will be list of all rents of given room
-//     * @return list of rents that meet given criteria
-//     */
-//    public List<Rent> getAllRentsOfRoom(Long roomId, Boolean past) throws RoomNotFoundException {
-//        if (!roomRepository.existsById(roomId)) {
-//            throw new RoomNotFoundException();
-//        }
-//
-//        List<Rent> rents;
-//        if (past != null) { // find past or active rents
-//            rents = rentRepository.findByRoomAndStatus(roomId, past);
-//        } else { // find all rents
-//            rents = rentRepository.getByRoomId(roomId);
-//        }
-//        return rents;
-//    }
-//
-//
     /**
-     * Endpoint which is used to update room properties
+     * Method which returns list of rents of given room
+     *
+     * @param roomId room id
+     * @param past flag which indicates if the result will be list of past rents or future rents.
+     * If this parameter is not set, the result of the method will be list of all rents of given room
+     * @return list of rents that meet given criteria
+     */
+    public List<Rent> getAllRentsOfRoom(Long roomId, Boolean past) throws RoomNotFoundException {
+        if (!roomQueryPort.existsById(roomId)) {
+            throw new RoomNotFoundException();
+        }
+
+        List<Rent> rents;
+        if (past != null) { // find past or active rents
+            rents = rentQueryPort.findByRoomAndStatus(roomId, past);
+        } else { // find all rents
+            rents = rentQueryPort.getByRoomId(roomId);
+        }
+        return rents;
+    }
+
+
+    /**
+     * Method used to update room properties
      *
      * @param id id of room to be updated
      * @param room object containing new properties of existing room
      */
-    //TODO not working properly due to version field
     public Room updateRoom(Long id, Room room) throws RoomNotFoundException, UpdateRoomException {
         Room existingRoom = roomQueryPort.getById(id)
                 .orElseThrow(RoomNotFoundException::new);
@@ -112,24 +118,28 @@ public class RoomService {
             throw new UpdateRoomException();
         }
     }
-//
-//
-//    /**
-//     * Endpoint for removing room from database. Room can be removed only if there are no current or future rents
-//     *
-//     * @param id id of the room to be removed
-//     * @return status code
-//     * 204(NO_CONTENT) if room was removed or was not found
-//     * 409(CONFLICT) if there are current or future rents for room with given id
-//     */
-//    public void removeRoom(Long id) throws RoomHasActiveReservationsException {
-//        Optional<Room> optionalRoom = roomQueryPort.getRoomById(id);
-//
-//        List<Rent> rentsForRoom = rentRepository.findByRoomAndStatus(room.getId(), false);
-//        if (rentsForRoom.isEmpty()) {
-//            roomRepository.remove(room);
-//        } else {
-//            throw new RoomHasActiveReservationsException();
-//        }
-//    }
+
+
+    /**
+     * Endpoint for removing room from database. Room can be removed only if there are no current or future rents
+     *
+     * @param id id of the room to be removed
+     * @return status code
+     * 204(NO_CONTENT) if room was removed or was not found
+     * 409(CONFLICT) if there are current or future rents for room with given id
+     */
+    public void removeRoom(Long id) throws RoomHasActiveReservationsException {
+        Optional<Room> optionalRoom = roomQueryPort.getById(id);
+        if (optionalRoom.isEmpty()) {
+            return;
+        }
+        Room room = optionalRoom.get();
+
+        List<Rent> rentsForRoom = rentQueryPort.findByRoomAndStatus(room.getId(), false);
+        if (rentsForRoom.isEmpty()) {
+            roomCommandPort.removeRoom(room);
+        } else {
+            throw new RoomHasActiveReservationsException();
+        }
+    }
 }
