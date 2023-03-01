@@ -13,4 +13,11 @@ public class AdminEntity extends UserEntity {
         super(username, password);
         this.setRole("ADMIN");
     }
+
+    @Override
+    public User mapToUser() {
+        return new Admin(this.getId(),
+                         this.getUsername(),
+                         this.getPassword());
+    }
 }

@@ -57,4 +57,6 @@ public abstract class UserEntity extends AbstractEntity {
         this.username = username;
         this.password = password;
     }
+
+    public abstract User mapToUser();
 }

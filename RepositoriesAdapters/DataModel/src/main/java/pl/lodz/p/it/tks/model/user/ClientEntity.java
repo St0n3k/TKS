@@ -61,5 +61,13 @@ public class ClientEntity extends UserEntity {
                 this.getPassword());
     }
 
-
+    public User mapToUser() {
+        return new Client(this.getId(),
+                          this.getUsername(),
+                          this.firstName,
+                          this.lastName,
+                          this.personalId,
+                          this.address.mapToAddress(),
+                          this.getPassword());
+    }
 }

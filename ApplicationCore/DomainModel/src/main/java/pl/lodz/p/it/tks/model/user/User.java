@@ -37,4 +37,23 @@ public abstract class User implements Principal {
         this.username = username;
         this.password = password;
     }
+
+    public User(Long id, String username, String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+    }
+
+    public User(String username, String role, String password) {
+        this.username = username;
+        this.role = role;
+        this.password = password;
+    }
+
+    public User(Long id, String username, String role, String password) {
+        this.id = id;
+        this.username = username;
+        this.role = role;
+        this.password = password;
+    }
 }

@@ -6,7 +6,10 @@ import lombok.NoArgsConstructor;
 public class Admin extends User {
 
     public Admin(String username, String password) {
-        super(username, password);
-        this.setRole("ADMIN");
+        super(username, "ADMIN", password);
+    }
+
+    public Admin(Long id, String username, String password) {
+        super(id, username, "ADMIN", password);
     }
 }

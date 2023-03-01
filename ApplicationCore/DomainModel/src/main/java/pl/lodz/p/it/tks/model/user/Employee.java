@@ -16,9 +16,14 @@ public class Employee extends User {
 
 
     public Employee(String username, String firstName, String lastName, String password) {
-        super(username, password);
+        super(username, "EMPLOYEE", password);
         this.firstName = firstName;
         this.lastName = lastName;
-        this.setRole("EMPLOYEE");
+    }
+
+    public Employee(Long id, String username, String firstName, String lastName, String password) {
+        super(id, username, "EMPLOYEE", password);
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 }

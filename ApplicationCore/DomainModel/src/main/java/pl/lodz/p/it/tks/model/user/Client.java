@@ -30,17 +30,14 @@ public class Client extends User {
         this.lastName = lastName;
         this.personalId = personalId;
         this.address = address;
-        this.setRole("CLIENT");
     }
 
     public Client(Long id, String username, String firstName, String lastName, String personalId, Address address,
                   String password) {
-        super(username, password);
-        this.setId(id);
+        super(id, username,  "CLIENT", password);
         this.firstName = firstName;
         this.lastName = lastName;
         this.personalId = personalId;
         this.address = address;
-        this.setRole("CLIENT");
     }
 }

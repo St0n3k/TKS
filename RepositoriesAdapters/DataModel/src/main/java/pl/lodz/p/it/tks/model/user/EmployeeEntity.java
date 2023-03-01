@@ -28,4 +28,13 @@ public class EmployeeEntity extends UserEntity {
         this.lastName = lastName;
         this.setRole("EMPLOYEE");
     }
+
+    @Override
+    public User mapToUser() {
+        return new Employee(this.getId(),
+                            this.getUsername(),
+                            this.firstName,
+                            this.lastName,
+                            this.getPassword());
+    }
 }
