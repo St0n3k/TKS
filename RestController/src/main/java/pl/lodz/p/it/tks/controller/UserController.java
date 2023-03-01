@@ -1,35 +1,22 @@
 package pl.lodz.p.it.tks.controller;
 
-import java.text.ParseException;
-import java.util.List;
-import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.shaded.gson.JsonObject;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.validation.Valid;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HeaderParam;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import pl.lodz.p.it.tks.dto.RegisterClientDTO;
-import pl.lodz.p.it.tks.dto.UpdateUserDTO;
-import pl.lodz.p.it.tks.exception.user.CreateUserException;
-import pl.lodz.p.it.tks.exception.user.UpdateUserException;
+import pl.lodz.p.it.tks.exception.security.JwsException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.model.user.Admin;
 import pl.lodz.p.it.tks.model.user.Client;
 import pl.lodz.p.it.tks.model.user.Employee;
 import pl.lodz.p.it.tks.model.user.User;
-import pl.lodz.p.it.tks.security.SignProvider;
+import pl.lodz.p.it.tks.out.JwsCommandPort;
 import pl.lodz.p.it.tks.service.UserService;
+
+import java.util.List;
 
 @RequestScoped
 @Path("/users")
@@ -38,7 +25,7 @@ public class UserController {
     private UserService userService;
 
     @Inject
-    private SignProvider signProvider;
+    private JwsCommandPort jwsCommandPort;
 
     /**
      * Endpoint which is used to register new client,
@@ -94,13 +81,13 @@ public class UserController {
    @Path("/{id}")
    @Produces(MediaType.APPLICATION_JSON)
    @RolesAllowed({"ADMIN", "EMPLOYEE"})
-   public Response getUserById(@PathParam("id") Long id) throws UserNotFoundException, JOSEException {
+   public Response getUserById(@PathParam("id") Long id) throws UserNotFoundException, JwsException {
        User user = userService.getUserById(id);
 
        JsonObject jsonObject = new JsonObject();
        jsonObject.addProperty("id", id);
 
-       String ifMatch = signProvider.sign(jsonObject.toString());
+       String ifMatch = jwsCommandPort.sign(jsonObject.toString());
        return Response.status(Response.Status.OK).entity(user).tag(ifMatch).build();
    }
 

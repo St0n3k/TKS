@@ -10,8 +10,8 @@ import pl.lodz.p.it.tks.exception.user.InactiveUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.in.UserQueryPort;
 import pl.lodz.p.it.tks.model.user.User;
+import pl.lodz.p.it.tks.out.JwtCommandPort;
 import pl.lodz.p.it.tks.out.UserCommandPort;
-import pl.lodz.p.it.tks.security.JwtProvider;
 
 import java.security.Principal;
 import java.util.Objects;
@@ -20,7 +20,7 @@ import java.util.Objects;
 @RequestScoped
 public class AuthService {
     @Inject
-    private JwtProvider jwtProvider;
+    private JwtCommandPort jwtCommandPort;
 
     @Context
     private SecurityContext securityContext;
@@ -29,7 +29,7 @@ public class AuthService {
     private UserQueryPort userQueryPort;
 
     @Inject
-    private UserCommandPort userComandPort;
+    private UserCommandPort userCommandPort;
 
     public String login(String username, String password)
             throws AuthenticationException, InactiveUserException {
@@ -44,7 +44,7 @@ public class AuthService {
             throw new InactiveUserException();
         }
 
-        String jwt = jwtProvider.generateJWT(user.getUsername(), user.getRole());
+        String jwt = jwtCommandPort.generateJWT(user.getUsername(), user.getRole());
         return jwt;
     }
 
@@ -55,7 +55,7 @@ public class AuthService {
                     && !user.getPassword().equals(newPassword)){
                 user.setPassword(newPassword);
                 //FIXME odkomentowac jak beda command porty
-//                userComandPort.update(user);
+//                userCommandPort.update(user);
                 return;
             }
             throw new InvalidInputException();

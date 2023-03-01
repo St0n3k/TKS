@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>pl.lodz.p.it.tks</groupId>
-        <artifactId>ApplicationCore</artifactId>
+        <artifactId>Guesthouse</artifactId>
         <version>1.0</version>
     </parent>
 
-    <artifactId>ApplicationService</artifactId>
+    <artifactId>Security</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -19,27 +19,20 @@
 
     <dependencies>
         <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-web-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile</groupId>
+            <artifactId>microprofile</artifactId>
+            <version>4.1</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>pl.lodz.p.it.tks</groupId>
             <artifactId>ApplicationPorts</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>pl.lodz.p.it.tks</groupId>
-            <artifactId>RepositoryAdapter</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>pl.lodz.p.it.tks</groupId>
-            <artifactId>Security</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-<!--            //FIXME usunac jak zrobimy porty-->
-        <dependency>
-            <groupId>pl.lodz.p.it.tks</groupId>
-            <artifactId>Repository</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>

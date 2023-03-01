@@ -15,6 +15,7 @@
         <module>RepositoriesAdapters</module>
         <module>ApplicationPorts</module>
         <module>RestController</module>
+        <module>Security</module>
     </modules>
 
     <dependencyManagement>
