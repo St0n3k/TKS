@@ -8,7 +8,7 @@ import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import pl.lodz.p.it.tks.model.RentEntity;
 import pl.lodz.p.it.tks.model.RoomEntity;
-import pl.lodz.p.it.tks.repository.Repository;
+import pl.lodz.p.it.tks.repository.RentRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @ApplicationScoped
 @Transactional
-public class RentRepository implements Repository<RentEntity> {
+public class RentRepositoryImpl implements RentRepository {
 
     @PersistenceContext
     EntityManager em;
@@ -67,24 +67,28 @@ public class RentRepository implements Repository<RentEntity> {
         return em.createNamedQuery("Rent.getAll", RentEntity.class).getResultList();
     }
 
+    @Override
     public List<RentEntity> getByRoomId(Long roomId) {
         return em.createNamedQuery("Rent.getByRoomId", RentEntity.class)
                  .setParameter("roomId", roomId)
                  .getResultList();
     }
 
+    @Override
     public List<RentEntity> getByClientUsername(String username) {
         return em.createNamedQuery("Rent.getByClientUsername", RentEntity.class)
                  .setParameter("username", username)
                  .getResultList();
     }
 
+    @Override
     public List<RentEntity> getByClientId(Long clientId) {
         return em.createNamedQuery("Rent.getByClientId", RentEntity.class)
                  .setParameter("id", clientId)
                  .getResultList();
     }
 
+    @Override
     public Optional<RentEntity> update(RentEntity rent) {
         return Optional.ofNullable(em.merge(rent));
     }
@@ -113,6 +117,7 @@ public class RentRepository implements Repository<RentEntity> {
      * @param rentId
      * @return true if rent existed and was removed, false otherwise.
      */
+    @Override
     public boolean removeById(Long rentId) {
         Optional<RentEntity> rent = getById(rentId);
 
@@ -129,6 +134,7 @@ public class RentRepository implements Repository<RentEntity> {
      * @param past Flag indicating, whether past or active rents are returned.
      * @return Past rents if past is false, active (future) rents otherwise.
      */
+    @Override
     public List<RentEntity> findByRoomAndStatus(Long roomId, boolean past) {
         TypedQuery<RentEntity> query;
         if (past) {
@@ -146,6 +152,7 @@ public class RentRepository implements Repository<RentEntity> {
      * @param past Flag indicating, whether past or active rents are returned.
      * @return Past rents if past is false, active (future) rents otherwise.
      */
+    @Override
     public List<RentEntity> findByClientAndStatus(Long clientId, boolean past) {
         TypedQuery<RentEntity> query;
         if (past) {

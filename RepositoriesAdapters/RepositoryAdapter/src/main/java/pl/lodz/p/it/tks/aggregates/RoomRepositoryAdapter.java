@@ -6,7 +6,7 @@ import pl.lodz.p.it.tks.in.RoomQueryPort;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.model.RoomEntity;
 import pl.lodz.p.it.tks.out.RoomCommandPort;
-import pl.lodz.p.it.tks.repository.impl.RoomRepository;
+import pl.lodz.p.it.tks.repository.RoomRepository;
 
 import java.util.List;
 import java.util.Optional;

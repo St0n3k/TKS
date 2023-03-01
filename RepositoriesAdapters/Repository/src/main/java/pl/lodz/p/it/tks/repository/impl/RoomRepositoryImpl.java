@@ -5,14 +5,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import pl.lodz.p.it.tks.model.RoomEntity;
-import pl.lodz.p.it.tks.repository.Repository;
+import pl.lodz.p.it.tks.repository.RoomRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
 @Transactional
-public class RoomRepository implements Repository<RoomEntity> {
+public class RoomRepositoryImpl implements RoomRepository {
 
     @PersistenceContext
     private EntityManager em;
@@ -50,6 +50,7 @@ public class RoomRepository implements Repository<RoomEntity> {
         return em.createNamedQuery("Room.getAll", RoomEntity.class).getResultList();
     }
 
+    @Override
     public Optional<RoomEntity> getByRoomNumber(int roomNumber) {
         List<RoomEntity> result = em.createNamedQuery("Room.getByRoomNumber", RoomEntity.class)
                               .setParameter("roomNumber", roomNumber)
@@ -64,6 +65,7 @@ public class RoomRepository implements Repository<RoomEntity> {
      * @param id id to be checked among rooms
      * @return true if a room with given id exists
      */
+    @Override
     public boolean existsById(Long id) {
         return em.createNamedQuery("Room.existsById", Boolean.class)
                  .setParameter("id", id)

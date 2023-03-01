@@ -5,14 +5,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import pl.lodz.p.it.tks.model.user.UserEntity;
-import pl.lodz.p.it.tks.repository.Repository;
+import pl.lodz.p.it.tks.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
 @Transactional
-public class UserRepository implements Repository<UserEntity> {
+public class UserRepositoryImpl implements UserRepository {
 
     @PersistenceContext
     EntityManager em;
@@ -44,6 +44,7 @@ public class UserRepository implements Repository<UserEntity> {
         return em.createNamedQuery("User.getAll", UserEntity.class).getResultList();
     }
 
+    @Override
     public Optional<UserEntity> getUserByUsername(String username) {
         List<UserEntity> result = em
                                 .createNamedQuery("User.getByUsername", UserEntity.class)
@@ -59,6 +60,7 @@ public class UserRepository implements Repository<UserEntity> {
      * @param phrase phrase to be matched among usernames
      * @return list of users, whose usernames contain given phrase
      */
+    @Override
     public List<UserEntity> matchUserByUsername(String phrase) {
         return em.createNamedQuery("User.matchByUsername", UserEntity.class)
                  .setParameter("username", '%' + phrase + '%')
@@ -66,6 +68,7 @@ public class UserRepository implements Repository<UserEntity> {
 
     }
 
+    @Override
     public List<UserEntity> getUsersByRole(String role) {
         return em.createNamedQuery("User.getByRole", UserEntity.class)
                  .setParameter("role", '%' + role + '%')
@@ -73,6 +76,7 @@ public class UserRepository implements Repository<UserEntity> {
 
     }
 
+    @Override
     public List<UserEntity> getAllUsers() {
         return em.createNamedQuery("User.getAll", UserEntity.class).getResultList();
     }
@@ -82,6 +86,7 @@ public class UserRepository implements Repository<UserEntity> {
         return Optional.ofNullable(em.merge(user));
     }
 
+    @Override
     public List<UserEntity> getUsersByRoleAndMatchingUsername(String role, String username) {
         return em.createNamedQuery("User.getByRoleMatchingName", UserEntity.class)
                  .setParameter("role", "%" + role + "%")

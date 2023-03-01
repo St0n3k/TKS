@@ -6,7 +6,7 @@ import pl.lodz.p.it.tks.in.RentQueryPort;
 import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.RentEntity;
 import pl.lodz.p.it.tks.out.RentCommandPort;
-import pl.lodz.p.it.tks.repository.impl.RentRepository;
+import pl.lodz.p.it.tks.repository.RentRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,12 +24,6 @@ public class RentRepositoryAdapter implements RentQueryPort, RentCommandPort {
 
     @Override
     public List<Rent> getAll() {
-//        List<RentEntity> entities = rentRepository.getAll();
-//        List<Rent> rents = new ArrayList<>();
-//        for (RentEntity e : entities) {
-//            rents.add(e.mapToRent());
-//        }
-//        return rents;
         return rentRepository.getAll()
                 .stream()
                 .map(RentEntity::mapToRent)
