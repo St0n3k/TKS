@@ -5,14 +5,13 @@ import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.lodz.p.it.tks.model.AbstractModel;
 
 import java.security.Principal;
 
 @Data
 @NoArgsConstructor
-public abstract class User implements Principal {
-
-    private Long id;
+public abstract class User extends AbstractModel implements Principal {
 
     @NotNull
     private String username;
@@ -39,7 +38,7 @@ public abstract class User implements Principal {
     }
 
     public User(Long id, String username, String password) {
-        this.id = id;
+        super(id);
         this.username = username;
         this.password = password;
     }
@@ -51,9 +50,21 @@ public abstract class User implements Principal {
     }
 
     public User(Long id, String username, String role, String password) {
-        this.id = id;
+        super(id);
         this.username = username;
         this.role = role;
         this.password = password;
+    }
+
+    public User(Long id, long version, String username, String role, String password) {
+        super(id, version);
+        this.username = username;
+        this.role = role;
+        this.password = password;
+    }
+
+    public User(Long id, long version, String username, String role, String password, boolean active) {
+        this(id, version, username, role, password);
+        this.active = active;
     }
 }

@@ -11,4 +11,7 @@ public abstract class AbstractModel {
     private Long id;
     private long version;
 
+    public AbstractModel(Long id) {
+        this.id = id;
+    }
 }

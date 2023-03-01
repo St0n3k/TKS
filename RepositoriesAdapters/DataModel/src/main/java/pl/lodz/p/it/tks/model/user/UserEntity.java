@@ -58,5 +58,26 @@ public abstract class UserEntity extends AbstractEntity {
         this.password = password;
     }
 
+    public UserEntity(Long id, String username, String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+    }
+
+    public UserEntity(Long id, String username, String password, long version) {
+        super(version);
+        this.id = id;
+        this.username = username;
+        this.password = password;
+    }
+
+    public UserEntity(long version, Long id, String username, boolean active, String password) {
+        super(version);
+        this.id = id;
+        this.username = username;
+        this.active = active;
+        this.password = password;
+    }
+
     public abstract User mapToUser();
 }

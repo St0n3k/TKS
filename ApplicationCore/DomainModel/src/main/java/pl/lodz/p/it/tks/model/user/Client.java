@@ -33,8 +33,8 @@ public class Client extends User {
     }
 
     public Client(Long id, String username, String firstName, String lastName, String personalId, Address address,
-                  String password) {
-        super(id, username,  "CLIENT", password);
+                  String password, boolean active, long version) {
+        super(id, version, username, "CLIENT", password, active);
         this.firstName = firstName;
         this.lastName = lastName;
         this.personalId = personalId;

@@ -7,15 +7,15 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import pl.lodz.p.it.tks.exception.user.CreateUserException;
+import pl.lodz.p.it.tks.exception.user.UpdateUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.in.UserQueryPort;
-import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.user.Admin;
 import pl.lodz.p.it.tks.model.user.Client;
 import pl.lodz.p.it.tks.model.user.Employee;
 import pl.lodz.p.it.tks.model.user.User;
-import pl.lodz.p.it.tks.repository.impl.RentRepository;
-import pl.lodz.p.it.tks.repository.impl.UserRepository;
+import pl.lodz.p.it.tks.out.UserCommandPort;
 
 
 @AllArgsConstructor
@@ -24,52 +24,46 @@ import pl.lodz.p.it.tks.repository.impl.UserRepository;
 public class UserService {
 
     @Inject
-    private UserQueryPort userRepository; // TODO rename
+    private UserQueryPort userQueryPort;
+
+    @Inject
+    private UserCommandPort userCommandPort;
+
     // @Inject
     // private RentRepository rentRepository;
 
 
-   // public Client registerClient(RegisterClientDTO rcDTO) throws CreateUserException {
-   //     Address address = new Address(rcDTO.getCity(), rcDTO.getStreet(), rcDTO.getNumber());
-   //
-   //     Client client = new Client(rcDTO.getUsername(),
-   //                                rcDTO.getFirstName(),
-   //                                rcDTO.getLastName(),
-   //                                rcDTO.getPersonalID(),
-   //                                address,
-   //                                rcDTO.getPassword());
-   //
-   //     try {
-   //         client = (Client) userRepository.add(client);
-   //     } catch (Exception e) {
-   //         throw new CreateUserException();
-   //     }
-   //     return client;
-   // }
+   public Client registerClient(Client client) throws CreateUserException {
+       try {
+           client = (Client) userCommandPort.add(client);
+       } catch (Exception e) {
+           throw new CreateUserException();
+       }
+       return client;
+   }
 
 
-   // public Employee registerEmployee(RegisterEmployeeDTO reDTO) throws CreateUserException {
-   //     Employee employee = new Employee(reDTO.getUsername(), reDTO.getFirstName(), reDTO.getLastName(), reDTO.getPassword());
-   //     employee = (Employee) userRepository.add(employee);
-   //
-   //     if (employee == null) {
-   //         throw new CreateUserException();
-   //     }
-   //     return employee;
-   // }
+   public Employee registerEmployee(Employee employee) throws CreateUserException {
+       employee = (Employee) userCommandPort.add(employee);
 
-   // public Admin registerAdmin(RegisterAdminDTO dto) throws CreateUserException {
-   //     Admin admin = new Admin(dto.getUsername(), dto.getPassword());
-   //     admin = (Admin) userRepository.add(admin);
-   //
-   //     if (admin == null) {
-   //         throw new CreateUserException();
-   //     }
-   //     return admin;
-   // }
+       if (employee == null) {
+           throw new CreateUserException();
+       }
+       return employee;
+   }
+
+   public Admin registerAdmin(Admin admin) throws CreateUserException {
+
+       admin = (Admin) userCommandPort.add(admin);
+
+       if (admin == null) {
+           throw new CreateUserException();
+       }
+       return admin;
+   }
 
    public User getUserById(Long id) throws UserNotFoundException {
-       Optional<User> optionalUser = userRepository.getById(id);
+       Optional<User> optionalUser = userQueryPort.getById(id);
 
        if (optionalUser.isEmpty()) {
            throw new UserNotFoundException();
@@ -80,15 +74,15 @@ public class UserService {
    public List<User> getAllUsers(String username) {
        List<User> users;
        if (username == null) {
-           users = userRepository.getAll();
+           users = userQueryPort.getAll();
        } else {
-           users = userRepository.matchUserByUsername(username);
+           users = userQueryPort.matchUserByUsername(username);
        }
        return users;
    }
 
    public User getUserByUsername(String username) throws UserNotFoundException {
-       Optional<User> optionalUser = userRepository.getUserByUsername(username);
+       Optional<User> optionalUser = userQueryPort.getUserByUsername(username);
 
        if (optionalUser.isEmpty()) {
            throw new UserNotFoundException();
@@ -98,28 +92,28 @@ public class UserService {
 
    public List<Client> getClients(String username) {
        if (username != null) {
-           return userRepository.getUsersByRoleAndMatchingUsername("CLIENT", username)
-                                .stream().map(u -> (Client) u)
-                                .toList();
+           return userQueryPort.getUsersByRoleAndMatchingUsername("CLIENT", username)
+                               .stream().map(u -> (Client) u)
+                               .toList();
        }
-       return userRepository.getUsersByRole("CLIENT")
-                            .stream()
-                            .map(user -> (Client) user)
-                            .collect(Collectors.toList());
+       return userQueryPort.getUsersByRole("CLIENT")
+                           .stream()
+                           .map(user -> (Client) user)
+                           .collect(Collectors.toList());
    }
 
    public List<Employee> getEmployees() {
-       return userRepository.getUsersByRole("EMPLOYEE")
-                            .stream()
-                            .map(user -> (Employee) user)
-                            .collect(Collectors.toList());
+       return userQueryPort.getUsersByRole("EMPLOYEE")
+                           .stream()
+                           .map(user -> (Employee) user)
+                           .collect(Collectors.toList());
    }
 
    public List<Admin> getAdmins() {
-       return userRepository.getUsersByRole("ADMIN")
-                            .stream()
-                            .map(user -> (Admin) user)
-                            .collect(Collectors.toList());
+       return userQueryPort.getUsersByRole("ADMIN")
+                           .stream()
+                           .map(user -> (Admin) user)
+                           .collect(Collectors.toList());
    }
 
 // public List<Rent> getAllRentsOfClient(Long clientId, Boolean past) throws UserNotFoundException {
@@ -135,8 +129,8 @@ public class UserService {
 //     return rents;
 // }
 
-// public User updateUser(Long id, UpdateUserDTO dto) throws UserNotFoundException, UpdateUserException {
-//     Optional<User> optionalUser = userRepository.getById(id);
+// public User updateUser(Long id, User dto) throws UserNotFoundException, UpdateUserException {
+//     Optional<User> optionalUser = userQueryPort.getById(id);
 //
 //     if (optionalUser.isEmpty()) {
 //         throw new UserNotFoundException();
@@ -194,40 +188,41 @@ public class UserService {
 //     }
 //     user = optionalUser.get();
 //     return user;
+//     // return optionalUser.orElseThrow(UpdateUserException::new);
 // }
 
-// public User activateUser(Long id) throws UserNotFoundException, UpdateUserException {
-//     Optional<User> optionalUser = userRepository.getById(id);
-//
-//     if (optionalUser.isEmpty()) {
-//         throw new UserNotFoundException();
-//     }
-//     User user = optionalUser.get();
-//     user.setActive(true);
-//
-//     optionalUser = userRepository.update(user);
-//     if (optionalUser.isEmpty()) {
-//         throw new UpdateUserException();
-//     }
-//     user = optionalUser.get();
-//     return user;
-// }
+public User activateUser(Long id) throws UserNotFoundException, UpdateUserException {
+    Optional<User> optionalUser = userQueryPort.getById(id);
 
-// public User deactivateUser(Long id) throws UpdateUserException, UserNotFoundException {
-//     Optional<User> optionalUser = userRepository.getById(id);
-//
-//     if (optionalUser.isEmpty()) {
-//         throw new UserNotFoundException();
-//     }
-//     User user = optionalUser.get();
-//     user.setActive(false);
-//
-//     optionalUser = userRepository.update(user);
-//     if (optionalUser.isEmpty()) {
-//         throw new UpdateUserException();
-//     }
-//     user = optionalUser.get();
-//     return user;
-// }
+    if (optionalUser.isEmpty()) {
+        throw new UserNotFoundException();
+    }
+    User user = optionalUser.get();
+    user.setActive(true);
+
+    optionalUser = userCommandPort.update(user);
+    if (optionalUser.isEmpty()) {
+        throw new UpdateUserException();
+    }
+    user = optionalUser.get();
+    return user;
+}
+
+public User deactivateUser(Long id) throws UpdateUserException, UserNotFoundException {
+    Optional<User> optionalUser = userQueryPort.getById(id);
+
+    if (optionalUser.isEmpty()) {
+        throw new UserNotFoundException();
+    }
+    User user = optionalUser.get();
+    user.setActive(false);
+
+    optionalUser = userCommandPort.update(user);
+    if (optionalUser.isEmpty()) {
+        throw new UpdateUserException();
+    }
+    user = optionalUser.get();
+    return user;
+}
 
 }

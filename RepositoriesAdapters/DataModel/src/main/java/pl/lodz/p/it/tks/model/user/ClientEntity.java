@@ -43,8 +43,7 @@ public class ClientEntity extends UserEntity {
     }
 
     public ClientEntity(Client client) {
-        super(client.getUsername(), client.getPassword());
-        this.setId(client.getId());
+        super(client.getVersion(), client.getId(), client.getUsername(), client.isActive(), client.getPassword());
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.personalId = client.getPersonalId();
@@ -52,15 +51,18 @@ public class ClientEntity extends UserEntity {
         this.setRole("CLIENT");
     }
 
-    public Client mapToClient(){
+    public Client mapToClient() {
         return new Client(this.getId(), this.getUsername(),
-                this.getFirstName(),
-                this.getLastName(),
-                this.getPersonalId(),
-                this.getAddress().mapToAddress(),
-                this.getPassword());
+                          this.getFirstName(),
+                          this.getLastName(),
+                          this.getPersonalId(),
+                          this.getAddress().mapToAddress(),
+                          this.getPassword(),
+                          this.isActive(),
+                          this.getVersion());
     }
 
+    @Override
     public User mapToUser() {
         return new Client(this.getId(),
                           this.getUsername(),
@@ -68,6 +70,8 @@ public class ClientEntity extends UserEntity {
                           this.lastName,
                           this.personalId,
                           this.address.mapToAddress(),
-                          this.getPassword());
+                          this.getPassword(),
+                          this.isActive(),
+                          this.getVersion());
     }
 }
