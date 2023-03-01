@@ -8,45 +8,47 @@ import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageCont
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import pl.lodz.p.it.tks.exception.security.JwtException;
-import pl.lodz.p.it.tks.infrastructure.JwtCommandPort;
-import pl.lodz.p.it.tks.infrastructure.UserQueryPort;
+import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.model.user.User;
+import pl.lodz.p.it.tks.ui.JwtUseCase;
+import pl.lodz.p.it.tks.ui.UserUseCase;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Optional;
 
 
 @ApplicationScoped
 public class GuesthouseAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     @Inject
-    private JwtCommandPort jwtCommandPort;
+    private JwtUseCase jwtUseCase;
 
     @Inject
-    private UserQueryPort userQueryPort;
+    private UserUseCase userUseCase;
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, HttpMessageContext httpMessageContext) {
         String jwt = getToken(httpServletRequest);
-        if (jwt == null || !jwtCommandPort.validateToken(jwt)) {
+        if (jwt == null || !jwtUseCase.validateToken(jwt)) {
             return loginAnonymous(httpMessageContext);
         }
         String subject;
         String role;
-        try{
-            subject = jwtCommandPort.getSubject(jwt);
-            role = jwtCommandPort.getRole(jwt);
+        try {
+            subject = jwtUseCase.getSubject(jwt);
+            role = jwtUseCase.getRole(jwt);
         } catch(JwtException e) {
             return loginAnonymous(httpMessageContext);
         }
 
-        Optional<User> optionalUser = userQueryPort.getUserByUsername(subject);
-        if (optionalUser.isEmpty()) {
+        User user;
+        try {
+            user = userUseCase.getUserByUsername(subject);
+        } catch (UserNotFoundException e) {
             return loginAnonymous(httpMessageContext);
         }
 
-        return httpMessageContext.notifyContainerAboutLogin(optionalUser.get(), Collections.singleton(role));
+        return httpMessageContext.notifyContainerAboutLogin(user, Collections.singleton(role));
     }
 
     private AuthenticationStatus loginAnonymous(HttpMessageContext httpMessageContext){

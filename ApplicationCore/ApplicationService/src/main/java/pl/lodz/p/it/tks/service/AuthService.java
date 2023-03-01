@@ -9,7 +9,6 @@ import pl.lodz.p.it.tks.exception.user.AuthenticationException;
 import pl.lodz.p.it.tks.exception.user.InactiveUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.infrastructure.JwtCommandPort;
-import pl.lodz.p.it.tks.infrastructure.UserCommandPort;
 import pl.lodz.p.it.tks.infrastructure.UserQueryPort;
 import pl.lodz.p.it.tks.model.user.User;
 import pl.lodz.p.it.tks.ui.AuthUseCase;
@@ -29,8 +28,6 @@ public class AuthService implements AuthUseCase {
     @Inject
     private UserQueryPort userQueryPort;
 
-    @Inject
-    private UserCommandPort userCommandPort;
 
     public String login(String username, String password)
             throws AuthenticationException, InactiveUserException {
@@ -45,8 +42,7 @@ public class AuthService implements AuthUseCase {
             throw new InactiveUserException();
         }
 
-        String jwt = jwtCommandPort.generateJWT(user.getUsername(), user.getRole());
-        return jwt;
+        return jwtCommandPort.generateJWT(user.getUsername(), user.getRole());
     }
 
     public void changePassword(String oldPassword, String newPassword) throws UserNotFoundException, InvalidInputException {

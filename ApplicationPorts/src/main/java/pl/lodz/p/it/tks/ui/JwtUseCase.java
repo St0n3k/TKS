@@ -1,10 +1,8 @@
-package pl.lodz.p.it.tks.infrastructure;
+package pl.lodz.p.it.tks.ui;
 
 import pl.lodz.p.it.tks.exception.security.JwtException;
 
-public interface JwtCommandPort {
-    String generateJWT(String subject, String role);
-
+public interface JwtUseCase {
     boolean validateToken(String jwt);
 
     String getSubject(String jwt) throws JwtException;
