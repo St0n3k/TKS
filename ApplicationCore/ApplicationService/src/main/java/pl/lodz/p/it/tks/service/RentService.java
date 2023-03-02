@@ -19,6 +19,7 @@ import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.model.user.Client;
 import pl.lodz.p.it.tks.model.user.User;
+import pl.lodz.p.it.tks.ui.RentUseCase;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -29,8 +30,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
-public class RentService implements pl.lodz.p.it.tks.ui.RentUseCase {
-
+public class RentService implements RentUseCase {
 
     @Inject
     private UserQueryPort userQueryPort;

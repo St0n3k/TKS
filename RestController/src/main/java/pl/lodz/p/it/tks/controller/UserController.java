@@ -22,6 +22,7 @@ import pl.lodz.p.it.tks.exception.user.CreateUserException;
 import pl.lodz.p.it.tks.exception.user.UpdateUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.model.Address;
+import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.user.Admin;
 import pl.lodz.p.it.tks.model.user.Client;
 import pl.lodz.p.it.tks.model.user.Employee;
@@ -164,15 +165,15 @@ public class UserController {
      * @param past flag indicating if the result will be list of past rents or list of future rents
      * @return
      */
-    // @GET
-    // @Path("/{id}/rents")
-    // @Produces(MediaType.APPLICATION_JSON)
-    // @RolesAllowed({"ADMIN", "EMPLOYEE"})
-    // public Response getAllRentsOfClient(@PathParam("id") Long clientId,
-    //                                     @QueryParam("past") Boolean past) throws UserNotFoundException {
-    //     List<Rent> rents = userService.getAllRentsOfClient(clientId, past);
-    //     return Response.status(Response.Status.OK).entity(rents).build();
-    // }
+    @GET
+    @Path("/{id}/rents")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    public Response getAllRentsOfClient(@PathParam("id") Long clientId,
+                                        @QueryParam("past") Boolean past) throws UserNotFoundException {
+        List<Rent> rents = userUseCase.getAllRentsOfClient(clientId, past);
+        return Response.status(Response.Status.OK).entity(rents).build();
+    }
 
 
     /**
