@@ -19,6 +19,7 @@ import pl.lodz.p.it.tks.dto.RegisterAdminDTO;
 import pl.lodz.p.it.tks.dto.RegisterClientDTO;
 import pl.lodz.p.it.tks.dto.RegisterEmployeeDTO;
 import pl.lodz.p.it.tks.dto.UpdateClientDTO;
+import pl.lodz.p.it.tks.dto.UpdateEmployeeDTO;
 import pl.lodz.p.it.tks.exception.user.CreateUserException;
 import pl.lodz.p.it.tks.exception.user.UpdateUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
@@ -164,7 +165,7 @@ public class UserController {
      *
      * @param clientId id of the client
      * @param past flag indicating if the result will be list of past rents or list of future rents
-     * @return
+     * @return List of rents for given client
      */
     @GET
     @Path("/{id}/rents")
@@ -204,25 +205,21 @@ public class UserController {
         return Response.status(Response.Status.OK).entity(updatedUser).build();
     }
 
-    // @PUT
-    // @Path("employees/{id}")
-    // @Produces(MediaType.APPLICATION_JSON)
-    // @Consumes(MediaType.APPLICATION_JSON)
-    // @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-    // public Response updateEmployee(@PathParam("id") Long id, @Valid UpdateClientDTO dto)
-    //     throws UserNotFoundException, UpdateUserException {
-    //     Address address = new Address(dto.getCity(), dto.getStreet(), dto.getNumber());
-    //
-    //     User user = new Employee(dto.getUsername(),
-    //                            dto.getFirstName(),
-    //                            dto.getLastName(),
-    //                            dto.getPersonalId(),
-    //                            address);
-    //
-    //     User updatedUser = userUseCase.updateUser(id, user);
-    //     return Response.status(Response.Status.OK).entity(updatedUser).build();
-    // }
-    //
+    @PUT
+    @Path("employees/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    public Response updateEmployee(@PathParam("id") Long id, @Valid UpdateEmployeeDTO dto)
+        throws UserNotFoundException, UpdateUserException {
+        User user = new Employee(dto.getUsername(),
+                                 dto.getFirstName(),
+                                 dto.getLastName());
+
+        User updatedUser = userUseCase.updateUser(id, user);
+        return Response.status(Response.Status.OK).entity(updatedUser).build();
+    }
+
     // @PUT
     // @Path("admins/{id}")
     // @Produces(MediaType.APPLICATION_JSON)

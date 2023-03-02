@@ -28,6 +28,12 @@ public class Employee extends User {
         this.lastName = lastName;
     }
 
+    public Employee(String username, String firstName, String lastName) {
+        super(username, null, "EMPLOYEE");
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public Employee(Long id,
                     long version,
                     String username,

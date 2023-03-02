@@ -158,12 +158,13 @@ public class UserService implements UserUseCase {
             throw new UpdateUserException();
         }
 
+        // common property for each class in hierarchy
+        if (newUser.getUsername() != null) {
+            user.setUsername(newUser.getUsername());
+        }
+
         if (user instanceof Client client) {
             Client newClient = (Client) newUser;
-
-            if (newClient.getUsername() != null) {
-                client.setUsername(newClient.getUsername());
-            }
 
             if (newClient.getFirstName() != null) {
                 client.setFirstName(newClient.getFirstName());
@@ -191,24 +192,21 @@ public class UserService implements UserUseCase {
 
             if (newAddress.getHouseNumber() > 0) {
                 address.setHouseNumber(newAddress.getHouseNumber());
+            }
+        } else if (user instanceof Employee employee) {
+            Employee newEmployee = (Employee) newUser;
 
+            if (newEmployee.getFirstName() != null) {
+                employee.setFirstName(newEmployee.getFirstName());
             }
 
-            return userCommandPort.update(client)
-                                  .orElseThrow(UpdateUserException::new);
-            // } else if (user instanceof Employee employee) {
-            //     employee.setUsername(username == null ? employee.getUsername() : username);
-            //     employee.setFirstName(firstName == null ? employee.getFirstName() : firstName);
-            //     employee.setLastName(lastName == null ? employee.getLastName() : lastName);
-            //
-            //     updatedUser = employee;
-            // } else if (user instanceof Admin admin) {
-            //     admin.setUsername(username == null ? admin.getUsername() : username);
-            //
-            //     updatedUser = admin;
-        } else {
-            throw new UpdateUserException();
+            if (newEmployee.getLastName() != null) {
+                employee.setLastName(newEmployee.getLastName());
+            }
         }
+
+        return userCommandPort.update(user)
+                              .orElseThrow(UpdateUserException::new);
     }
 
     @Override
