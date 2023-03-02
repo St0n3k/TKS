@@ -18,6 +18,7 @@ import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.tks.dto.RegisterAdminDTO;
 import pl.lodz.p.it.tks.dto.RegisterClientDTO;
 import pl.lodz.p.it.tks.dto.RegisterEmployeeDTO;
+import pl.lodz.p.it.tks.dto.UpdateClientDTO;
 import pl.lodz.p.it.tks.exception.user.CreateUserException;
 import pl.lodz.p.it.tks.exception.user.UpdateUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
@@ -184,23 +185,60 @@ public class UserController {
      * 200(OK) if update was successful
      * 409(CONFLICT) if update was unsuccessful (could be due to new username not being unique)
      */
+    @PUT
+    @Path("clients/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    public Response updateClient(@PathParam("id") Long id, @Valid UpdateClientDTO dto)
+        throws UserNotFoundException, UpdateUserException {
+        Address address = new Address(dto.getCity(), dto.getStreet(), dto.getNumber());
+
+        User user = new Client(dto.getUsername(),
+                               dto.getFirstName(),
+                               dto.getLastName(),
+                               dto.getPersonalId(),
+                               address);
+
+        User updatedUser = userUseCase.updateUser(id, user);
+        return Response.status(Response.Status.OK).entity(updatedUser).build();
+    }
+
     // @PUT
-    // @Path("/")
+    // @Path("employees/{id}")
     // @Produces(MediaType.APPLICATION_JSON)
     // @Consumes(MediaType.APPLICATION_JSON)
-    // @RolesAllowed({"ADMIN", "EMPLOYEE"})
-    // public Response updateUser(@Valid UpdateUserDTO dto, @HeaderParam("If-Match") String ifMatch)
-    //         throws UserNotFoundException, UpdateUserException, ParseException, JOSEException {
-    //     JsonObject jsonObject = new JsonObject();
-    //     jsonObject.addProperty("id", dto.getId());
+    // @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    // public Response updateEmployee(@PathParam("id") Long id, @Valid UpdateClientDTO dto)
+    //     throws UserNotFoundException, UpdateUserException {
+    //     Address address = new Address(dto.getCity(), dto.getStreet(), dto.getNumber());
     //
-    //     if (!signProvider.verify(ifMatch, jsonObject.toString())) {
-    //         return Response.status(Response.Status.BAD_REQUEST).build();
-    //     }
+    //     User user = new Employee(dto.getUsername(),
+    //                            dto.getFirstName(),
+    //                            dto.getLastName(),
+    //                            dto.getPersonalId(),
+    //                            address);
     //
-    //     User user;
+    //     User updatedUser = userUseCase.updateUser(id, user);
+    //     return Response.status(Response.Status.OK).entity(updatedUser).build();
+    // }
     //
-    //     User updatedUser = userService.updateUser(dto.getId(), user);
+    // @PUT
+    // @Path("admins/{id}")
+    // @Produces(MediaType.APPLICATION_JSON)
+    // @Consumes(MediaType.APPLICATION_JSON)
+    // @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    // public Response updateAdmin(@PathParam("id") Long id, @Valid UpdateClientDTO dto)
+    //     throws UserNotFoundException, UpdateUserException {
+    //     Address address = new Address(dto.getCity(), dto.getStreet(), dto.getNumber());
+    //
+    //     User user = new Client(dto.getUsername(),
+    //                            dto.getFirstName(),
+    //                            dto.getLastName(),
+    //                            dto.getPersonalId(),
+    //                            address);
+    //
+    //     User updatedUser = userUseCase.updateUser(id, user);
     //     return Response.status(Response.Status.OK).entity(updatedUser).build();
     // }
 

@@ -29,6 +29,8 @@ public interface UserUseCase {
 
     List<Admin> getAdmins();
 
+    User updateUser(Long id, User dto) throws UserNotFoundException, UpdateUserException;
+
     User activateUser(Long id) throws UserNotFoundException, UpdateUserException;
 
     User deactivateUser(Long id) throws UpdateUserException, UserNotFoundException;

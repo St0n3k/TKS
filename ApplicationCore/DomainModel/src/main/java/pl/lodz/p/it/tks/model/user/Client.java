@@ -17,6 +17,18 @@ public class Client extends User {
     private Address address;
 
     public Client(String username,
+                  String firstName,
+                  String lastName,
+                  String personalId,
+                  Address address) {
+        super(username, null, "CLIENT");
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.personalId = personalId;
+        this.address = address;
+    }
+
+    public Client(String username,
                   String password,
                   String firstName,
                   String lastName,

@@ -13,6 +13,7 @@ import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.infrastructure.RentQueryPort;
 import pl.lodz.p.it.tks.infrastructure.UserCommandPort;
 import pl.lodz.p.it.tks.infrastructure.UserQueryPort;
+import pl.lodz.p.it.tks.model.Address;
 import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.user.Admin;
 import pl.lodz.p.it.tks.model.user.Client;
@@ -141,67 +142,74 @@ public class UserService implements UserUseCase {
         return rents;
     }
 
-    // public User updateUser(Long id, User dto) throws UserNotFoundException, UpdateUserException {
-    //     Optional<User> optionalUser = userQueryPort.getById(id);
-    //
-    //     if (optionalUser.isEmpty()) {
-    //         throw new UserNotFoundException();
-    //     }
-    //     User user = optionalUser.get();
-    //
-    //     String username = dto.getUsername();
-    //     String firstName = dto.getFirstName();
-    //     String lastName = dto.getLastName();
-    //     String personalId = dto.getPersonalId();
-    //     String city = dto.getCity();
-    //     String street = dto.getStreet();
-    //     Integer number = dto.getNumber();
-    //
-    //     if (username != null && userRepository.getUserByUsername(username).isPresent()) {
-    //         throw new UpdateUserException();
-    //     }
-    //     User updatedUser;
-    //
-    //     if (user instanceof Client client) {
-    //         client.setUsername(username == null ? client.getUsername() : username);
-    //         client.setFirstName(firstName == null ? client.getFirstName() : firstName);
-    //         client.setLastName(lastName == null ? client.getLastName() : lastName);
-    //         client.setPersonalId(personalId == null ? client.getPersonalId() : personalId);
-    //
-    //         Address address = client.getAddress();
-    //
-    //         address.setCity(city == null ? address.getCity() : city);
-    //         address.setStreet(street == null ? address.getStreet() : street);
-    //         address.setHouseNumber(number == null ? address.getHouseNumber() : number);
-    //
-    //         updatedUser = client;
-    //     } else if (user instanceof Employee employee) {
-    //         employee.setUsername(username == null ? employee.getUsername() : username);
-    //         employee.setFirstName(firstName == null ? employee.getFirstName() : firstName);
-    //         employee.setLastName(lastName == null ? employee.getLastName() : lastName);
-    //
-    //         updatedUser = employee;
-    //     } else if (user instanceof Admin admin) {
-    //         admin.setUsername(username == null ? admin.getUsername() : username);
-    //
-    //         updatedUser = admin;
-    //     } else {
-    //         throw new UpdateUserException();
-    //     }
-    //
-    //     try {
-    //         optionalUser = userRepository.update(updatedUser);
-    //     } catch (Exception e) {
-    //         throw new UpdateUserException();
-    //     }
-    //
-    //     if (optionalUser.isEmpty()) {
-    //         throw new UpdateUserException();
-    //     }
-    //     user = optionalUser.get();
-    //     return user;
-    //     // return optionalUser.orElseThrow(UpdateUserException::new);
-    // }
+    @Override
+    public User updateUser(Long id, User newUser) throws UserNotFoundException, UpdateUserException {
+        User user = userQueryPort.getById(id)
+                                 .orElseThrow(UserNotFoundException::new);
+
+        if (!user.getClass().equals(newUser.getClass())) {
+            throw new UpdateUserException();
+            // TODO consider changing to different exception
+        }
+
+        // check if username is not taken
+        if (newUser.getUsername() != null
+            && userQueryPort.getUserByUsername(newUser.getUsername()).isPresent()) {
+            throw new UpdateUserException();
+        }
+
+        if (user instanceof Client client) {
+            Client newClient = (Client) newUser;
+
+            if (newClient.getUsername() != null) {
+                client.setUsername(newClient.getUsername());
+            }
+
+            if (newClient.getFirstName() != null) {
+                client.setFirstName(newClient.getFirstName());
+            }
+
+            if (newClient.getLastName() != null) {
+                client.setLastName(newClient.getLastName());
+            }
+
+            // TODO check if personalId is not taken or catch exception from the database
+            if (newClient.getPersonalId() != null) {
+                client.setPersonalId(newClient.getPersonalId());
+            }
+
+            Address address = client.getAddress();
+            Address newAddress = newClient.getAddress();
+
+            if (newAddress.getCity() != null) {
+                address.setCity(newAddress.getCity());
+            }
+
+            if (newAddress.getStreet() != null) {
+                address.setStreet(newAddress.getStreet());
+            }
+
+            if (newAddress.getHouseNumber() > 0) {
+                address.setHouseNumber(newAddress.getHouseNumber());
+
+            }
+
+            return userCommandPort.update(client)
+                                  .orElseThrow(UpdateUserException::new);
+            // } else if (user instanceof Employee employee) {
+            //     employee.setUsername(username == null ? employee.getUsername() : username);
+            //     employee.setFirstName(firstName == null ? employee.getFirstName() : firstName);
+            //     employee.setLastName(lastName == null ? employee.getLastName() : lastName);
+            //
+            //     updatedUser = employee;
+            // } else if (user instanceof Admin admin) {
+            //     admin.setUsername(username == null ? admin.getUsername() : username);
+            //
+            //     updatedUser = admin;
+        } else {
+            throw new UpdateUserException();
+        }
+    }
 
     @Override
     public User activateUser(Long id) throws UserNotFoundException, UpdateUserException {
