@@ -45,4 +45,8 @@ public class Employee extends User {
         this.firstName = firstName;
         this.lastName = lastName;
     }
+
+    public Employee(String firstName, String lastName) {
+        this(null, firstName, lastName, null);
+    }
 }

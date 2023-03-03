@@ -195,8 +195,7 @@ public class UserController {
         throws UserNotFoundException, UpdateUserException {
         Address address = new Address(dto.getCity(), dto.getStreet(), dto.getNumber());
 
-        User user = new Client(dto.getUsername(),
-                               dto.getFirstName(),
+        User user = new Client(dto.getFirstName(),
                                dto.getLastName(),
                                dto.getPersonalId(),
                                address);
@@ -212,33 +211,12 @@ public class UserController {
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response updateEmployee(@PathParam("id") Long id, @Valid UpdateEmployeeDTO dto)
         throws UserNotFoundException, UpdateUserException {
-        User user = new Employee(dto.getUsername(),
-                                 dto.getFirstName(),
+        User user = new Employee(dto.getFirstName(),
                                  dto.getLastName());
 
         User updatedUser = userUseCase.updateUser(id, user);
         return Response.status(Response.Status.OK).entity(updatedUser).build();
     }
-
-    // @PUT
-    // @Path("admins/{id}")
-    // @Produces(MediaType.APPLICATION_JSON)
-    // @Consumes(MediaType.APPLICATION_JSON)
-    // @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-    // public Response updateAdmin(@PathParam("id") Long id, @Valid UpdateClientDTO dto)
-    //     throws UserNotFoundException, UpdateUserException {
-    //     Address address = new Address(dto.getCity(), dto.getStreet(), dto.getNumber());
-    //
-    //     User user = new Client(dto.getUsername(),
-    //                            dto.getFirstName(),
-    //                            dto.getLastName(),
-    //                            dto.getPersonalId(),
-    //                            address);
-    //
-    //     User updatedUser = userUseCase.updateUser(id, user);
-    //     return Response.status(Response.Status.OK).entity(updatedUser).build();
-    // }
-
 
     /**
      * Endpoint used for activating given user

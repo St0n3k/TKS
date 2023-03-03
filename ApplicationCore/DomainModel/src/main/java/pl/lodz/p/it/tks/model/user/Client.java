@@ -71,4 +71,8 @@ public class Client extends User {
         this.personalId = personalId;
         this.address = address;
     }
+
+    public Client(String firstName, String lastName, String personalId, Address address) {
+        this(null, firstName, lastName, personalId, address);
+    }
 }

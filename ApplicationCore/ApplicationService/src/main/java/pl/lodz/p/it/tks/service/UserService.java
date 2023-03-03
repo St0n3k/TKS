@@ -152,17 +152,6 @@ public class UserService implements UserUseCase {
             // TODO consider changing to different exception
         }
 
-        // check if username is not taken
-        if (newUser.getUsername() != null
-            && userQueryPort.getUserByUsername(newUser.getUsername()).isPresent()) {
-            throw new UpdateUserException();
-        }
-
-        // common property for each class in hierarchy
-        if (newUser.getUsername() != null) {
-            user.setUsername(newUser.getUsername());
-        }
-
         if (user instanceof Client client) {
             Client newClient = (Client) newUser;
 
