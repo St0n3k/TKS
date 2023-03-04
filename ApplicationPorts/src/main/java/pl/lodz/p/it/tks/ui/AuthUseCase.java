@@ -1,6 +1,6 @@
 package pl.lodz.p.it.tks.ui;
 
-import pl.lodz.p.it.tks.exception.InvalidInputException;
+import pl.lodz.p.it.tks.exception.shared.InvalidInputException;
 import pl.lodz.p.it.tks.exception.user.AuthenticationException;
 import pl.lodz.p.it.tks.exception.user.InactiveUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;

@@ -4,8 +4,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import pl.lodz.p.it.tks.exception.BaseApplicationException;
-import pl.lodz.p.it.tks.exception.ConstructorArgumentException;
-import pl.lodz.p.it.tks.exception.InvalidInputException;
 import pl.lodz.p.it.tks.exception.rent.CreateRentException;
 import pl.lodz.p.it.tks.exception.rent.RemoveRentException;
 import pl.lodz.p.it.tks.exception.rent.RentNotFoundException;
@@ -14,6 +12,7 @@ import pl.lodz.p.it.tks.exception.room.CreateRoomException;
 import pl.lodz.p.it.tks.exception.room.RoomHasActiveReservationsException;
 import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
 import pl.lodz.p.it.tks.exception.room.UpdateRoomException;
+import pl.lodz.p.it.tks.exception.shared.InvalidInputException;
 import pl.lodz.p.it.tks.exception.user.AuthenticationException;
 import pl.lodz.p.it.tks.exception.user.CreateUserException;
 import pl.lodz.p.it.tks.exception.user.InactiveUserException;
@@ -21,7 +20,7 @@ import pl.lodz.p.it.tks.exception.user.UpdateUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 
 @Provider
-public class RestExceptionMapper implements ExceptionMapper<BaseApplicationException> {
+public class CheckedExceptionMapper implements ExceptionMapper<BaseApplicationException> {
     @Override
     public Response toResponse(BaseApplicationException e) {
         if (e.getClass() == UserNotFoundException.class
@@ -41,8 +40,7 @@ public class RestExceptionMapper implements ExceptionMapper<BaseApplicationExcep
             return Response.status(Response.Status.CONFLICT).build();
         }
 
-        if (e.getClass() == InvalidInputException.class
-                || e.getClass() == ConstructorArgumentException.class) {
+        if (e.getClass() == InvalidInputException.class) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
@@ -50,8 +48,6 @@ public class RestExceptionMapper implements ExceptionMapper<BaseApplicationExcep
                 || e.getClass() == AuthenticationException.class) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        System.out.println(e.getClass());
-
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 }

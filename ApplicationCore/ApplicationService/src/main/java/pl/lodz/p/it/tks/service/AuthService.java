@@ -1,12 +1,10 @@
 package pl.lodz.p.it.tks.service;
 
-import java.security.Principal;
-import java.util.Objects;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.SecurityContext;
-import pl.lodz.p.it.tks.exception.InvalidInputException;
+import pl.lodz.p.it.tks.exception.shared.InvalidInputException;
 import pl.lodz.p.it.tks.exception.user.AuthenticationException;
 import pl.lodz.p.it.tks.exception.user.InactiveUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
@@ -15,6 +13,9 @@ import pl.lodz.p.it.tks.infrastructure.UserCommandPort;
 import pl.lodz.p.it.tks.infrastructure.UserQueryPort;
 import pl.lodz.p.it.tks.model.user.User;
 import pl.lodz.p.it.tks.ui.AuthUseCase;
+
+import java.security.Principal;
+import java.util.Objects;
 
 
 @RequestScoped

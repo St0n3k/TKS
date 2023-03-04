@@ -2,7 +2,7 @@ package pl.lodz.p.it.tks.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.lodz.p.it.tks.exception.ConstructorArgumentException;
+import pl.lodz.p.it.tks.exception.shared.ConstructorArgumentException;
 import pl.lodz.p.it.tks.model.user.Client;
 
 import java.time.LocalDateTime;
