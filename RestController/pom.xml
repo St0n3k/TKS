@@ -25,6 +25,11 @@
         </dependency>
         <dependency>
             <groupId>pl.lodz.p.it.tks</groupId>
+            <artifactId>DomainModel</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>pl.lodz.p.it.tks</groupId>
             <artifactId>Security</artifactId>
             <scope>compile</scope>
         </dependency>

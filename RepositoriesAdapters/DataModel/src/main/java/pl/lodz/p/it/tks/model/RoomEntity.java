@@ -53,7 +53,7 @@ public class RoomEntity extends AbstractEntity {
         this.setVersion(room.getVersion());
     }
 
-    public Room mapToRoom(){
+    public Room mapToRoom() {
         return new Room(this.getId(), this.getRoomNumber(), this.getPrice(), this.getSize(), this.getVersion());
     }
 }

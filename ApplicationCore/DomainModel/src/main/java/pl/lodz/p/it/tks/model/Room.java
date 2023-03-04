@@ -1,10 +1,13 @@
 package pl.lodz.p.it.tks.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.lodz.p.it.tks.exception.ConstructorArgumentException;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Room extends AbstractModel {
 
     private Integer roomNumber;
@@ -14,14 +17,11 @@ public class Room extends AbstractModel {
     private Integer size;
 
 
-    public Room(Integer roomNumber, Double price, Integer size) {
-        this.roomNumber = roomNumber;
-        this.price = price;
-        this.size = size;
-    }
-
     public Room(Long id, Integer roomNumber, Double price, Integer size, long version) {
         super(id, version);
+        if (roomNumber < 1 || price < 1 || size < 1) {
+            throw new ConstructorArgumentException();
+        }
         this.roomNumber = roomNumber;
         this.price = price;
         this.size = size;
