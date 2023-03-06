@@ -1,4 +1,4 @@
-package pl.lodz.p.it.tks.infrastructure;
+package pl.lodz.p.it.tks.infrastructure.command;
 
 import pl.lodz.p.it.tks.exception.room.UpdateRoomException;
 import pl.lodz.p.it.tks.model.Room;

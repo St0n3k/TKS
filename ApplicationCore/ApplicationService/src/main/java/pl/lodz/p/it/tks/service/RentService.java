@@ -11,15 +11,16 @@ import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
 import pl.lodz.p.it.tks.exception.shared.InvalidInputException;
 import pl.lodz.p.it.tks.exception.user.InactiveUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
-import pl.lodz.p.it.tks.infrastructure.RentCommandPort;
-import pl.lodz.p.it.tks.infrastructure.RentQueryPort;
-import pl.lodz.p.it.tks.infrastructure.RoomQueryPort;
-import pl.lodz.p.it.tks.infrastructure.UserQueryPort;
+import pl.lodz.p.it.tks.infrastructure.command.RentCommandPort;
+import pl.lodz.p.it.tks.infrastructure.query.RentQueryPort;
+import pl.lodz.p.it.tks.infrastructure.query.RoomQueryPort;
+import pl.lodz.p.it.tks.infrastructure.query.UserQueryPort;
 import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.model.user.Client;
 import pl.lodz.p.it.tks.model.user.User;
-import pl.lodz.p.it.tks.ui.RentUseCase;
+import pl.lodz.p.it.tks.ui.command.RentCommandUseCase;
+import pl.lodz.p.it.tks.ui.query.RentQueryUseCase;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -30,7 +31,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
-public class RentService implements RentUseCase {
+public class RentService implements RentQueryUseCase, RentCommandUseCase {
 
     @Inject
     private UserQueryPort userQueryPort;

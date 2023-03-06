@@ -1,8 +1,5 @@
 package pl.lodz.p.it.tks.service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
@@ -10,22 +7,27 @@ import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.exception.user.CreateUserException;
 import pl.lodz.p.it.tks.exception.user.UpdateUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
-import pl.lodz.p.it.tks.infrastructure.RentQueryPort;
-import pl.lodz.p.it.tks.infrastructure.UserCommandPort;
-import pl.lodz.p.it.tks.infrastructure.UserQueryPort;
+import pl.lodz.p.it.tks.infrastructure.command.UserCommandPort;
+import pl.lodz.p.it.tks.infrastructure.query.RentQueryPort;
+import pl.lodz.p.it.tks.infrastructure.query.UserQueryPort;
 import pl.lodz.p.it.tks.model.Address;
 import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.user.Admin;
 import pl.lodz.p.it.tks.model.user.Client;
 import pl.lodz.p.it.tks.model.user.Employee;
 import pl.lodz.p.it.tks.model.user.User;
-import pl.lodz.p.it.tks.ui.UserUseCase;
+import pl.lodz.p.it.tks.ui.command.UserCommandUseCase;
+import pl.lodz.p.it.tks.ui.query.UserQueryUseCase;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
-public class UserService implements UserUseCase {
+public class UserService implements UserQueryUseCase, UserCommandUseCase {
 
     @Inject
     private UserQueryPort userQueryPort;

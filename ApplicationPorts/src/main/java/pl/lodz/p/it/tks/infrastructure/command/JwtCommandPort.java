@@ -1,4 +1,4 @@
-package pl.lodz.p.it.tks.infrastructure;
+package pl.lodz.p.it.tks.infrastructure.command;
 
 import pl.lodz.p.it.tks.exception.security.JwtException;
 

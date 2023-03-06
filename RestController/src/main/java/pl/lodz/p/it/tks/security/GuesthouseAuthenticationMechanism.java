@@ -11,7 +11,7 @@ import pl.lodz.p.it.tks.exception.security.JwtException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.model.user.User;
 import pl.lodz.p.it.tks.ui.JwtUseCase;
-import pl.lodz.p.it.tks.ui.UserUseCase;
+import pl.lodz.p.it.tks.ui.query.UserQueryUseCase;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -24,7 +24,7 @@ public class GuesthouseAuthenticationMechanism implements HttpAuthenticationMech
     private JwtUseCase jwtUseCase;
 
     @Inject
-    private UserUseCase userUseCase;
+    private UserQueryUseCase userQueryUseCase;
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, HttpMessageContext httpMessageContext) {
@@ -43,7 +43,7 @@ public class GuesthouseAuthenticationMechanism implements HttpAuthenticationMech
 
         User user;
         try {
-            user = userUseCase.getUserByUsername(subject);
+            user = userQueryUseCase.getUserByUsername(subject);
         } catch (UserNotFoundException e) {
             return loginAnonymous(httpMessageContext);
         }

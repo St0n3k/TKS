@@ -1,25 +1,13 @@
 package pl.lodz.p.it.tks.controller;
 
-import java.util.List;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import pl.lodz.p.it.tks.dto.RegisterAdminDTO;
-import pl.lodz.p.it.tks.dto.RegisterClientDTO;
-import pl.lodz.p.it.tks.dto.RegisterEmployeeDTO;
-import pl.lodz.p.it.tks.dto.UpdateClientDTO;
-import pl.lodz.p.it.tks.dto.UpdateEmployeeDTO;
+import pl.lodz.p.it.tks.dto.*;
 import pl.lodz.p.it.tks.exception.user.CreateUserException;
 import pl.lodz.p.it.tks.exception.user.UpdateUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
@@ -29,13 +17,20 @@ import pl.lodz.p.it.tks.model.user.Admin;
 import pl.lodz.p.it.tks.model.user.Client;
 import pl.lodz.p.it.tks.model.user.Employee;
 import pl.lodz.p.it.tks.model.user.User;
-import pl.lodz.p.it.tks.ui.UserUseCase;
+import pl.lodz.p.it.tks.ui.command.UserCommandUseCase;
+import pl.lodz.p.it.tks.ui.query.UserQueryUseCase;
+
+import java.util.List;
 
 @RequestScoped
 @Path("/users")
 public class UserController {
+
     @Inject
-    private UserUseCase userUseCase;
+    private UserCommandUseCase userCommandUseCase;
+
+    @Inject
+    private UserQueryUseCase userQueryUseCase;
 
     /**
      * Endpoint which is used to register new client,
@@ -61,7 +56,7 @@ public class UserController {
                                    rcDTO.getPersonalID(),
                                    address);
 
-        Client registeredClient = userUseCase.registerClient(client);
+        Client registeredClient = userCommandUseCase.registerClient(client);
         return Response.status(Response.Status.CREATED)
                        .entity(registeredClient)
                        .build();
@@ -88,7 +83,7 @@ public class UserController {
                                          reDTO.getLastName(),
                                          reDTO.getPassword());
 
-        Employee registeredEmployee = userUseCase.registerEmployee(employee);
+        Employee registeredEmployee = userCommandUseCase.registerEmployee(employee);
         return Response.status(Response.Status.CREATED).entity(registeredEmployee).build();
     }
 
@@ -99,7 +94,7 @@ public class UserController {
     @RolesAllowed({ "ADMIN" })
     public Response registerAdmin(@Valid RegisterAdminDTO raDto) throws CreateUserException {
         Admin admin = new Admin(raDto.getUsername(), raDto.getPassword());
-        Admin registeredAdmin = userUseCase.registerAdmin(admin);
+        Admin registeredAdmin = userCommandUseCase.registerAdmin(admin);
         return Response.status(Response.Status.CREATED)
                        .entity(registeredAdmin)
                        .build();
@@ -111,7 +106,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response getUserById(@PathParam("id") Long id) throws UserNotFoundException {
-        User user = userUseCase.getUserById(id);
+        User user = userQueryUseCase.getUserById(id);
         return Response.status(Response.Status.OK).entity(user).build();
     }
 
@@ -120,7 +115,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response getAllUsers(@QueryParam("username") String username) {
-        List<User> users = userUseCase.getAllUsers(username);
+        List<User> users = userQueryUseCase.getAllUsers(username);
         return Response.status(Response.Status.OK).entity(users).build();
     }
 
@@ -128,7 +123,7 @@ public class UserController {
     @Path("/clients")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllClients(@QueryParam("username") String username) {
-        List<Client> clients = userUseCase.getClients(username);
+        List<Client> clients = userQueryUseCase.getClients(username);
         return Response.status(Response.Status.OK).entity(clients).build();
     }
 
@@ -137,7 +132,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN" })
     public Response getAllEmployees() {
-        List<Employee> employee = userUseCase.getEmployees();
+        List<Employee> employee = userQueryUseCase.getEmployees();
         return Response.status(Response.Status.OK).entity(employee).build();
     }
 
@@ -146,7 +141,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN" })
     public Response getAllAdmins() {
-        List<Admin> admins = userUseCase.getAdmins();
+        List<Admin> admins = userQueryUseCase.getAdmins();
         return Response.status(Response.Status.OK).entity(admins).build();
     }
 
@@ -155,7 +150,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN" })
     public Response getUserByUsername(@PathParam("username") String username) throws UserNotFoundException {
-        User user = userUseCase.getUserByUsername(username);
+        User user = userQueryUseCase.getUserByUsername(username);
         return Response.status(Response.Status.OK).entity(user).build();
     }
 
@@ -173,7 +168,7 @@ public class UserController {
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response getAllRentsOfClient(@PathParam("id") Long clientId,
                                         @QueryParam("past") Boolean past) throws UserNotFoundException {
-        List<Rent> rents = userUseCase.getAllRentsOfClient(clientId, past);
+        List<Rent> rents = userQueryUseCase.getAllRentsOfClient(clientId, past);
         return Response.status(Response.Status.OK).entity(rents).build();
     }
 
@@ -200,7 +195,7 @@ public class UserController {
                                dto.getPersonalId(),
                                address);
 
-        User updatedUser = userUseCase.updateUser(id, user);
+        User updatedUser = userCommandUseCase.updateUser(id, user);
         return Response.status(Response.Status.OK).entity(updatedUser).build();
     }
 
@@ -214,7 +209,7 @@ public class UserController {
         User user = new Employee(dto.getFirstName(),
                                  dto.getLastName());
 
-        User updatedUser = userUseCase.updateUser(id, user);
+        User updatedUser = userCommandUseCase.updateUser(id, user);
         return Response.status(Response.Status.OK).entity(updatedUser).build();
     }
 
@@ -231,7 +226,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response activateUser(@PathParam("id") Long id) throws UserNotFoundException, UpdateUserException {
-        User user = userUseCase.activateUser(id);
+        User user = userCommandUseCase.activateUser(id);
         return Response.status(Response.Status.OK).entity(user).build();
     }
 
@@ -249,7 +244,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response deactivateUser(@PathParam("id") Long id) throws UserNotFoundException, UpdateUserException {
-        User user = userUseCase.deactivateUser(id);
+        User user = userCommandUseCase.deactivateUser(id);
         return Response.status(Response.Status.OK).entity(user).build();
     }
 }

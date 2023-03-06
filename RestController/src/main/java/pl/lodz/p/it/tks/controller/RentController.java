@@ -4,14 +4,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.PATCH;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.tks.dto.CreateRentDTO;
@@ -24,7 +17,8 @@ import pl.lodz.p.it.tks.exception.shared.InvalidInputException;
 import pl.lodz.p.it.tks.exception.user.InactiveUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.model.Rent;
-import pl.lodz.p.it.tks.ui.RentUseCase;
+import pl.lodz.p.it.tks.ui.command.RentCommandUseCase;
+import pl.lodz.p.it.tks.ui.query.RentQueryUseCase;
 
 import java.util.List;
 
@@ -33,9 +27,10 @@ import java.util.List;
 public class RentController {
 
     @Inject
-    private RentUseCase rentUseCase;
+    private RentQueryUseCase rentQueryUseCase;
 
-
+    @Inject
+    private RentCommandUseCase rentCommandUseCase;
 
     /**
      * Enpoint for creating a new rent. Rent will be created if client and room exists in database, and if rent period
@@ -60,7 +55,7 @@ public class RentController {
                 null,
                 null
         );
-        Rent rent = rentUseCase.rentRoom(fromDTO,
+        Rent rent = rentCommandUseCase.rentRoom(fromDTO,
                 createRentDTO.getClientId(),
                 createRentDTO.getRoomId());
         return Response.status(Response.Status.CREATED).entity(rent).build();
@@ -70,7 +65,7 @@ public class RentController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRentById(@PathParam("id") Long id) throws RentNotFoundException {
-        Rent rent = rentUseCase.getRentById(id);
+        Rent rent = rentQueryUseCase.getRentById(id);
         return Response.status(Response.Status.OK).entity(rent).build();
     }
 
@@ -78,7 +73,7 @@ public class RentController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"EMPLOYEE", "ADMIN"})
     public Response getAllRents() {
-        List<Rent> rents = rentUseCase.getAllRents();
+        List<Rent> rents = rentQueryUseCase.getAllRents();
         return Response.status(Response.Status.OK).entity(rents).build();
     }
 
@@ -96,7 +91,7 @@ public class RentController {
     @RolesAllowed({"EMPLOYEE", "ADMIN"})
     public Response updateRentBoard(@PathParam("id") Long id, @Valid UpdateRentBoardDTO dto)
         throws InvalidInputException, RentNotFoundException {
-        Rent rent = rentUseCase.updateRentBoard(id, dto.getBoard());
+        Rent rent = rentCommandUseCase.updateRentBoard(id, dto.getBoard());
         return Response.status(Response.Status.OK).entity(rent).build();
     }
 
@@ -110,7 +105,7 @@ public class RentController {
     @Path("/{id}")
     @RolesAllowed({"EMPLOYEE", "ADMIN"})
     public Response removeRent(@PathParam("id") Long rentId) throws RemoveRentException {
-        rentUseCase.removeRent(rentId);
+        rentCommandUseCase.removeRent(rentId);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 }

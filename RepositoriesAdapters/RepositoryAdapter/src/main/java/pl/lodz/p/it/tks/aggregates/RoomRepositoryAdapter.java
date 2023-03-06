@@ -2,8 +2,8 @@ package pl.lodz.p.it.tks.aggregates;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import pl.lodz.p.it.tks.infrastructure.RoomCommandPort;
-import pl.lodz.p.it.tks.infrastructure.RoomQueryPort;
+import pl.lodz.p.it.tks.infrastructure.command.RoomCommandPort;
+import pl.lodz.p.it.tks.infrastructure.query.RoomQueryPort;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.model.RoomEntity;
 import pl.lodz.p.it.tks.repository.RoomRepository;

@@ -3,7 +3,7 @@ package pl.lodz.p.it.tks.service;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import pl.lodz.p.it.tks.exception.security.JwtException;
-import pl.lodz.p.it.tks.infrastructure.JwtCommandPort;
+import pl.lodz.p.it.tks.infrastructure.command.JwtCommandPort;
 import pl.lodz.p.it.tks.ui.JwtUseCase;
 
 @RequestScoped

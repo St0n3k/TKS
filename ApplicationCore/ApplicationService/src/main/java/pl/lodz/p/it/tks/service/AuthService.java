@@ -8,9 +8,9 @@ import pl.lodz.p.it.tks.exception.shared.InvalidInputException;
 import pl.lodz.p.it.tks.exception.user.AuthenticationException;
 import pl.lodz.p.it.tks.exception.user.InactiveUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
-import pl.lodz.p.it.tks.infrastructure.JwtCommandPort;
-import pl.lodz.p.it.tks.infrastructure.UserCommandPort;
-import pl.lodz.p.it.tks.infrastructure.UserQueryPort;
+import pl.lodz.p.it.tks.infrastructure.command.JwtCommandPort;
+import pl.lodz.p.it.tks.infrastructure.command.UserCommandPort;
+import pl.lodz.p.it.tks.infrastructure.query.UserQueryPort;
 import pl.lodz.p.it.tks.model.user.User;
 import pl.lodz.p.it.tks.ui.AuthUseCase;
 

@@ -2,8 +2,8 @@ package pl.lodz.p.it.tks.aggregates;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import pl.lodz.p.it.tks.infrastructure.UserCommandPort;
-import pl.lodz.p.it.tks.infrastructure.UserQueryPort;
+import pl.lodz.p.it.tks.infrastructure.command.UserCommandPort;
+import pl.lodz.p.it.tks.infrastructure.query.UserQueryPort;
 import pl.lodz.p.it.tks.model.user.*;
 import pl.lodz.p.it.tks.repository.UserRepository;
 

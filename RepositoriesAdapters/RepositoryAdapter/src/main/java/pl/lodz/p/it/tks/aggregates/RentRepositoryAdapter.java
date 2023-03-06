@@ -2,8 +2,8 @@ package pl.lodz.p.it.tks.aggregates;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import pl.lodz.p.it.tks.infrastructure.RentCommandPort;
-import pl.lodz.p.it.tks.infrastructure.RentQueryPort;
+import pl.lodz.p.it.tks.infrastructure.command.RentCommandPort;
+import pl.lodz.p.it.tks.infrastructure.query.RentQueryPort;
 import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.RentEntity;
 import pl.lodz.p.it.tks.repository.RentRepository;

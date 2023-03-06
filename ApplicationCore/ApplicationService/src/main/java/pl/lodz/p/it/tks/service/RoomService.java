@@ -8,12 +8,13 @@ import pl.lodz.p.it.tks.exception.room.CreateRoomException;
 import pl.lodz.p.it.tks.exception.room.RoomHasActiveReservationsException;
 import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
 import pl.lodz.p.it.tks.exception.room.UpdateRoomException;
-import pl.lodz.p.it.tks.infrastructure.RentQueryPort;
-import pl.lodz.p.it.tks.infrastructure.RoomCommandPort;
-import pl.lodz.p.it.tks.infrastructure.RoomQueryPort;
+import pl.lodz.p.it.tks.infrastructure.command.RoomCommandPort;
+import pl.lodz.p.it.tks.infrastructure.query.RentQueryPort;
+import pl.lodz.p.it.tks.infrastructure.query.RoomQueryPort;
 import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.Room;
-import pl.lodz.p.it.tks.ui.RoomUseCase;
+import pl.lodz.p.it.tks.ui.command.RoomCommandUseCase;
+import pl.lodz.p.it.tks.ui.query.RoomQueryUseCase;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
-public class RoomService implements RoomUseCase {
+public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
 
     @Inject
     private RoomQueryPort roomQueryPort;
