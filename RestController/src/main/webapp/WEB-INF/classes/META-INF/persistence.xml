@@ -14,7 +14,7 @@
             <property name="hibernate.transaction.jta.platform"
                       value="org.hibernate.service.jta.platform.internal.SunOneJtaPlatform"/>
 
-            <property name="javax.persistence.sql-load-script-source"
+            <property name="jakarta.persistence.sql-load-script-source"
                       value="META-INF/sql/initial_data.sql"/>
         </properties>
     </persistence-unit>

@@ -1,14 +1,17 @@
 package pl.lodz.p.it.tks.security;
 
 
-import io.jsonwebtoken.*;
+import java.util.Date;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import pl.lodz.p.it.tks.exception.security.JwtException;
 import pl.lodz.p.it.tks.infrastructure.command.JwtCommandPort;
-
-import java.util.Date;
 
 @ApplicationScoped
 public class JwtProvider implements JwtCommandPort {
@@ -35,10 +38,10 @@ public class JwtProvider implements JwtCommandPort {
     }
 
     private Jws<Claims> parseJWT(String jwt) throws JwtException {
-        try{
+        try {
             return Jwts.parser()
-                    .setSigningKey(SECRET)
-                    .parseClaimsJws(jwt);
+                       .setSigningKey(SECRET)
+                       .parseClaimsJws(jwt);
         } catch (SignatureException e) {
             throw new JwtException();
         }
