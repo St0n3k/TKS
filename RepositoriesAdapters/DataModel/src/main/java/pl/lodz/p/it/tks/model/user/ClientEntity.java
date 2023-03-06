@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.model.AddressEntity;
 
+import java.util.UUID;
+
 @Entity
 @DiscriminatorValue("Client")
 @Data
@@ -44,7 +46,7 @@ public class ClientEntity extends UserEntity {
     }
 
     public ClientEntity(long version,
-                        Long id,
+                        UUID id,
                         String username,
                         boolean active,
                         String password,
@@ -59,7 +61,7 @@ public class ClientEntity extends UserEntity {
         this.address = address;
     }
 
-    public ClientEntity(Long id,
+    public ClientEntity(UUID id,
                         String username,
                         boolean active,
                         String password,

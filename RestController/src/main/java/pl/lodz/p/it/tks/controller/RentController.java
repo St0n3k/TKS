@@ -21,6 +21,7 @@ import pl.lodz.p.it.tks.ui.command.RentCommandUseCase;
 import pl.lodz.p.it.tks.ui.query.RentQueryUseCase;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequestScoped
 @Path("/rents")
@@ -64,7 +65,7 @@ public class RentController {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRentById(@PathParam("id") Long id) throws RentNotFoundException {
+    public Response getRentById(@PathParam("id") UUID id) throws RentNotFoundException {
         Rent rent = rentQueryUseCase.getRentById(id);
         return Response.status(Response.Status.OK).entity(rent).build();
     }
@@ -89,7 +90,7 @@ public class RentController {
     @Path("/{id}/board")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"EMPLOYEE", "ADMIN"})
-    public Response updateRentBoard(@PathParam("id") Long id, @Valid UpdateRentBoardDTO dto)
+    public Response updateRentBoard(@PathParam("id") UUID id, @Valid UpdateRentBoardDTO dto)
         throws InvalidInputException, RentNotFoundException {
         Rent rent = rentCommandUseCase.updateRentBoard(id, dto.getBoard());
         return Response.status(Response.Status.OK).entity(rent).build();
@@ -104,7 +105,7 @@ public class RentController {
     @DELETE
     @Path("/{id}")
     @RolesAllowed({"EMPLOYEE", "ADMIN"})
-    public Response removeRent(@PathParam("id") Long rentId) throws RemoveRentException {
+    public Response removeRent(@PathParam("id") UUID rentId) throws RemoveRentException {
         rentCommandUseCase.removeRent(rentId);
         return Response.status(Response.Status.NO_CONTENT).build();
     }

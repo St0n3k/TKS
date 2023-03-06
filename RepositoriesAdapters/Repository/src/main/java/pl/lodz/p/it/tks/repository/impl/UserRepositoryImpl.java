@@ -9,6 +9,7 @@ import pl.lodz.p.it.tks.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @ApplicationScoped
 @Transactional
@@ -35,7 +36,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<UserEntity> getById(Long id) {
+    public Optional<UserEntity> getById(UUID id) {
         return Optional.ofNullable(em.find(UserEntity.class, id));
     }
 

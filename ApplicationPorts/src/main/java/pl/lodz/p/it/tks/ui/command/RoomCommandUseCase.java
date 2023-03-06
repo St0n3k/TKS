@@ -6,10 +6,12 @@ import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
 import pl.lodz.p.it.tks.exception.room.UpdateRoomException;
 import pl.lodz.p.it.tks.model.Room;
 
+import java.util.UUID;
+
 public interface RoomCommandUseCase {
     Room addRoom(Room room) throws CreateRoomException;
 
-    Room updateRoom(Long id, Room room) throws RoomNotFoundException, UpdateRoomException;
+    Room updateRoom(UUID id, Room room) throws RoomNotFoundException, UpdateRoomException;
 
-    void removeRoom(Long id) throws RoomHasActiveReservationsException;
+    void removeRoom(UUID id) throws RoomHasActiveReservationsException;
 }

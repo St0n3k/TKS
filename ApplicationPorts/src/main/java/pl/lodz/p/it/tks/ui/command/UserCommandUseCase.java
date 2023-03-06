@@ -8,6 +8,8 @@ import pl.lodz.p.it.tks.model.user.Client;
 import pl.lodz.p.it.tks.model.user.Employee;
 import pl.lodz.p.it.tks.model.user.User;
 
+import java.util.UUID;
+
 public interface UserCommandUseCase {
     Client registerClient(Client client) throws CreateUserException;
 
@@ -15,9 +17,9 @@ public interface UserCommandUseCase {
 
     Admin registerAdmin(Admin admin) throws CreateUserException;
 
-    User updateUser(Long id, User dto) throws UserNotFoundException, UpdateUserException;
+    User updateUser(UUID id, User dto) throws UserNotFoundException, UpdateUserException;
 
-    User activateUser(Long id) throws UserNotFoundException, UpdateUserException;
+    User activateUser(UUID id) throws UserNotFoundException, UpdateUserException;
 
-    User deactivateUser(Long id) throws UpdateUserException, UserNotFoundException;
+    User deactivateUser(UUID id) throws UpdateUserException, UserNotFoundException;
 }

@@ -21,6 +21,7 @@ import pl.lodz.p.it.tks.ui.command.UserCommandUseCase;
 import pl.lodz.p.it.tks.ui.query.UserQueryUseCase;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequestScoped
 @Path("/users")
@@ -105,7 +106,7 @@ public class UserController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-    public Response getUserById(@PathParam("id") Long id) throws UserNotFoundException {
+    public Response getUserById(@PathParam("id") UUID id) throws UserNotFoundException {
         User user = userQueryUseCase.getUserById(id);
         return Response.status(Response.Status.OK).entity(user).build();
     }
@@ -166,7 +167,7 @@ public class UserController {
     @Path("/{id}/rents")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-    public Response getAllRentsOfClient(@PathParam("id") Long clientId,
+    public Response getAllRentsOfClient(@PathParam("id") UUID clientId,
                                         @QueryParam("past") Boolean past) throws UserNotFoundException {
         List<Rent> rents = userQueryUseCase.getAllRentsOfClient(clientId, past);
         return Response.status(Response.Status.OK).entity(rents).build();
@@ -186,7 +187,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-    public Response updateClient(@PathParam("id") Long id, @Valid UpdateClientDTO dto)
+    public Response updateClient(@PathParam("id") UUID id, @Valid UpdateClientDTO dto)
         throws UserNotFoundException, UpdateUserException {
         Address address = new Address(dto.getCity(), dto.getStreet(), dto.getNumber());
 
@@ -204,7 +205,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-    public Response updateEmployee(@PathParam("id") Long id, @Valid UpdateEmployeeDTO dto)
+    public Response updateEmployee(@PathParam("id") UUID id, @Valid UpdateEmployeeDTO dto)
         throws UserNotFoundException, UpdateUserException {
         User user = new Employee(dto.getFirstName(),
                                  dto.getLastName());
@@ -225,7 +226,7 @@ public class UserController {
     @Path("/{id}/activate")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-    public Response activateUser(@PathParam("id") Long id) throws UserNotFoundException, UpdateUserException {
+    public Response activateUser(@PathParam("id") UUID id) throws UserNotFoundException, UpdateUserException {
         User user = userCommandUseCase.activateUser(id);
         return Response.status(Response.Status.OK).entity(user).build();
     }
@@ -243,7 +244,7 @@ public class UserController {
     @Path("/{id}/deactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-    public Response deactivateUser(@PathParam("id") Long id) throws UserNotFoundException, UpdateUserException {
+    public Response deactivateUser(@PathParam("id") UUID id) throws UserNotFoundException, UpdateUserException {
         User user = userCommandUseCase.deactivateUser(id);
         return Response.status(Response.Status.OK).entity(user).build();
     }

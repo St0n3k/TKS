@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.model.Address;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 public class Client extends User {
@@ -41,7 +43,7 @@ public class Client extends User {
         this.address = address;
     }
 
-    public Client(Long id,
+    public Client(UUID id,
                   String username,
                   boolean active,
                   String password,
@@ -56,7 +58,7 @@ public class Client extends User {
         this.address = address;
     }
 
-    public Client(Long id,
+    public Client(UUID id,
                   long version,
                   String username,
                   boolean active,

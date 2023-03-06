@@ -18,6 +18,7 @@ import pl.lodz.p.it.tks.ui.query.RoomQueryUseCase;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @AllArgsConstructor
@@ -68,7 +69,7 @@ public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
 
 
     @Override
-    public Room getRoomById(Long id) throws RoomNotFoundException {
+    public Room getRoomById(UUID id) throws RoomNotFoundException {
         return roomQueryPort.getById(id)
                 .orElseThrow(RoomNotFoundException::new);
     }
@@ -89,7 +90,7 @@ public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
      * @return list of rents that meet given criteria
      */
     @Override
-    public List<Rent> getAllRentsOfRoom(Long roomId, Boolean past) throws RoomNotFoundException {
+    public List<Rent> getAllRentsOfRoom(UUID roomId, Boolean past) throws RoomNotFoundException {
         if (!roomQueryPort.existsById(roomId)) {
             throw new RoomNotFoundException();
         }
@@ -111,7 +112,7 @@ public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
      * @param room object containing new properties of existing room
      */
     @Override
-    public Room updateRoom(Long id, Room room) throws RoomNotFoundException, UpdateRoomException {
+    public Room updateRoom(UUID id, Room room) throws RoomNotFoundException, UpdateRoomException {
         Room existingRoom = roomQueryPort.getById(id)
                 .orElseThrow(RoomNotFoundException::new);
 
@@ -137,7 +138,7 @@ public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
      * 409(CONFLICT) if there are current or future rents for room with given id
      */
     @Override
-    public void removeRoom(Long id) throws RoomHasActiveReservationsException {
+    public void removeRoom(UUID id) throws RoomHasActiveReservationsException {
         Optional<Room> optionalRoom = roomQueryPort.getById(id);
         if (optionalRoom.isEmpty()) {
             return;

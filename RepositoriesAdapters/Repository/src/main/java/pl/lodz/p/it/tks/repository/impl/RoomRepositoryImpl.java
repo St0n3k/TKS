@@ -9,6 +9,7 @@ import pl.lodz.p.it.tks.repository.RoomRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @ApplicationScoped
 @Transactional
@@ -36,7 +37,7 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    public Optional<RoomEntity> getById(Long id) {
+    public Optional<RoomEntity> getById(UUID id) {
         return Optional.ofNullable(em.find(RoomEntity.class, id));
     }
 
@@ -66,7 +67,7 @@ public class RoomRepositoryImpl implements RoomRepository {
      * @return true if a room with given id exists
      */
     @Override
-    public boolean existsById(Long id) {
+    public boolean existsById(UUID id) {
         return em.createNamedQuery("Room.existsById", Boolean.class)
                  .setParameter("id", id)
                  .getSingleResult();

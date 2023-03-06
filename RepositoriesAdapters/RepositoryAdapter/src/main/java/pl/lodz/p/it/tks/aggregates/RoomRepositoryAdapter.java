@@ -10,6 +10,7 @@ import pl.lodz.p.it.tks.repository.RoomRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -43,7 +44,7 @@ public class RoomRepositoryAdapter implements RoomQueryPort, RoomCommandPort {
     }
 
     @Override
-    public Optional<Room> getById(Long id) {
+    public Optional<Room> getById(UUID id) {
         return roomRepository.getById(id).map(RoomEntity::mapToRoom);
     }
 
@@ -53,7 +54,7 @@ public class RoomRepositoryAdapter implements RoomQueryPort, RoomCommandPort {
     }
 
     @Override
-    public boolean existsById(Long id) {
+    public boolean existsById(UUID id) {
         return roomRepository.existsById(id);
     }
 }

@@ -10,6 +10,7 @@ import pl.lodz.p.it.tks.repository.RentRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -18,7 +19,7 @@ public class RentRepositoryAdapter implements RentQueryPort, RentCommandPort {
     private RentRepository rentRepository;
 
     @Override
-    public Optional<Rent> getById(Long id) {
+    public Optional<Rent> getById(UUID id) {
         return rentRepository.getById(id).map(RentEntity::mapToRent);
     }
 
@@ -31,7 +32,7 @@ public class RentRepositoryAdapter implements RentQueryPort, RentCommandPort {
     }
 
     @Override
-    public List<Rent> getByRoomId(Long roomId) {
+    public List<Rent> getByRoomId(UUID roomId) {
         return rentRepository.getByRoomId(roomId).stream().map(RentEntity::mapToRent).collect(Collectors.toList());
     }
 
@@ -41,17 +42,17 @@ public class RentRepositoryAdapter implements RentQueryPort, RentCommandPort {
     }
 
     @Override
-    public List<Rent> getByClientId(Long clientId) {
+    public List<Rent> getByClientId(UUID clientId) {
         return rentRepository.getByClientId(clientId).stream().map(RentEntity::mapToRent).collect(Collectors.toList());
     }
 
     @Override
-    public List<Rent> findByRoomAndStatus(Long roomId, boolean past) {
+    public List<Rent> findByRoomAndStatus(UUID roomId, boolean past) {
         return rentRepository.findByRoomAndStatus(roomId, past).stream().map(RentEntity::mapToRent).collect(Collectors.toList());
     }
 
     @Override
-    public List<Rent> findByClientAndStatus(Long clientId, boolean past) {
+    public List<Rent> findByClientAndStatus(UUID clientId, boolean past) {
         return rentRepository.findByClientAndStatus(clientId, past).stream().map(RentEntity::mapToRent).collect(Collectors.toList());
     }
 
@@ -71,7 +72,7 @@ public class RentRepositoryAdapter implements RentQueryPort, RentCommandPort {
     }
 
     @Override
-    public boolean removeById(Long rentId) {
+    public boolean removeById(UUID rentId) {
         return rentRepository.removeById(rentId);
     }
 }

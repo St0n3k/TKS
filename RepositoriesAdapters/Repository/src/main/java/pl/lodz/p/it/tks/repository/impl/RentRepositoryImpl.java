@@ -13,6 +13,7 @@ import pl.lodz.p.it.tks.repository.RentRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @ApplicationScoped
 @Transactional
@@ -58,7 +59,7 @@ public class RentRepositoryImpl implements RentRepository {
     }
 
     @Override
-    public Optional<RentEntity> getById(Long id) {
+    public Optional<RentEntity> getById(UUID id) {
         return Optional.ofNullable(em.find(RentEntity.class, id));
     }
 
@@ -68,7 +69,7 @@ public class RentRepositoryImpl implements RentRepository {
     }
 
     @Override
-    public List<RentEntity> getByRoomId(Long roomId) {
+    public List<RentEntity> getByRoomId(UUID roomId) {
         return em.createNamedQuery("Rent.getByRoomId", RentEntity.class)
                  .setParameter("roomId", roomId)
                  .getResultList();
@@ -82,7 +83,7 @@ public class RentRepositoryImpl implements RentRepository {
     }
 
     @Override
-    public List<RentEntity> getByClientId(Long clientId) {
+    public List<RentEntity> getByClientId(UUID clientId) {
         return em.createNamedQuery("Rent.getByClientId", RentEntity.class)
                  .setParameter("id", clientId)
                  .getResultList();
@@ -118,7 +119,7 @@ public class RentRepositoryImpl implements RentRepository {
      * @return true if rent existed and was removed, false otherwise.
      */
     @Override
-    public boolean removeById(Long rentId) {
+    public boolean removeById(UUID rentId) {
         Optional<RentEntity> rent = getById(rentId);
 
         if (rent.isEmpty()) {
@@ -135,7 +136,7 @@ public class RentRepositoryImpl implements RentRepository {
      * @return Past rents if past is false, active (future) rents otherwise.
      */
     @Override
-    public List<RentEntity> findByRoomAndStatus(Long roomId, boolean past) {
+    public List<RentEntity> findByRoomAndStatus(UUID roomId, boolean past) {
         TypedQuery<RentEntity> query;
         if (past) {
             query = em.createNamedQuery("Rent.getPastRentsByRoom", RentEntity.class);
@@ -153,7 +154,7 @@ public class RentRepositoryImpl implements RentRepository {
      * @return Past rents if past is false, active (future) rents otherwise.
      */
     @Override
-    public List<RentEntity> findByClientAndStatus(Long clientId, boolean past) {
+    public List<RentEntity> findByClientAndStatus(UUID clientId, boolean past) {
         TypedQuery<RentEntity> query;
         if (past) {
             query = em.createNamedQuery("Rent.getPastRentsByClient", RentEntity.class);

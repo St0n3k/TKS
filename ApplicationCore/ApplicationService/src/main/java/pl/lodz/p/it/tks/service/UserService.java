@@ -21,6 +21,7 @@ import pl.lodz.p.it.tks.ui.query.UserQueryUseCase;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -72,7 +73,7 @@ public class UserService implements UserQueryUseCase, UserCommandUseCase {
     }
 
     @Override
-    public User getUserById(Long id) throws UserNotFoundException {
+    public User getUserById(UUID id) throws UserNotFoundException {
         Optional<User> optionalUser = userQueryPort.getById(id);
 
         if (optionalUser.isEmpty()) {
@@ -131,7 +132,7 @@ public class UserService implements UserQueryUseCase, UserCommandUseCase {
                             .collect(Collectors.toList());
     }
 
-    public List<Rent> getAllRentsOfClient(Long clientId, Boolean past) throws UserNotFoundException {
+    public List<Rent> getAllRentsOfClient(UUID clientId, Boolean past) throws UserNotFoundException {
         if (userQueryPort.getById(clientId).isEmpty()) {
             throw new UserNotFoundException();
         }
@@ -145,7 +146,7 @@ public class UserService implements UserQueryUseCase, UserCommandUseCase {
     }
 
     @Override
-    public User updateUser(Long id, User newUser) throws UserNotFoundException, UpdateUserException {
+    public User updateUser(UUID id, User newUser) throws UserNotFoundException, UpdateUserException {
         User user = userQueryPort.getById(id)
                                  .orElseThrow(UserNotFoundException::new);
 
@@ -201,7 +202,7 @@ public class UserService implements UserQueryUseCase, UserCommandUseCase {
     }
 
     @Override
-    public User activateUser(Long id) throws UserNotFoundException, UpdateUserException {
+    public User activateUser(UUID id) throws UserNotFoundException, UpdateUserException {
         Optional<User> optionalUser = userQueryPort.getById(id);
 
         if (optionalUser.isEmpty()) {
@@ -219,7 +220,7 @@ public class UserService implements UserQueryUseCase, UserCommandUseCase {
     }
 
     @Override
-    public User deactivateUser(Long id) throws UpdateUserException, UserNotFoundException {
+    public User deactivateUser(UUID id) throws UpdateUserException, UserNotFoundException {
         Optional<User> optionalUser = userQueryPort.getById(id);
 
         if (optionalUser.isEmpty()) {

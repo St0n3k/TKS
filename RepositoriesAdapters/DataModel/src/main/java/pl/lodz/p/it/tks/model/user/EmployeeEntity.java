@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @DiscriminatorValue("Employee")
 @Data
@@ -22,7 +24,7 @@ public class EmployeeEntity extends UserEntity {
     private String lastName;
 
     public EmployeeEntity(long version,
-                          Long id,
+                          UUID id,
                           String username,
                           boolean active,
                           String password,
@@ -33,7 +35,7 @@ public class EmployeeEntity extends UserEntity {
         this.lastName = lastName;
     }
 
-    public EmployeeEntity(Long id,
+    public EmployeeEntity(UUID id,
                           String username,
                           boolean active,
                           String password,

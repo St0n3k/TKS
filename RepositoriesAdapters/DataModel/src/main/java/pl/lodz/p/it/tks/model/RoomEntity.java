@@ -11,6 +11,8 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "room")
 @NamedQueries({
@@ -24,11 +26,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class RoomEntity extends AbstractEntity {
-
-    @Id
-    @GeneratedValue(generator = "roomId", strategy = GenerationType.IDENTITY)
-    @Column(name = "room_id")
-    private Long id;
 
     @Column(name = "room_number", unique = true)
     private int roomNumber;
@@ -46,11 +43,10 @@ public class RoomEntity extends AbstractEntity {
     }
 
     public RoomEntity(Room room) {
-        this.id = room.getId();
+        super(room.getId(), room.getVersion());
         this.roomNumber = room.getRoomNumber();
         this.price = room.getPrice();
         this.size = room.getSize();
-        this.setVersion(room.getVersion());
     }
 
     public Room mapToRoom() {

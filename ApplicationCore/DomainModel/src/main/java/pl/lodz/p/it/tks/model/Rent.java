@@ -6,6 +6,7 @@ import pl.lodz.p.it.tks.exception.shared.ConstructorArgumentException;
 import pl.lodz.p.it.tks.model.user.Client;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Data
@@ -35,7 +36,7 @@ public class Rent extends AbstractModel{
         this.room = room;
     }
 
-    public Rent(Long id, LocalDateTime beginTime, LocalDateTime endTime, boolean board, double finalCost, Client client,
+    public Rent(UUID id, LocalDateTime beginTime, LocalDateTime endTime, boolean board, double finalCost, Client client,
                 Room room, long version) {
         super(id, version);
         validateDates(beginTime, endTime);

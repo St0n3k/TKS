@@ -11,6 +11,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import pl.lodz.p.it.tks.model.user.ClientEntity;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "rent")
@@ -47,11 +48,6 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class RentEntity extends AbstractEntity {
-
-    @Id
-    @GeneratedValue(generator = "rentId", strategy = GenerationType.IDENTITY)
-    @Column(name = "rent_id")
-    private Long id;
 
     @NotNull
     @Column(name = "begin_time")
@@ -94,14 +90,13 @@ public class RentEntity extends AbstractEntity {
     }
 
     public RentEntity(Rent rent) {
-        this.id = rent.getId();
+        super(rent.getId(), rent.getVersion());
         this.beginTime = rent.getBeginTime();
         this.endTime = rent.getEndTime();
         this.board = rent.isBoard();
         this.finalCost = rent.getFinalCost();
         this.client = new ClientEntity(rent.getClient());
         this.room = new RoomEntity(rent.getRoom());
-        this.setVersion(rent.getVersion());
     }
 
     public Rent mapToRent(){

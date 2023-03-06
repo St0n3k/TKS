@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -24,10 +25,10 @@ public class CreateRentDTO {
     private boolean board;
 
     @NotNull
-    private Long clientId;
+    private UUID clientId;
 
     @NotNull
-    private Long roomId;
+    private UUID roomId;
 
     @AssertTrue
     private boolean isEndDateAfterBeginDate() {

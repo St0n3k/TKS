@@ -4,16 +4,18 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @DiscriminatorValue("Admin")
 @NoArgsConstructor
 public class AdminEntity extends UserEntity {
 
-    public AdminEntity(long version, Long id, String username, boolean active, String password) {
+    public AdminEntity(long version, UUID id, String username, boolean active, String password) {
         super(version, id, username, active, "ADMIN", password);
     }
 
-    public AdminEntity(Long id, String username, boolean active, String password) {
+    public AdminEntity(UUID id, String username, boolean active, String password) {
         super(id, username, active, "ADMIN", password);
     }
 

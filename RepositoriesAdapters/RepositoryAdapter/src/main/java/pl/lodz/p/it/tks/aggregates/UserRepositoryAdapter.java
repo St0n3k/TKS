@@ -9,6 +9,7 @@ import pl.lodz.p.it.tks.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @ApplicationScoped
@@ -19,7 +20,7 @@ public class UserRepositoryAdapter implements UserCommandPort, UserQueryPort {
 
     //region Query
     @Override
-    public Optional<User> getById(Long id) {
+    public Optional<User> getById(UUID id) {
         return userRepository.getById(id)
                              .map(UserEntity::mapToUser);
     }

@@ -16,6 +16,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.model.AbstractEntity;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -42,11 +44,6 @@ import pl.lodz.p.it.tks.model.AbstractEntity;
 @NoArgsConstructor
 public abstract class UserEntity extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(generator = "userId", strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long id;
-
     @NotNull
     @Column(name = "username", unique = true)
     private String username;
@@ -63,17 +60,16 @@ public abstract class UserEntity extends AbstractEntity {
     @Column(name = "password")
     private String password;
 
-    public UserEntity(long version, Long id, String username, boolean active, String role, String password) {
-        super(version);
-        this.id = id;
+    public UserEntity(long version, UUID id, String username, boolean active, String role, String password) {
+        super(id, version);
         this.username = username;
         this.active = active;
         this.role = role;
         this.password = password;
     }
 
-    public UserEntity(Long id, String username, boolean active, String role, String password) {
-        this.id = id;
+    public UserEntity(UUID id, String username, boolean active, String role, String password) {
+        super(id);
         this.username = username;
         this.active = active;
         this.role = role;

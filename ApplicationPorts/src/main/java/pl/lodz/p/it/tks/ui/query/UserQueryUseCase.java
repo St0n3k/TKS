@@ -8,9 +8,10 @@ import pl.lodz.p.it.tks.model.user.Employee;
 import pl.lodz.p.it.tks.model.user.User;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface UserQueryUseCase {
-    User getUserById(Long id) throws UserNotFoundException;
+    User getUserById(UUID id) throws UserNotFoundException;
 
     List<User> getAllUsers(String username);
 
@@ -22,5 +23,5 @@ public interface UserQueryUseCase {
 
     List<Admin> getAdmins();
 
-    List<Rent> getAllRentsOfClient(Long clientId, Boolean past) throws UserNotFoundException;
+    List<Rent> getAllRentsOfClient(UUID clientId, Boolean past) throws UserNotFoundException;
 }

@@ -29,6 +29,7 @@ import pl.lodz.p.it.tks.ui.query.RoomQueryUseCase;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @RequestScoped
 @Path("/rooms")
@@ -62,7 +63,7 @@ public class RoomController {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRoomById(@PathParam("id") Long id) throws RoomNotFoundException {
+    public Response getRoomById(@PathParam("id") UUID id) throws RoomNotFoundException {
         Room room = roomQueryUseCase.getRoomById(id);
         return Response.status(Response.Status.OK).entity(room).build();
     }
@@ -72,11 +73,11 @@ public class RoomController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"CLIENT"})
-    public Response rentRoomForSelf(@PathParam("id") Long roomID, @Valid RentRoomForSelfDTO dto)
+    public Response rentRoomForSelf(@PathParam("id") UUID roomID, @Valid RentRoomForSelfDTO dto)
             throws UserNotFoundException, RoomNotFoundException, InactiveUserException, CreateRentException {
         Principal principal = securityContext.getUserPrincipal();
         if (principal instanceof User user) {
-            Long clientID = user.getId();
+            UUID clientID = user.getId();
             Rent rent = new Rent(dto.getBeginTime(), dto.getEndTime(), dto.isBoard(), 0, null, null);
 
             rent = rentCommandUseCase.rentRoom(rent, clientID, roomID);
@@ -122,7 +123,7 @@ public class RoomController {
     @GET
     @Path("/{roomId}/rents")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllRentsOfRoom(@PathParam("roomId") Long roomId,
+    public Response getAllRentsOfRoom(@PathParam("roomId") UUID roomId,
                                       @QueryParam("past") Boolean past) throws RoomNotFoundException {
         List<Rent> rents = roomQueryUseCase.getAllRentsOfRoom(roomId, past);
         return Response.status(Response.Status.OK).entity(rents).build();
@@ -140,7 +141,7 @@ public class RoomController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN", "EMPLOYEE"})
-    public Response updateRoom(@PathParam("id") Long id,
+    public Response updateRoom(@PathParam("id") UUID id,
                                @Valid UpdateRoomDTO dto) throws RoomNotFoundException, UpdateRoomException {
         Room room = roomCommandUseCase.updateRoom(id, new Room(dto.getRoomNumber(), dto.getPrice(), dto.getSize()));
         return Response.status(Response.Status.OK).entity(room).build();
@@ -159,7 +160,7 @@ public class RoomController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN", "EMPLOYEE"})
-    public Response removeRoom(@PathParam("id") Long id) throws RoomHasActiveReservationsException {
+    public Response removeRoom(@PathParam("id") UUID id) throws RoomHasActiveReservationsException {
         roomCommandUseCase.removeRoom(id);
         return Response.status(Response.Status.NO_CONTENT).build();
     }

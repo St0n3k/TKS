@@ -26,6 +26,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @AllArgsConstructor
@@ -53,7 +54,7 @@ public class RentService implements RentQueryUseCase, RentCommandUseCase {
      * @throws InactiveUserException if user is inactive
      */
     @Override
-    public Rent rentRoom(Rent tempRent, Long clientId, Long roomId) throws
+    public Rent rentRoom(Rent tempRent, UUID clientId, UUID roomId) throws
             UserNotFoundException,
             RoomNotFoundException,
             InactiveUserException,
@@ -97,7 +98,7 @@ public class RentService implements RentQueryUseCase, RentCommandUseCase {
      * @throws RentNotFoundException if rent with given id was not found
      */
     @Override
-    public Rent getRentById(Long id) throws RentNotFoundException {
+    public Rent getRentById(UUID id) throws RentNotFoundException {
         Optional<Rent> optionalRent = rentQueryPort.getById(id);
 
         if (optionalRent.isEmpty()) {
@@ -126,7 +127,7 @@ public class RentService implements RentQueryUseCase, RentCommandUseCase {
      * @throws RentNotFoundException if rent with given id does not exist
      */
     @Override
-    public Rent updateRentBoard(Long id, Boolean board) throws InvalidInputException, RentNotFoundException {
+    public Rent updateRentBoard(UUID id, Boolean board) throws InvalidInputException, RentNotFoundException {
         if (board == null) {
             throw new InvalidInputException();
         }
@@ -161,7 +162,7 @@ public class RentService implements RentQueryUseCase, RentCommandUseCase {
      * @return void
      */
     @Override
-    public void removeRent(Long rentId) throws RemoveRentException {
+    public void removeRent(UUID rentId) throws RemoveRentException {
         Optional<Rent> optionalRent = rentQueryPort.getById(rentId);
         if (optionalRent.isEmpty()) {
             return;

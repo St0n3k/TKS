@@ -9,15 +9,17 @@ import pl.lodz.p.it.tks.exception.user.InactiveUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.model.Rent;
 
+import java.util.UUID;
+
 
 public interface RentCommandUseCase {
-    Rent rentRoom(Rent tempRent, Long clientId, Long roomId) throws
+    Rent rentRoom(Rent tempRent, UUID clientId, UUID roomId) throws
             UserNotFoundException,
             RoomNotFoundException,
             InactiveUserException,
             CreateRentException;
 
-    Rent updateRentBoard(Long id, Boolean board) throws InvalidInputException, RentNotFoundException;
+    Rent updateRentBoard(UUID id, Boolean board) throws InvalidInputException, RentNotFoundException;
 
-    void removeRent(Long rentId) throws RemoveRentException;
+    void removeRent(UUID rentId) throws RemoveRentException;
 }
