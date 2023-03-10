@@ -4,6 +4,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import pl.lodz.p.it.tks.infrastructure.command.RoomCommandPort;
 import pl.lodz.p.it.tks.infrastructure.query.RoomQueryPort;
+import pl.lodz.p.it.tks.model.Apartment;
+import pl.lodz.p.it.tks.model.ApartmentEntity;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.model.RoomEntity;
 import pl.lodz.p.it.tks.repository.RoomRepository;
@@ -32,7 +34,22 @@ public class RoomRepositoryAdapter implements RoomQueryPort, RoomCommandPort {
 
     @Override
     public void removeRoom(Room room) {
-        roomRepository.remove(new RoomEntity(room));
+        if (room instanceof Apartment apartment) {
+            roomRepository.remove(new ApartmentEntity(apartment));
+        } else {
+            roomRepository.remove(new RoomEntity(room));
+        }
+    }
+
+    @Override
+    public Apartment addApartment(Apartment apartment) {
+        return (Apartment) roomRepository.add(new ApartmentEntity(apartment)).mapToRoom();
+    }
+
+    @Override
+    public Optional<Apartment> updateApartment(Apartment apartment) {
+        return roomRepository.update(new ApartmentEntity(apartment))
+                .map(roomEntity -> (Apartment) roomEntity.mapToRoom());
     }
 
     @Override

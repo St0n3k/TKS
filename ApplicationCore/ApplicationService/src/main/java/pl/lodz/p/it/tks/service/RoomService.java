@@ -8,9 +8,11 @@ import pl.lodz.p.it.tks.exception.room.CreateRoomException;
 import pl.lodz.p.it.tks.exception.room.RoomHasActiveReservationsException;
 import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
 import pl.lodz.p.it.tks.exception.room.UpdateRoomException;
+import pl.lodz.p.it.tks.exception.shared.InvalidInputException;
 import pl.lodz.p.it.tks.infrastructure.command.RoomCommandPort;
 import pl.lodz.p.it.tks.infrastructure.query.RentQueryPort;
 import pl.lodz.p.it.tks.infrastructure.query.RoomQueryPort;
+import pl.lodz.p.it.tks.model.Apartment;
 import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.ui.command.RoomCommandUseCase;
@@ -121,6 +123,10 @@ public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
         existingRoom.setRoomNumber(room.getRoomNumber() == null ? existingRoom.getRoomNumber() : room.getRoomNumber());
 
         try {
+            if (existingRoom instanceof Apartment apartment) {
+                return roomCommandPort.updateApartment(apartment)
+                        .orElseThrow(UpdateRoomException::new);
+            }
             return roomCommandPort.updateRoom(existingRoom)
                     .orElseThrow(UpdateRoomException::new);
         } catch (Exception e) {
@@ -150,6 +156,37 @@ public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
             roomCommandPort.removeRoom(room);
         } else {
             throw new RoomHasActiveReservationsException();
+        }
+    }
+
+    @Override
+    public Apartment addApartment(Apartment apartment) throws CreateRoomException {
+        try {
+            return roomCommandPort.addApartment(apartment);
+        } catch (Exception e) {
+            throw new CreateRoomException();
+        }
+    }
+
+    @Override
+    public Apartment updateApartment(UUID id, Apartment apartment) throws RoomNotFoundException, UpdateRoomException, InvalidInputException {
+        Room existingRoom = roomQueryPort.getById(id)
+                .orElseThrow(RoomNotFoundException::new);
+
+        if (!(existingRoom instanceof Apartment existingApartment)) {
+            throw new InvalidInputException();
+        }
+
+        existingApartment.setPrice(apartment.getPrice() == null ? existingApartment.getPrice() : apartment.getPrice());
+        existingApartment.setSize(apartment.getSize() == null ? existingApartment.getSize() : apartment.getSize());
+        existingApartment.setRoomNumber(apartment.getRoomNumber() == null ? existingApartment.getRoomNumber() : apartment.getRoomNumber());
+        existingApartment.setBalconyArea(apartment.getBalconyArea() == null ? existingApartment.getBalconyArea() : apartment.getBalconyArea());
+
+        try {
+            return roomCommandPort.updateApartment(existingApartment)
+                    .orElseThrow(UpdateRoomException::new);
+        } catch (Exception e) {
+            throw new UpdateRoomException();
         }
     }
 }

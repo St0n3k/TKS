@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateRoomDTO {
+public class UpdateApartmentDTO {
 
     @Min(1)
     private Integer roomNumber;

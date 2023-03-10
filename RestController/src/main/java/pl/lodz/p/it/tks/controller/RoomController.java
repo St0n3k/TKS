@@ -4,21 +4,33 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import pl.lodz.p.it.tks.dto.CreateApartmentDTO;
 import pl.lodz.p.it.tks.dto.CreateRoomDTO;
 import pl.lodz.p.it.tks.dto.RentRoomForSelfDTO;
+import pl.lodz.p.it.tks.dto.UpdateApartmentDTO;
 import pl.lodz.p.it.tks.dto.UpdateRoomDTO;
 import pl.lodz.p.it.tks.exception.rent.CreateRentException;
 import pl.lodz.p.it.tks.exception.room.CreateRoomException;
 import pl.lodz.p.it.tks.exception.room.RoomHasActiveReservationsException;
 import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
 import pl.lodz.p.it.tks.exception.room.UpdateRoomException;
+import pl.lodz.p.it.tks.exception.shared.InvalidInputException;
 import pl.lodz.p.it.tks.exception.user.InactiveUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
+import pl.lodz.p.it.tks.model.Apartment;
 import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.model.user.User;
@@ -58,6 +70,17 @@ public class RoomController {
         Room room = new Room(dto.getRoomNumber(), dto.getPrice(), dto.getSize());
         room = roomCommandUseCase.addRoom(room);
         return Response.status(Response.Status.CREATED).entity(room).build();
+    }
+
+    @POST
+    @Path("/apartments")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
+    public Response addApartment(@Valid CreateApartmentDTO dto) throws CreateRoomException {
+        Apartment apartment = new Apartment(dto.getRoomNumber(), dto.getPrice(), dto.getSize(), dto.getBalconyArea());
+        apartment = roomCommandUseCase.addApartment(apartment);
+        return Response.status(Response.Status.CREATED).entity(apartment).build();
     }
 
     @GET
@@ -145,6 +168,17 @@ public class RoomController {
                                @Valid UpdateRoomDTO dto) throws RoomNotFoundException, UpdateRoomException {
         Room room = roomCommandUseCase.updateRoom(id, new Room(dto.getRoomNumber(), dto.getPrice(), dto.getSize()));
         return Response.status(Response.Status.OK).entity(room).build();
+    }
+
+    @PUT
+    @Path("/apartments/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
+    public Response updateApartment(@PathParam("id") UUID id,
+                               @Valid UpdateApartmentDTO dto) throws RoomNotFoundException, UpdateRoomException, InvalidInputException {
+        Apartment apartment = roomCommandUseCase.updateApartment(id, new Apartment(dto.getRoomNumber(), dto.getPrice(), dto.getSize(), dto.getBalconyArea()));
+        return Response.status(Response.Status.OK).entity(apartment).build();
     }
 
 
