@@ -46,6 +46,13 @@ public class EmployeeEntity extends UserEntity {
         this.lastName = lastName;
     }
 
+    public EmployeeEntity(Employee employee) {
+        super(employee.getVersion(), employee.getId(), employee.getUsername(), employee.isActive(), employee.getRole(), employee.getPassword());
+        this.firstName = employee.getFirstName();
+        this.lastName = employee.getLastName();
+
+    }
+
     @Override
     public User mapToUser() {
         return new Employee(this.getId(),

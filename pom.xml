@@ -16,6 +16,7 @@
         <module>ApplicationPorts</module>
         <module>RestController</module>
         <module>Security</module>
+        <module>Tests</module>
     </modules>
 
     <dependencyManagement>
@@ -150,6 +151,12 @@
                 <version>4.1</version>
                 <type>pom</type>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>5.9.2</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

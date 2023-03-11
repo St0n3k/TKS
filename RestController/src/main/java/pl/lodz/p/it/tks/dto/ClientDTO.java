@@ -23,7 +23,7 @@ public class ClientDTO extends UserDTO {
     public ClientDTO(Client client) {
         super(client);
         firstName = client.getFirstName();
-        lastName = client.getFirstName();
+        lastName = client.getLastName();
         personalId = client.getPersonalId();
         city = client.getAddress().getCity();
         street = client.getAddress().getStreet();
