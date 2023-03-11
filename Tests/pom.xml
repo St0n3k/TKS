@@ -26,7 +26,8 @@
         <dependency>
             <groupId>pl.lodz.p.it.tks</groupId>
             <artifactId>RestController</artifactId>
-            <version>1.0</version>
+            <classifier>classes</classifier>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
