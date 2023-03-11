@@ -4,10 +4,18 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.tks.dto.CreateRentDTO;
+import pl.lodz.p.it.tks.dto.RentDTO;
 import pl.lodz.p.it.tks.dto.UpdateRentBoardDTO;
 import pl.lodz.p.it.tks.exception.rent.CreateRentException;
 import pl.lodz.p.it.tks.exception.rent.RemoveRentException;
@@ -22,6 +30,7 @@ import pl.lodz.p.it.tks.ui.query.RentQueryUseCase;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RequestScoped
 @Path("/rents")
@@ -59,7 +68,7 @@ public class RentController {
         Rent rent = rentCommandUseCase.rentRoom(fromDTO,
                 createRentDTO.getClientId(),
                 createRentDTO.getRoomId());
-        return Response.status(Response.Status.CREATED).entity(rent).build();
+        return Response.status(Response.Status.CREATED).entity(new RentDTO(rent)).build();
     }
 
     @GET
@@ -67,14 +76,17 @@ public class RentController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRentById(@PathParam("id") UUID id) throws RentNotFoundException {
         Rent rent = rentQueryUseCase.getRentById(id);
-        return Response.status(Response.Status.OK).entity(rent).build();
+        return Response.status(Response.Status.OK).entity(new RentDTO(rent)).build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"EMPLOYEE", "ADMIN"})
     public Response getAllRents() {
-        List<Rent> rents = rentQueryUseCase.getAllRents();
+        List<RentDTO> rents = rentQueryUseCase.getAllRents()
+                .stream()
+                .map(RentDTO::new)
+                .collect(Collectors.toList());
         return Response.status(Response.Status.OK).entity(rents).build();
     }
 
@@ -93,7 +105,7 @@ public class RentController {
     public Response updateRentBoard(@PathParam("id") UUID id, @Valid UpdateRentBoardDTO dto)
         throws InvalidInputException, RentNotFoundException {
         Rent rent = rentCommandUseCase.updateRentBoard(id, dto.getBoard());
-        return Response.status(Response.Status.OK).entity(rent).build();
+        return Response.status(Response.Status.OK).entity(new RentDTO(rent)).build();
     }
 
     /**

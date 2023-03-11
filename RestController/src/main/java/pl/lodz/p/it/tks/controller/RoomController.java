@@ -17,11 +17,15 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import pl.lodz.p.it.tks.dto.ApartmentDTO;
 import pl.lodz.p.it.tks.dto.CreateApartmentDTO;
 import pl.lodz.p.it.tks.dto.CreateRoomDTO;
+import pl.lodz.p.it.tks.dto.RentDTO;
 import pl.lodz.p.it.tks.dto.RentRoomForSelfDTO;
+import pl.lodz.p.it.tks.dto.RoomDTO;
 import pl.lodz.p.it.tks.dto.UpdateApartmentDTO;
 import pl.lodz.p.it.tks.dto.UpdateRoomDTO;
+import pl.lodz.p.it.tks.dtoMapper.RoomMapper;
 import pl.lodz.p.it.tks.exception.rent.CreateRentException;
 import pl.lodz.p.it.tks.exception.room.CreateRoomException;
 import pl.lodz.p.it.tks.exception.room.RoomHasActiveReservationsException;
@@ -36,12 +40,12 @@ import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.model.user.User;
 import pl.lodz.p.it.tks.ui.command.RentCommandUseCase;
 import pl.lodz.p.it.tks.ui.command.RoomCommandUseCase;
-import pl.lodz.p.it.tks.ui.query.RentQueryUseCase;
 import pl.lodz.p.it.tks.ui.query.RoomQueryUseCase;
 
 import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RequestScoped
 @Path("/rooms")
@@ -57,10 +61,10 @@ public class RoomController {
     private RoomQueryUseCase roomQueryUseCase;
 
     @Inject
-    private RentQueryUseCase rentQueryUseCase;
+    private RentCommandUseCase rentCommandUseCase;
 
     @Inject
-    private RentCommandUseCase rentCommandUseCase;
+    private RoomMapper roomMapper;
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -69,7 +73,7 @@ public class RoomController {
     public Response addRoom(@Valid CreateRoomDTO dto) throws CreateRoomException {
         Room room = new Room(dto.getRoomNumber(), dto.getPrice(), dto.getSize());
         room = roomCommandUseCase.addRoom(room);
-        return Response.status(Response.Status.CREATED).entity(room).build();
+        return Response.status(Response.Status.CREATED).entity(new RoomDTO(room)).build();
     }
 
     @POST
@@ -80,7 +84,7 @@ public class RoomController {
     public Response addApartment(@Valid CreateApartmentDTO dto) throws CreateRoomException {
         Apartment apartment = new Apartment(dto.getRoomNumber(), dto.getPrice(), dto.getSize(), dto.getBalconyArea());
         apartment = roomCommandUseCase.addApartment(apartment);
-        return Response.status(Response.Status.CREATED).entity(apartment).build();
+        return Response.status(Response.Status.CREATED).entity(new ApartmentDTO(apartment)).build();
     }
 
     @GET
@@ -88,7 +92,7 @@ public class RoomController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRoomById(@PathParam("id") UUID id) throws RoomNotFoundException {
         Room room = roomQueryUseCase.getRoomById(id);
-        return Response.status(Response.Status.OK).entity(room).build();
+        return Response.status(Response.Status.OK).entity(roomMapper.mapToDto(room)).build();
     }
 
     @POST
@@ -104,7 +108,7 @@ public class RoomController {
             Rent rent = new Rent(dto.getBeginTime(), dto.getEndTime(), dto.isBoard(), 0, null, null);
 
             rent = rentCommandUseCase.rentRoom(rent, clientID, roomID);
-            return Response.status(Response.Status.CREATED).entity(rent).build();
+            return Response.status(Response.Status.CREATED).entity(new RentDTO(rent)).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
@@ -122,7 +126,10 @@ public class RoomController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllRooms() {
-        List<Room> rooms = roomQueryUseCase.getAllRooms();
+        List<RoomDTO> rooms = roomQueryUseCase.getAllRooms()
+                .stream()
+                .map(room -> roomMapper.mapToDto(room))
+                .collect(Collectors.toList());
         return Response.status(Response.Status.OK).entity(rooms).build();
     }
 
@@ -131,7 +138,7 @@ public class RoomController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRoomByNumber(@PathParam("number") Integer number) throws RoomNotFoundException {
         Room room = roomQueryUseCase.getRoomByNumber(number);
-        return Response.status(Response.Status.OK).entity(room).build();
+        return Response.status(Response.Status.OK).entity(roomMapper.mapToDto(room)).build();
     }
 
 
@@ -148,7 +155,10 @@ public class RoomController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllRentsOfRoom(@PathParam("roomId") UUID roomId,
                                       @QueryParam("past") Boolean past) throws RoomNotFoundException {
-        List<Rent> rents = roomQueryUseCase.getAllRentsOfRoom(roomId, past);
+        List<RentDTO> rents = roomQueryUseCase.getAllRentsOfRoom(roomId, past)
+                .stream()
+                .map(RentDTO::new)
+                .collect(Collectors.toList());
         return Response.status(Response.Status.OK).entity(rents).build();
     }
 
@@ -167,7 +177,7 @@ public class RoomController {
     public Response updateRoom(@PathParam("id") UUID id,
                                @Valid UpdateRoomDTO dto) throws RoomNotFoundException, UpdateRoomException {
         Room room = roomCommandUseCase.updateRoom(id, new Room(dto.getRoomNumber(), dto.getPrice(), dto.getSize()));
-        return Response.status(Response.Status.OK).entity(room).build();
+        return Response.status(Response.Status.OK).entity(roomMapper.mapToDto(room)).build();
     }
 
     @PUT
@@ -178,7 +188,7 @@ public class RoomController {
     public Response updateApartment(@PathParam("id") UUID id,
                                @Valid UpdateApartmentDTO dto) throws RoomNotFoundException, UpdateRoomException, InvalidInputException {
         Apartment apartment = roomCommandUseCase.updateApartment(id, new Apartment(dto.getRoomNumber(), dto.getPrice(), dto.getSize(), dto.getBalconyArea()));
-        return Response.status(Response.Status.OK).entity(apartment).build();
+        return Response.status(Response.Status.OK).entity(roomMapper.mapToDto(apartment)).build();
     }
 
 

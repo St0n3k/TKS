@@ -4,15 +4,31 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import pl.lodz.p.it.tks.dto.*;
+import pl.lodz.p.it.tks.dto.AdminDTO;
+import pl.lodz.p.it.tks.dto.ClientDTO;
+import pl.lodz.p.it.tks.dto.EmployeeDTO;
+import pl.lodz.p.it.tks.dto.RegisterAdminDTO;
+import pl.lodz.p.it.tks.dto.RegisterClientDTO;
+import pl.lodz.p.it.tks.dto.RegisterEmployeeDTO;
+import pl.lodz.p.it.tks.dto.RentDTO;
+import pl.lodz.p.it.tks.dto.UpdateClientDTO;
+import pl.lodz.p.it.tks.dto.UpdateEmployeeDTO;
+import pl.lodz.p.it.tks.dto.UserDTO;
+import pl.lodz.p.it.tks.dtoMapper.UserMapper;
 import pl.lodz.p.it.tks.exception.user.CreateUserException;
 import pl.lodz.p.it.tks.exception.user.UpdateUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.model.Address;
-import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.user.Admin;
 import pl.lodz.p.it.tks.model.user.Client;
 import pl.lodz.p.it.tks.model.user.Employee;
@@ -22,6 +38,7 @@ import pl.lodz.p.it.tks.ui.query.UserQueryUseCase;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RequestScoped
 @Path("/users")
@@ -32,6 +49,9 @@ public class UserController {
 
     @Inject
     private UserQueryUseCase userQueryUseCase;
+
+    @Inject
+    private UserMapper userMapper;
 
     /**
      * Endpoint which is used to register new client,
@@ -59,7 +79,7 @@ public class UserController {
 
         Client registeredClient = userCommandUseCase.registerClient(client);
         return Response.status(Response.Status.CREATED)
-                       .entity(registeredClient)
+                       .entity(new ClientDTO(registeredClient))
                        .build();
     }
 
@@ -85,7 +105,7 @@ public class UserController {
                                          reDTO.getPassword());
 
         Employee registeredEmployee = userCommandUseCase.registerEmployee(employee);
-        return Response.status(Response.Status.CREATED).entity(registeredEmployee).build();
+        return Response.status(Response.Status.CREATED).entity(new EmployeeDTO(registeredEmployee)).build();
     }
 
     @POST
@@ -97,7 +117,7 @@ public class UserController {
         Admin admin = new Admin(raDto.getUsername(), raDto.getPassword());
         Admin registeredAdmin = userCommandUseCase.registerAdmin(admin);
         return Response.status(Response.Status.CREATED)
-                       .entity(registeredAdmin)
+                       .entity(new AdminDTO(registeredAdmin))
                        .build();
     }
 
@@ -108,7 +128,7 @@ public class UserController {
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response getUserById(@PathParam("id") UUID id) throws UserNotFoundException {
         User user = userQueryUseCase.getUserById(id);
-        return Response.status(Response.Status.OK).entity(user).build();
+        return Response.status(Response.Status.OK).entity(userMapper.mapToDto(user)).build();
     }
 
     @GET
@@ -116,7 +136,10 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response getAllUsers(@QueryParam("username") String username) {
-        List<User> users = userQueryUseCase.getAllUsers(username);
+        List<UserDTO> users = userQueryUseCase.getAllUsers(username)
+                .stream()
+                .map(user -> userMapper.mapToDto(user))
+                .collect(Collectors.toList());
         return Response.status(Response.Status.OK).entity(users).build();
     }
 
@@ -124,7 +147,10 @@ public class UserController {
     @Path("/clients")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllClients(@QueryParam("username") String username) {
-        List<Client> clients = userQueryUseCase.getClients(username);
+        List<ClientDTO> clients = userQueryUseCase.getClients(username)
+                .stream()
+                .map(ClientDTO::new)
+                .collect(Collectors.toList());
         return Response.status(Response.Status.OK).entity(clients).build();
     }
 
@@ -133,8 +159,11 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN" })
     public Response getAllEmployees() {
-        List<Employee> employee = userQueryUseCase.getEmployees();
-        return Response.status(Response.Status.OK).entity(employee).build();
+        List<EmployeeDTO> employees = userQueryUseCase.getEmployees()
+                .stream()
+                .map(EmployeeDTO::new)
+                .collect(Collectors.toList());
+        return Response.status(Response.Status.OK).entity(employees).build();
     }
 
     @GET
@@ -142,7 +171,10 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ "ADMIN" })
     public Response getAllAdmins() {
-        List<Admin> admins = userQueryUseCase.getAdmins();
+        List<AdminDTO> admins = userQueryUseCase.getAdmins()
+                .stream()
+                .map(AdminDTO::new)
+                .collect(Collectors.toList());
         return Response.status(Response.Status.OK).entity(admins).build();
     }
 
@@ -152,7 +184,7 @@ public class UserController {
     @RolesAllowed({ "ADMIN" })
     public Response getUserByUsername(@PathParam("username") String username) throws UserNotFoundException {
         User user = userQueryUseCase.getUserByUsername(username);
-        return Response.status(Response.Status.OK).entity(user).build();
+        return Response.status(Response.Status.OK).entity(userMapper.mapToDto(user)).build();
     }
 
 
@@ -169,7 +201,10 @@ public class UserController {
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response getAllRentsOfClient(@PathParam("id") UUID clientId,
                                         @QueryParam("past") Boolean past) throws UserNotFoundException {
-        List<Rent> rents = userQueryUseCase.getAllRentsOfClient(clientId, past);
+        List<RentDTO> rents = userQueryUseCase.getAllRentsOfClient(clientId, past)
+                .stream()
+                .map(RentDTO::new)
+                .collect(Collectors.toList());
         return Response.status(Response.Status.OK).entity(rents).build();
     }
 
@@ -197,7 +232,7 @@ public class UserController {
                                address);
 
         User updatedUser = userCommandUseCase.updateUser(id, user);
-        return Response.status(Response.Status.OK).entity(updatedUser).build();
+        return Response.status(Response.Status.OK).entity(userMapper.mapToDto(updatedUser)).build();
     }
 
     @PUT
@@ -211,7 +246,7 @@ public class UserController {
                                  dto.getLastName());
 
         User updatedUser = userCommandUseCase.updateUser(id, user);
-        return Response.status(Response.Status.OK).entity(updatedUser).build();
+        return Response.status(Response.Status.OK).entity(userMapper.mapToDto(updatedUser)).build();
     }
 
     /**
@@ -228,7 +263,7 @@ public class UserController {
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response activateUser(@PathParam("id") UUID id) throws UserNotFoundException, UpdateUserException {
         User user = userCommandUseCase.activateUser(id);
-        return Response.status(Response.Status.OK).entity(user).build();
+        return Response.status(Response.Status.OK).entity(userMapper.mapToDto(user)).build();
     }
 
 
@@ -246,6 +281,6 @@ public class UserController {
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response deactivateUser(@PathParam("id") UUID id) throws UserNotFoundException, UpdateUserException {
         User user = userCommandUseCase.deactivateUser(id);
-        return Response.status(Response.Status.OK).entity(user).build();
+        return Response.status(Response.Status.OK).entity(userMapper.mapToDto(user)).build();
     }
 }
