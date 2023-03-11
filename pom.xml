@@ -100,13 +100,7 @@
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-api</artifactId>
-                <version>5.9.2</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-engine</artifactId>
+                <artifactId>junit-jupiter</artifactId>
                 <version>5.9.2</version>
                 <scope>test</scope>
             </dependency>
@@ -120,7 +114,6 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>42.5.4</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.hibernate.validator</groupId>
@@ -157,6 +150,11 @@
                 <version>4.1</version>
                 <type>pom</type>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>4.0.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

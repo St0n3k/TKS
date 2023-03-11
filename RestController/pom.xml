@@ -19,6 +19,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
             <groupId>pl.lodz.p.it.tks</groupId>
             <artifactId>ApplicationService</artifactId>
             <scope>compile</scope>

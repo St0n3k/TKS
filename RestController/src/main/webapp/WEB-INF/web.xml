@@ -19,8 +19,8 @@
     <data-source>
         <name>java:global/jdbc/guesthouse</name>
         <class-name>org.postgresql.ds.PGSimpleDataSource</class-name>
-        <server-name>localhost</server-name>
-        <port-number>5433</port-number>
+        <server-name>db</server-name>
+        <port-number>5432</port-number>
         <database-name>pas</database-name>
         <user>pas</user>
         <password>pas</password>
