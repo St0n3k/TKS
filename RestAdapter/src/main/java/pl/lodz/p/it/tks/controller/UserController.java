@@ -224,7 +224,9 @@ public class UserController {
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response updateClient(@PathParam("id") UUID id, @Valid UpdateClientDTO dto)
         throws UserNotFoundException, UpdateUserException {
-        Address address = new Address(dto.getCity(), dto.getStreet(), dto.getNumber());
+        Address address = new Address(dto.getCity(),
+                                      dto.getStreet(),
+                                      dto.getNumber() == null ? 0 :  dto.getNumber());
 
         User user = new Client(dto.getFirstName(),
                                dto.getLastName(),
