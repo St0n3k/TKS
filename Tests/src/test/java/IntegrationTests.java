@@ -1,4 +1,5 @@
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import jakarta.ws.rs.core.Response.Status;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -9,16 +10,24 @@ import pl.lodz.p.it.tks.dto.UpdateRoomDTO;
 import pl.lodz.p.it.tks.model.Room;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @Testcontainers
 public class IntegrationTests extends TestcontainersSetup {
 
+    //region RoomTests
     @Test
     void shouldReturnRoomWithStatusCode200() {
         given().spec(clientSpec)
@@ -320,4 +329,536 @@ public class IntegrationTests extends TestcontainersSetup {
                 .statusCode(Status.FORBIDDEN.getStatusCode());
 
     }
+    //endregion
+
+    //region RentTests
+
+    @Test
+    void shouldReturnRentWithStatusCode200() {
+        given().spec(employeeSpec)
+                .when().get("/api/rents/22208864-7b61-4e6e-8573-53863bd93b35")
+                .then()
+                .statusCode(Status.OK.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("id", equalTo("22208864-7b61-4e6e-8573-53863bd93b35"),
+                        "board", equalTo(true),
+                        "client.id", equalTo("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                        "room.id", equalTo("9acac245-25b3-492d-a742-4c69bfcb90cf"));
+    }
+
+    @Test
+    void shouldFailReturningNoExistingRentWithStatusCode404() {
+        given().spec(employeeSpec).when().get("/api/rents/bb6be8cd-6a18-4b24-ac81-90539f86b284")
+                .then()
+                .statusCode(Status.NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void shouldRemoveRentWithStatusCode204() {
+        given().spec(employeeSpec)
+                .when().delete("/api/rents/32208864-7b61-4e6e-8573-53863bd93b35")
+                .then()
+                .statusCode(Status.NO_CONTENT.getStatusCode());
+
+        given().spec(employeeSpec)
+                .when().get("/api/rents/32208864-7b61-4e6e-8573-53863bd93b35")
+                .then()
+                .statusCode(Status.NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void shouldReturnStatusCode204WhenRemovingNonExistingRent() {
+        given().spec(employeeSpec)
+                .when().delete("/api/rents/bb6be8cd-6a18-4b24-ac81-90539f86b284")
+                .then()
+                .statusCode(Status.NO_CONTENT.getStatusCode());
+
+        given().spec(employeeSpec)
+                .when().get("/api/rents/bb6be8cd-6a18-4b24-ac81-90539f86b284")
+                .then()
+                .statusCode(Status.NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void shouldCreateRentWithStatusCode201() {
+        LocalDateTime beginDate = LocalDateTime.of(2023, 11, 22, 11, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 11, 25, 10, 0, 0);
+
+        CreateRentDTO dto = new CreateRentDTO(
+                beginDate,
+                endDate,
+                true,
+                UUID.fromString("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                UUID.fromString("9acac245-25b3-492d-a742-4c69bfcb90cf"));
+        JSONObject body = new JSONObject(dto);
+
+        String id = given().spec(employeeSpec)
+                .contentType(ContentType.JSON)
+                .body(body.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .statusCode(Status.CREATED.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("board", equalTo(true),
+                        "client.id", equalTo("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                        "room.id", equalTo("9acac245-25b3-492d-a742-4c69bfcb90cf"))
+                .extract()
+                .response()
+                .path("id");
+
+        given().spec(employeeSpec)
+                .when().get("api/rents/" + id)
+                .then()
+                .statusCode(Status.OK.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("id", equalTo(id),
+                        "board", equalTo(true),
+                        "client.id", equalTo("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                        "room.id", equalTo("9acac245-25b3-492d-a742-4c69bfcb90cf"));
+
+    }
+
+    @Test
+    void shouldFailCreatingRentForNonExistingClientWithStatusCode400() {
+        LocalDateTime beginDate = LocalDateTime.now().plusYears(1);
+        LocalDateTime endDate = beginDate.plusDays(3);
+        CreateRentDTO dto = new CreateRentDTO(
+                beginDate,
+                endDate,
+                false,
+                UUID.fromString("bb6be8cd-6a18-4b24-ac81-90539f86b284"),
+                UUID.fromString("dba673f8-0526-4cea-941e-3c8ddd5e4f92"));
+
+        JSONObject body = new JSONObject(dto);
+
+        given().spec(employeeSpec)
+                .contentType(ContentType.JSON)
+                .body(body.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .statusCode(Status.NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void shouldFailCreatingRentOfNonExistingRoomWithStatusCode400() {
+        LocalDateTime beginDate = LocalDateTime.now().plusYears(1);
+        LocalDateTime endDate = beginDate.plusDays(3);
+        CreateRentDTO dto = new CreateRentDTO(
+                beginDate,
+                endDate,
+                false,
+                UUID.fromString("a524d75e-927a-4a10-8c46-6321fff6979e"),
+                UUID.fromString("bb6be8cd-6a18-4b24-ac81-90539f86b284"));
+
+        JSONObject body = new JSONObject(dto);
+
+        given().spec(employeeSpec)
+                .contentType(ContentType.JSON)
+                .body(body.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .assertThat().statusCode(Status.NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void shouldFailCreatingRentForOverlappingDatesWithStatusCode409() {
+        LocalDateTime beginDate = LocalDateTime.of(2023, 10, 1, 11, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 10, 3, 10, 0, 0);
+        CreateRentDTO dto = new CreateRentDTO(
+                beginDate,
+                endDate,
+                false,
+                UUID.fromString("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                UUID.fromString("9acac245-25b3-492d-a742-4c69bfcb90cf"));
+
+        JSONObject json = new JSONObject(dto);
+
+        given().spec(employeeSpec)
+                .contentType(ContentType.JSON)
+                .body(json.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .assertThat().statusCode(Status.CONFLICT.getStatusCode());
+    }
+
+    @Test
+    void shouldFailCreatingRentForDatesContainedInExistingRentWithStatusCode409() {
+        LocalDateTime beginDate = LocalDateTime.of(2023, 10, 13, 9, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 10, 16, 10, 0, 0);
+        CreateRentDTO dto = new CreateRentDTO(
+                beginDate,
+                endDate,
+                false,
+                UUID.fromString("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                UUID.fromString("9acac245-25b3-492d-a742-4c69bfcb90cf"));
+
+        JSONObject json = new JSONObject(dto);
+
+        given().spec(employeeSpec)
+                .contentType(ContentType.JSON)
+                .body(json.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .assertThat().statusCode(Status.CONFLICT.getStatusCode());
+    }
+
+    @Test
+    void shouldFailCreatingRentForDatesContainingExistingRentWithStatusCode409() {
+        LocalDateTime beginDate = LocalDateTime.of(2023, 10, 1, 9, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 10, 6, 10, 0, 0);
+        CreateRentDTO dto = new CreateRentDTO(
+                beginDate,
+                endDate,
+                false,
+                UUID.fromString("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                UUID.fromString("9acac245-25b3-492d-a742-4c69bfcb90cf"));
+
+        JSONObject json = new JSONObject(dto);
+
+        given().spec(employeeSpec)
+                .contentType(ContentType.JSON)
+                .body(json.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .assertThat().statusCode(Status.CONFLICT.getStatusCode());
+    }
+
+    @Test
+    void shouldCreateOnlyOneRentWithConcurrentRequests() throws BrokenBarrierException, InterruptedException {
+        int threadNumber = 10;
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(threadNumber + 1);
+        List<Thread> threads = new ArrayList<>(threadNumber);
+        AtomicInteger numberFinished = new AtomicInteger();
+        LocalDateTime begin = LocalDateTime.now().plusDays(40);
+        LocalDateTime end = LocalDateTime.now().plusDays(41);
+        for (int i = 0; i < threadNumber; i++) {
+            threads.add(new Thread(() -> {
+                try {
+                    cyclicBarrier.await();
+                } catch (InterruptedException | BrokenBarrierException e) {
+                    throw new RuntimeException(e);
+                }
+
+                CreateRentDTO dto = new CreateRentDTO(
+                        begin,
+                        end,
+                        false,
+                        UUID.fromString("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                        UUID.fromString("b9573aa2-42fa-43cb-baa1-42d06e1bdc8d"));
+
+                JSONObject json = new JSONObject(dto);
+
+                given().spec(employeeSpec)
+                        .contentType(ContentType.JSON)
+                        .body(json.toString())
+                        .when()
+                        .post("/api/rents")
+                        .then()
+                        .extract().response();
+                numberFinished.getAndIncrement();
+            }));
+        }
+
+        threads.forEach(Thread::start);
+        cyclicBarrier.await();
+        while (numberFinished.get() != threadNumber) {
+        }
+
+        Response response = when().get("/api/rooms/b9573aa2-42fa-43cb-baa1-42d06e1bdc8d/rents")
+                .then()
+                .assertThat().statusCode(Status.OK.getStatusCode())
+                .assertThat().contentType(ContentType.JSON)
+                .extract().response();
+        List<String> jsonResponse = response.jsonPath().getList("$");
+        assertEquals(1, jsonResponse.size());
+    }
+
+    @Test
+    void shouldCreateTwoRentsWithNonOverlappingDates() throws BrokenBarrierException, InterruptedException {
+        int threadNumber = 4;
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(threadNumber + 1);
+        List<Thread> threads = new ArrayList<>(threadNumber);
+        AtomicInteger numberFinished = new AtomicInteger();
+
+        LocalDateTime localDateTime = LocalDateTime.now();
+
+        for (int i = 0; i < threadNumber; i++) {
+            int finalI = i;
+            threads.add(new Thread(() -> {
+                try {
+                    cyclicBarrier.await();
+                } catch (InterruptedException | BrokenBarrierException e) {
+                    throw new RuntimeException(e);
+                }
+                CreateRentDTO dto = new CreateRentDTO(
+                        localDateTime.plusDays(1000 + finalI),
+                        localDateTime.plusDays(1000 + finalI + 2).minusHours(1),
+                        false,
+                        UUID.fromString("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                        UUID.fromString("b0f9495e-13a7-4da1-989c-c403ece4e22d"));
+                JSONObject json = new JSONObject(dto);
+
+                given().spec(employeeSpec)
+                        .contentType(ContentType.JSON)
+                        .body(json.toString())
+                        .when()
+                        .post("/api/rents");
+                numberFinished.getAndIncrement();
+            }));
+        }
+
+        threads.forEach(Thread::start);
+        cyclicBarrier.await();
+        while (numberFinished.get() != threadNumber) {
+        }
+
+        given().spec(employeeSpec)
+                .when().get("/api/rooms/b0f9495e-13a7-4da1-989c-c403ece4e22d/rents")
+                .then()
+                .statusCode(Status.OK.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("size()", equalTo(2));
+    }
+
+    @Test
+    void shouldFailWithStatusCode404WhenGettingRentsOfNonExistentRoom() {
+        given().spec(employeeSpec)
+                .when().get("/api/rooms/bb6be8cd-6a18-4b24-ac81-90539f86b284/rents")
+                .then()
+                .statusCode(Status.NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void shouldGetEmptyArrayWithStatusCode200() {
+        given().spec(employeeSpec)
+                .when().get("/api/rooms/0533a035-22de-45e8-b922-5fa8b103b1a2/rents")
+                .then()
+                .statusCode(Status.OK.getStatusCode())
+                .body("$", empty());
+    }
+
+    @Test
+    void shouldUpdateRentBoardAndRecalculateRentCost() {
+        JSONObject reqFalse = new JSONObject();
+        reqFalse.put("board", false);
+
+        given().spec(employeeSpec)
+                .when().get("/api/rents/42208864-7b61-4e6e-8573-53863bd93b35")
+                .then()
+                .statusCode(Status.OK.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("id", equalTo("42208864-7b61-4e6e-8573-53863bd93b35"),
+                        "board", equalTo(true),
+                        "finalCost", equalTo(3000.0F));
+
+
+        given().spec(employeeSpec)
+                .contentType(ContentType.JSON)
+                .body(reqFalse.toString())
+                .when()
+                .patch("/api/rents/42208864-7b61-4e6e-8573-53863bd93b35/board")
+                .then()
+                .statusCode(Status.OK.getStatusCode())
+                .body(
+                        "board", equalTo(false),
+                        "finalCost", equalTo(2500.0F));
+
+        // perform GET request to verify changes
+        given().spec(employeeSpec)
+                .when().get("/api/rents/42208864-7b61-4e6e-8573-53863bd93b35")
+                .then()
+                .statusCode(Status.OK.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("id", equalTo("42208864-7b61-4e6e-8573-53863bd93b35"),
+                        "board", equalTo(false),
+                        "finalCost", equalTo(2500.0F));
+
+        JSONObject reqTrue = new JSONObject();
+        reqTrue.put("board", true);
+
+        // update board once again
+        given().spec(employeeSpec)
+                .contentType(ContentType.JSON)
+                .body(reqTrue.toString())
+                .when()
+                .patch("/api/rents/42208864-7b61-4e6e-8573-53863bd93b35/board")
+                .then()
+                .statusCode(Status.OK.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("board", equalTo(true),
+                        "finalCost", equalTo(3000.0F));
+
+        // perform GET request to verify changes
+        given().spec(employeeSpec)
+                .when().get("/api/rents/42208864-7b61-4e6e-8573-53863bd93b35")
+                .then()
+                .statusCode(Status.OK.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("id", equalTo("42208864-7b61-4e6e-8573-53863bd93b35"),
+                        "board", equalTo(true),
+                        "finalCost", equalTo(3000.0F));
+
+    }
+
+    @Test
+    void shouldFailWithStatusCode400WhenBeginDateIsPast() {
+        LocalDateTime begin = LocalDateTime.now().minusDays(2);
+        LocalDateTime end = LocalDateTime.now().plusDays(2);
+
+        CreateRentDTO dto = new CreateRentDTO(
+                begin,
+                end,
+                false,
+                UUID.fromString("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                UUID.fromString("a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9"));
+        JSONObject requestBody = new JSONObject(dto);
+
+        given().spec(employeeSpec)
+                .contentType(ContentType.JSON)
+                .body(requestBody.toString())
+                .when().post("api/rents")
+                .then()
+                .statusCode(Status.BAD_REQUEST.getStatusCode());
+    }
+
+    @Test
+    void shouldFailWithStatusCode400WhenBeginDateIsAfterEndDate() {
+        LocalDateTime begin = LocalDateTime.of(2023, 6, 30, 10, 0);
+        LocalDateTime end = LocalDateTime.of(2023, 6, 25, 10, 0);
+
+        CreateRentDTO dto = new CreateRentDTO(
+                begin,
+                end,
+                false,
+                UUID.fromString("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                UUID.fromString("a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9"));
+        JSONObject requestBody = new JSONObject(dto);
+
+        given().spec(employeeSpec)
+                .contentType(ContentType.JSON)
+                .body(requestBody.toString())
+                .when().post("api/rents")
+                .then()
+                .statusCode(Status.BAD_REQUEST.getStatusCode());
+    }
+
+    @Test
+    void shouldFailWithStatusCode400WhenBothDatesArePast() {
+        LocalDateTime begin = LocalDateTime.of(2020, 6, 30, 10, 0);
+        LocalDateTime end = LocalDateTime.of(2020, 6, 29, 10, 0);
+
+        CreateRentDTO dto = new CreateRentDTO(
+                begin,
+                end,
+                false,
+                UUID.fromString("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                UUID.fromString("a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9"));
+        JSONObject requestBody = new JSONObject(dto);
+
+        given().spec(employeeSpec)
+                .contentType(ContentType.JSON)
+                .body(requestBody.toString())
+                .when().post("api/rents")
+                .then()
+                .statusCode(Status.BAD_REQUEST.getStatusCode());
+    }
+
+    @Test
+    void shouldFailWithStatusCode409WhenRemovingAnActiveRent() {
+        given().spec(employeeSpec)
+                .when().delete("/api/rents/6ddee1ee-9eba-4222-a031-463a849e1886")
+                .then()
+                .statusCode(409);
+    }
+
+    @Test
+    void shouldFailCreatingRentForInactiveUserWithStatusCode401() {
+        UUID clientId =
+                given().spec(adminSpec)
+                        .when().get("/api/users/search/jakub3")
+                        .then()
+                        .extract().jsonPath().getUUID("id");
+
+        LocalDateTime beginDate = LocalDateTime.of(2023, 11, 22, 11, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 11, 25, 10, 0, 0);
+
+        CreateRentDTO dto = new CreateRentDTO(
+                beginDate,
+                endDate,
+                true,
+                clientId,
+                UUID.fromString("0533a035-22de-45e8-b922-5fa8b103b1a2"));
+        JSONObject body = new JSONObject(dto);
+
+        given().spec(employeeSpec)
+                .contentType(ContentType.JSON)
+                .body(body.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .assertThat().statusCode(Status.UNAUTHORIZED.getStatusCode());
+    }
+
+    @Test
+    void shouldFailCreatingRentAsClientWithStatusCode403() {
+        LocalDateTime beginDate = LocalDateTime.of(2023, 11, 22, 11, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 11, 25, 10, 0, 0);
+
+        CreateRentDTO dto = new CreateRentDTO(
+                beginDate,
+                endDate,
+                true,
+                UUID.fromString("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                UUID.fromString("9acac245-25b3-492d-a742-4c69bfcb90cf"));
+        JSONObject body = new JSONObject(dto);
+
+        given().spec(clientSpec)
+                .contentType(ContentType.JSON)
+                .body(body.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .statusCode(Status.FORBIDDEN.getStatusCode());
+    }
+
+    @Test
+    void shouldFailGettingAllRentsAsClientWithStatusCode403() {
+        given().spec(clientSpec)
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/api/rents")
+                .then()
+                .statusCode(Status.FORBIDDEN.getStatusCode());
+    }
+
+    @Test
+    void shouldFailRemovingRentAsClientWithStatusCode403() {
+        given().spec(clientSpec)
+                .when().delete("/api/rents/32208864-7b61-4e6e-8573-53863bd93b35")
+                .then()
+                .statusCode(Status.FORBIDDEN.getStatusCode());
+    }
+
+    @Test
+    void shouldFailUpdatingRentBoardAsClientWithStatusCode403(){
+        JSONObject reqFalse = new JSONObject();
+        reqFalse.put("board", false);
+
+        given().spec(clientSpec)
+                .contentType(ContentType.JSON)
+                .body(reqFalse.toString())
+                .when()
+                .patch("/api/rents/42208864-7b61-4e6e-8573-53863bd93b35/board")
+                .then()
+                .statusCode(Status.FORBIDDEN.getStatusCode());
+    }
+    //endregion
+
+
 }
