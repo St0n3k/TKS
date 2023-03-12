@@ -18,44 +18,4 @@
         <groupId>pl.lodz.p.it.tks</groupId>
         <version>1.0</version>
     </parent>
-
-<!--    <dependencyManagement>-->
-<!--        <dependencies>-->
-<!--            <dependency>-->
-<!--                <groupId>jakarta.platform</groupId>-->
-<!--                <artifactId>jakarta.jakartaee-web-api</artifactId>-->
-<!--                <version>9.1.0</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>org.projectlombok</groupId>-->
-<!--                <artifactId>lombok</artifactId>-->
-<!--                <version>1.18.24</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>com.fasterxml.jackson.core</groupId>-->
-<!--                <artifactId>jackson-annotations</artifactId>-->
-<!--                <version>2.14.1</version>-->
-<!--            </dependency>-->
-
-<!--            <dependency>-->
-<!--                <groupId>pl.lodz.p.it.tks</groupId>-->
-<!--                <artifactId>ApplicationPorts</artifactId>-->
-<!--                <version>1.0</version>-->
-<!--                <scope>compile</scope>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>pl.lodz.p.it.tks</groupId>-->
-<!--                <artifactId>RepositoryAdapter</artifactId>-->
-<!--                <version>1.0</version>-->
-<!--                <scope>compile</scope>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>pl.lodz.p.it.tks</groupId>-->
-<!--                <artifactId>Security</artifactId>-->
-<!--                <version>1.0</version>-->
-<!--                <scope>compile</scope>-->
-<!--            </dependency>-->
-<!--        </dependencies>-->
-<!--    </dependencyManagement>-->
-
 </project>

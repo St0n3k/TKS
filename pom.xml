@@ -223,15 +223,6 @@
                         <target>17</target>
                     </configuration>
                 </plugin>
-                <plugin>
-                    <groupId>fish.payara.maven.plugins</groupId>
-                    <artifactId>payara-micro-maven-plugin</artifactId>
-                    <version>1.4.0</version>
-                    <configuration>
-                        <payaraVersion>5.2021.9</payaraVersion>
-                        <deployWar>true</deployWar>
-                    </configuration>
-                </plugin>
             </plugins>
         </pluginManagement>
     </build>

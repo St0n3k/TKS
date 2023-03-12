@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.it.tks.dto.CreateRentDTO;
+import pl.lodz.p.it.tks.dto.RentRoomForSelfDTO;
 import pl.lodz.p.it.tks.dto.UpdateRoomDTO;
 import pl.lodz.p.it.tks.model.Room;
 
@@ -72,6 +73,26 @@ public class IntegrationTests extends TestcontainersSetup {
                 .post("/api/rooms")
                 .then()
                 .statusCode(Status.CONFLICT.getStatusCode());
+    }
+
+    @Test
+    void shouldFailCreatingRoomWithStatusCode403() {
+        Room room = new Room(643, 200.0, 10);
+
+        JSONObject req = new JSONObject(room);
+        given().contentType(ContentType.JSON)
+                .body(req.toString())
+                .when()
+                .post("/api/rooms")
+                .then()
+                .statusCode(Status.FORBIDDEN.getStatusCode());
+
+        given().spec(clientSpec).contentType(ContentType.JSON)
+                .body(req.toString())
+                .when()
+                .post("/api/rooms")
+                .then()
+                .statusCode(Status.FORBIDDEN.getStatusCode());
     }
 
     @Test
@@ -154,10 +175,31 @@ public class IntegrationTests extends TestcontainersSetup {
                 .then().assertThat().statusCode(Status.CONFLICT.getStatusCode());
     }
 
+    @Test
+    void shouldFailUpdatingRoomWithStatusCode403() {
+        UpdateRoomDTO dto = new UpdateRoomDTO(836, null, null);
+        JSONObject req = new JSONObject(dto);
+
+        when().get("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
+                .then()
+                .assertThat().statusCode(Status.OK.getStatusCode())
+                .assertThat().body("roomNumber", equalTo(244));
+
+        given().contentType(ContentType.JSON)
+                .body(req.toString())
+                .when().put("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
+                .then().assertThat().statusCode(Status.FORBIDDEN.getStatusCode());
+
+        given().spec(clientSpec).contentType(ContentType.JSON)
+                .body(req.toString())
+                .when().put("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
+                .then().assertThat().statusCode(Status.FORBIDDEN.getStatusCode());
+    }
+
 
     @Test
     void shouldRemoveRoomWithStatusCode204() {
-        Room room = new Room(1234, 200.0, 4);
+        Room room = new Room(12345, 2020.0, 4);
         JSONObject json = new JSONObject(room);
         Room addedRoom = given().spec(adminSpec).body(json.toString())
                 .contentType(ContentType.JSON)
@@ -172,6 +214,26 @@ public class IntegrationTests extends TestcontainersSetup {
         when().get("/api/rooms/" + addedRoom.getId())
                 .then()
                 .statusCode(Status.NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void shouldFailRemovingRoomWithStatusCode403() {
+        Room room = new Room(1234, 200.0, 4);
+        JSONObject json = new JSONObject(room);
+        Room addedRoom = given().spec(adminSpec).body(json.toString())
+                .contentType(ContentType.JSON)
+                .when().post("/api/rooms")
+                .getBody().as(Room.class);
+
+        given().contentType(ContentType.JSON)
+                .when().delete("/api/rooms/" + addedRoom.getId())
+                .then()
+                .statusCode(Status.FORBIDDEN.getStatusCode());
+
+        given().spec(clientSpec).contentType(ContentType.JSON)
+                .when().delete("/api/rooms/" + addedRoom.getId())
+                .then()
+                .statusCode(Status.FORBIDDEN.getStatusCode());
     }
 
     @Test
@@ -214,5 +276,48 @@ public class IntegrationTests extends TestcontainersSetup {
                 .put("/api/rooms/8378b753-6d05-454b-8447-efb125846fc7")
                 .then()
                 .assertThat().statusCode(Status.BAD_REQUEST.getStatusCode());
+    }
+
+    @Test
+    void shouldRentRoomForSelfWithStatusCode201() {
+
+        RentRoomForSelfDTO dto = new RentRoomForSelfDTO(LocalDateTime.now().plusDays(10), LocalDateTime.now().plusDays(13), false);
+
+        JSONObject req = new JSONObject(dto);
+        UUID id = given().spec(clientSpec).contentType(ContentType.JSON)
+                .body(req.toString())
+                .when()
+                .post("/api/rooms/b0f9495e-13a7-4da1-989c-c403ece4e22d")
+                .then()
+                .statusCode(Status.CREATED.getStatusCode())
+                .extract().jsonPath().getUUID("id");
+
+        when().get("api/rents/" + id)
+                .then()
+                .statusCode(Status.OK.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("id", equalTo(id.toString()));
+    }
+
+    @Test
+    void shouldFailRentingRoomForSelfWithStatusCode403() {
+
+        RentRoomForSelfDTO dto = new RentRoomForSelfDTO(LocalDateTime.now().plusDays(10), LocalDateTime.now().plusDays(13), false);
+
+        JSONObject req = new JSONObject(dto);
+        given().spec(employeeSpec).contentType(ContentType.JSON)
+                .body(req.toString())
+                .when()
+                .post("/api/rooms/b0f9495e-13a7-4da1-989c-c403ece4e22d")
+                .then()
+                .statusCode(Status.FORBIDDEN.getStatusCode());
+
+        given().spec(adminSpec).contentType(ContentType.JSON)
+                .body(req.toString())
+                .when()
+                .post("/api/rooms/b0f9495e-13a7-4da1-989c-c403ece4e22d")
+                .then()
+                .statusCode(Status.FORBIDDEN.getStatusCode());
+
     }
 }

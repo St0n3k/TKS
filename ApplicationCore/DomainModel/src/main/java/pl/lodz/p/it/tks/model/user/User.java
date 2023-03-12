@@ -1,12 +1,11 @@
 package pl.lodz.p.it.tks.model.user;
 
-import java.security.Principal;
-import java.util.UUID;
-
-import jakarta.json.bind.annotation.JsonbTransient;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.model.AbstractModel;
+
+import java.security.Principal;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -18,11 +17,9 @@ public abstract class User extends AbstractModel implements Principal {
 
     private String role = "CLIENT";
 
-    @JsonbTransient
     private String password;
 
     @Override
-    @JsonbTransient
     public String getName() {
         return getUsername();
     }
