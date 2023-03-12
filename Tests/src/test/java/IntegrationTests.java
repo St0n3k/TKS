@@ -958,7 +958,7 @@ public class IntegrationTests extends TestcontainersSetup {
     @Test
     public void shouldUpdateUserWithStatusCode200() {
         UpdateClientDTO dto = new UpdateClientDTO("Franciszek", null, null,
-                                                  null, "Szybka", null);
+                                                  null, "Wesoła", null);
 
         JSONObject req = new JSONObject(dto);
         String id = "a524d75e-927a-4a10-8c46-6321fff6979e";
