@@ -286,6 +286,9 @@ public class IntegrationTests extends TestcontainersSetup {
                 .then()
                 .assertThat().statusCode(Status.BAD_REQUEST.getStatusCode());
     }
+    //endregion
+
+    //region RentTests
 
     @Test
     void shouldRentRoomForSelfWithStatusCode201() {
@@ -296,7 +299,7 @@ public class IntegrationTests extends TestcontainersSetup {
         UUID id = given().spec(clientSpec).contentType(ContentType.JSON)
                 .body(req.toString())
                 .when()
-                .post("/api/rooms/b0f9495e-13a7-4da1-989c-c403ece4e22d")
+                .post("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
                 .then()
                 .statusCode(Status.CREATED.getStatusCode())
                 .extract().jsonPath().getUUID("id");
@@ -317,21 +320,18 @@ public class IntegrationTests extends TestcontainersSetup {
         given().spec(employeeSpec).contentType(ContentType.JSON)
                 .body(req.toString())
                 .when()
-                .post("/api/rooms/b0f9495e-13a7-4da1-989c-c403ece4e22d")
+                .post("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
                 .then()
                 .statusCode(Status.FORBIDDEN.getStatusCode());
 
         given().spec(adminSpec).contentType(ContentType.JSON)
                 .body(req.toString())
                 .when()
-                .post("/api/rooms/b0f9495e-13a7-4da1-989c-c403ece4e22d")
+                .post("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
                 .then()
                 .statusCode(Status.FORBIDDEN.getStatusCode());
 
     }
-    //endregion
-
-    //region RentTests
 
     @Test
     void shouldReturnRentWithStatusCode200() {
@@ -859,6 +859,4 @@ public class IntegrationTests extends TestcontainersSetup {
                 .statusCode(Status.FORBIDDEN.getStatusCode());
     }
     //endregion
-
-
 }
