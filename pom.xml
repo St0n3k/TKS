@@ -14,7 +14,7 @@
         <module>ApplicationCore</module>
         <module>RepositoriesAdapters</module>
         <module>ApplicationPorts</module>
-        <module>RestController</module>
+        <module>RestAdapter</module>
         <module>Security</module>
         <module>Tests</module>
     </modules>
@@ -64,9 +64,8 @@
             </dependency>
             <dependency>
                 <groupId>pl.lodz.p.it.tks</groupId>
-                <artifactId>RestController</artifactId>
+                <artifactId>RestAdapter</artifactId>
                 <version>1.0</version>
-                <scope>compile</scope>
                 <classifier>classes</classifier>
             </dependency>
             <dependency>

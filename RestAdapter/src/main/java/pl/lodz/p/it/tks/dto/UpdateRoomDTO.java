@@ -18,7 +18,4 @@ public class UpdateRoomDTO {
 
     @Min(1)
     private Double price;
-
-    @Min(1)
-    private Double balconyArea;
 }

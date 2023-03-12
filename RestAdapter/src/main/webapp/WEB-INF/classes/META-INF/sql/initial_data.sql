@@ -13,7 +13,7 @@ INSERT INTO room (id, version, price, room_number, size, type, balconyArea) VALU
 INSERT INTO room (id, version, price, room_number, size, type) VALUES ('7009adc1-94c7-4b15-b068-9cf00d325adf', 0, 1471.35, 958, 5, 'Room');
 INSERT INTO room (id, version, price, room_number, size, type, balconyArea) VALUES ('36f81e94-3832-4a66-a15d-ff05f01c0e98', 0, 736.75, 498, 5, 'Apartment', 35);
 INSERT INTO room (id, version, price, room_number, size, type) VALUES ('0533a035-22de-45e8-b922-5fa8b103b1a2', 0, 956.51, 792, 4, 'Room');
-INSERT INTO room (id, version, price, room_number, size, type, balconyArea) VALUES ('b9573aa2-42fa-43cb-baa1-42d06e1bdc8d', 0, 1396.79, 392, 9, 'Apartment', 53.5);
+INSERT INTO room (id, version, price, room_number, size, type) VALUES ('b9573aa2-42fa-43cb-baa1-42d06e1bdc8d', 0, 1396.79, 392, 9, 'Room');
 INSERT INTO room (id, version, price, room_number, size, type) VALUES ('a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9', 0, 541.56, 244, 4, 'Room');
 INSERT INTO room (id, version, price, room_number, size, type, balconyArea) VALUES ('561d7a3a-6447-417e-a2ad-2053ec777a8b', 0, 353.4, 598, 9, 'Apartment', 54.5);
 INSERT INTO room (id, version, price, room_number, size, type) VALUES ('b72205fb-27bc-4015-b3ce-1773706d175e', 0, 638.8, 380, 4, 'Room');
@@ -27,3 +27,6 @@ INSERT INTO rent (id, version, begin_time, board, end_time, final_cost, client_i
 INSERT INTO rent (id, version, begin_time, board, end_time, final_cost, client_id, room_id) VALUES ('52208864-7b61-4e6e-8573-53863bd93b35', 0, '2022-10-11 11:00:00.000000', FALSE, '2023-02-01 10:00:00.000000', 30000, 'bdbe2fcf-6203-47d6-8908-ca65b9689396', '561d7a3a-6447-417e-a2ad-2053ec777a8b');
 INSERT INTO rent (id, version, begin_time, board, end_time, final_cost, client_id, room_id) VALUES ('6ddee1ee-9eba-4222-a031-463a849e1886', 0, '2022-05-01 11:00:00.000000', FALSE, '2022-05-09 10:00:00.000000', 3000, 'bdbe2fcf-6203-47d6-8908-ca65b9689396', '561d7a3a-6447-417e-a2ad-2053ec777a8b');
 INSERT INTO rent (id, version, begin_time, board, end_time, final_cost, client_id, room_id) VALUES ('831351a7-6d6a-4900-8dd8-edd13c484dee', 0, '2024-10-11 11:00:00.000000', FALSE, '2024-11-21 10:00:00.000000', 3000, 'bdbe2fcf-6203-47d6-8908-ca65b9689396', '561d7a3a-6447-417e-a2ad-2053ec777a8b');
+INSERT INTO rent (id, version, begin_time, board, end_time, final_cost, client_id, room_id) VALUES ('931351a7-6d6a-4900-8dd8-edd13c484dee', 0, '2021-10-11 11:00:00.000000', FALSE, '2021-11-21 10:00:00.000000', 430, 'bdbe2fcf-6203-47d6-8908-ca65b9689396', '66208864-7b61-4e6e-8573-53863bd93b35');
+INSERT INTO rent (id, version, begin_time, board, end_time, final_cost, client_id, room_id) VALUES ('931251a7-6d6a-4900-8dd8-edd13c484dee', 0, '2024-10-11 11:00:00.000000', FALSE, '2024-11-21 10:00:00.000000', 430, 'bdbe2fcf-6203-47d6-8908-ca65b9689396', '66208864-7b61-4e6e-8573-53863bd93b35');
+INSERT INTO rent (id, version, begin_time, board, end_time, final_cost, client_id, room_id) VALUES ('931151a7-6d6a-4900-8dd8-edd13c484dee', 0, '2025-10-11 11:00:00.000000', FALSE, '2025-11-21 10:00:00.000000', 430, 'bdbe2fcf-6203-47d6-8908-ca65b9689396', '66208864-7b61-4e6e-8573-53863bd93b35');

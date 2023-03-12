@@ -1,6 +1,4 @@
 import org.junit.jupiter.api.Test;
-import pl.lodz.p.it.tks.dtoMapper.RoomMapper;
-import pl.lodz.p.it.tks.dtoMapper.UserMapper;
 import pl.lodz.p.it.tks.model.Address;
 import pl.lodz.p.it.tks.model.Apartment;
 import pl.lodz.p.it.tks.model.ApartmentEntity;
@@ -22,12 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 
-public class EntityMapperTest {
+public class EntityMapperTests {
 
     @Test
     void RoomMapperTest() {
-        RoomMapper roomMapper = new RoomMapper();
-
         Room room = new Room(UUID.randomUUID(), 1, 2.0, 3, 2);
         Apartment apartment = new Apartment(UUID.randomUUID(), 1, 2.0, 3, 2.5, 43);
 
@@ -75,8 +71,6 @@ public class EntityMapperTest {
 
     @Test
     void UserMapperTest() {
-        UserMapper userMapper = new UserMapper();
-
         Client client = new Client(UUID.randomUUID(), 0, "x", true, "a", "b", "c", "f", new Address("d", "f", 1));
         Employee employee = new Employee(UUID.randomUUID(), 4, "x", true, "a", "b", "c");
         Admin admin = new Admin(UUID.randomUUID(), 3, "x", true, "a");

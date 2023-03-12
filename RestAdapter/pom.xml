@@ -10,7 +10,7 @@
     </parent>
     <packaging>war</packaging>
 
-    <artifactId>RestController</artifactId>
+    <artifactId>RestAdapter</artifactId>
 
     <dependencies>
         <dependency>
