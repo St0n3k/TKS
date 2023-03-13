@@ -31,17 +31,13 @@ public abstract class TestcontainersSetup {
     private static GenericContainer payaraContainer;
 
     @BeforeAll
-    public static void setup() {
+    public static void setup() throws IOException {
         Network network = Network.SHARED;
         MountableFile warFile;
         String warFilePath = "../RestAdapter/target/RestAdapter-1.0.war";
 
-        try {
-            warFile = MountableFile.forHostPath(
-                    Paths.get(new File(warFilePath).getCanonicalPath()).toAbsolutePath(), 0777);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        warFile = MountableFile.forHostPath(
+                Paths.get(new File(warFilePath).getCanonicalPath()).toAbsolutePath(), 0777);
 
         postgresContainer = new PostgreSQLContainer(DockerImageName.parse("postgres:latest"))
                 .withDatabaseName("pas")
@@ -57,7 +53,7 @@ public abstract class TestcontainersSetup {
                 .dependsOn(postgresContainer)
                 .withNetwork(network)
                 .withNetworkAliases("payara")
-                .withCopyFileToContainer(warFile, "/opt/payara/deployments/RestController-1.0.war")
+                .withCopyFileToContainer(warFile, "/opt/payara/deployments/RestAdapter-1.0.war")
                 .waitingFor(Wait.forHttps("/api/rooms").allowInsecure())
                 .withReuse(true);
 
