@@ -17,6 +17,7 @@
         <module>RestAdapter</module>
         <module>Security</module>
         <module>Tests</module>
+        <module>SoapAdapter</module>
     </modules>
 
     <dependencyManagement>
@@ -193,6 +194,22 @@
                 <artifactId>postgresql</artifactId>
                 <version>1.17.3</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.xml.soap</groupId>
+                <artifactId>jakarta.xml.soap-api</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.xml.ws</groupId>
+                <artifactId>jakarta.xml.ws-api</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>jaxws-rt</artifactId>
+                <version>3.0.0</version>
+                <scope>runtime</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

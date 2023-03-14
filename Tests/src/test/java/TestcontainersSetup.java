@@ -43,7 +43,6 @@ public abstract class TestcontainersSetup {
                 .withDatabaseName("pas")
                 .withUsername("pas")
                 .withPassword("pas")
-                .withExposedPorts(5432)
                 .withNetwork(network)
                 .withNetworkAliases("db")
                 .withReuse(true);
