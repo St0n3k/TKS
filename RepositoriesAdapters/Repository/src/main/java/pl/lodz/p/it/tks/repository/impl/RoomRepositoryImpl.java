@@ -68,8 +68,6 @@ public class RoomRepositoryImpl implements RoomRepository {
      */
     @Override
     public boolean existsById(UUID id) {
-        return em.createNamedQuery("Room.existsById", Boolean.class)
-                 .setParameter("id", id)
-                 .getSingleResult();
+        return getById(id).isPresent();
     }
 }

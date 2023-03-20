@@ -1,28 +1,22 @@
 package pl.lodz.p.it.tks.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "room")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type")
+@DiscriminatorValue("Room")
 @NamedQueries({
     @NamedQuery(name = "Room.getAll",
                 query = "SELECT r FROM RoomEntity r"),
     @NamedQuery(name = "Room.getByRoomNumber",
-                query = "SELECT r FROM RoomEntity r WHERE r.roomNumber = :roomNumber"),
-    @NamedQuery(name = "Room.existsById",
-                query = "select (count(r) > 0) from RoomEntity r where r.id = :id")
+                query = "SELECT r FROM RoomEntity r WHERE r.roomNumber = :roomNumber")
 })
 @Data
-@DiscriminatorValue(value = "Room")
-@DiscriminatorColumn(name = "type")
+
 @NoArgsConstructor
 public class RoomEntity extends AbstractEntity {
 

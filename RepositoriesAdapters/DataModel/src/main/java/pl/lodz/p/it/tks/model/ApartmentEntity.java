@@ -3,14 +3,11 @@ package pl.lodz.p.it.tks.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorValue(value = "Apartment")
+@DiscriminatorValue("Apartment")
 @Data
 @NoArgsConstructor
 public class ApartmentEntity extends RoomEntity {

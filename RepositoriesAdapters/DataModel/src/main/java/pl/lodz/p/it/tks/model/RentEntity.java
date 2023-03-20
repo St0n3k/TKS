@@ -6,12 +6,10 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.eclipse.persistence.annotations.CascadeOnDelete;
 import pl.lodz.p.it.tks.model.user.ClientEntity;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "rent")
@@ -69,13 +67,13 @@ public class RentEntity extends AbstractEntity {
 
     @NotNull
     @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @CascadeOnDelete
     @JoinColumn(name = "client_id")
     private ClientEntity client;
 
     @NotNull
     @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @CascadeOnDelete
     @JoinColumn(name = "room_id")
     private RoomEntity room;
 
