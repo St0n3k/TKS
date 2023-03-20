@@ -18,6 +18,7 @@
         <module>Security</module>
         <module>Tests</module>
         <module>SoapAdapter</module>
+        <module>UIAdapters</module>
     </modules>
 
     <dependencyManagement>
@@ -66,6 +67,12 @@
             <dependency>
                 <groupId>pl.lodz.p.it.tks</groupId>
                 <artifactId>RestAdapter</artifactId>
+                <version>1.0</version>
+                <classifier>classes</classifier>
+            </dependency>
+            <dependency>
+                <groupId>pl.lodz.p.it.tks</groupId>
+                <artifactId>SoapAdapter</artifactId>
                 <version>1.0</version>
                 <classifier>classes</classifier>
             </dependency>
