@@ -214,6 +214,12 @@
                 <version>3.0.0</version>
             </dependency>
             <dependency>
+                <groupId>jakarta.jws</groupId>
+                <artifactId>jakarta.jws-api</artifactId>
+                <version>3.0.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
                 <groupId>com.sun.xml.ws</groupId>
                 <artifactId>jaxws-rt</artifactId>
                 <version>3.0.0</version>
