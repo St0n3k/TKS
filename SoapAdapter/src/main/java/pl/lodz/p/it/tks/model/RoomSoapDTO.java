@@ -1,5 +1,6 @@
 package pl.lodz.p.it.tks.model;
 
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@XmlType
+@XmlType(name = "Room")
+@XmlSeeAlso({ApartmentSoapDTO.class})
 public class RoomSoapDTO extends AbstractSoapDTO {
 
     private Integer roomNumber;

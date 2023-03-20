@@ -1,4 +1,4 @@
-package pl.lodz.p.it.tks.dto;
+package pl.lodz.p.it.tks.dto.room;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateApartmentDTO {
+public class CreateRoomDTO {
 
     @NotNull
     @Min(value = 1)
@@ -23,8 +23,4 @@ public class CreateApartmentDTO {
     @NotNull
     @Min(value = 1)
     private int size;
-
-    @NotNull
-    @Min(value = 0)
-    private Double balconyArea;
 }

@@ -1,4 +1,4 @@
-package pl.lodz.p.it.tks.dto;
+package pl.lodz.p.it.tks.dto.rent;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

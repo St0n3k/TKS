@@ -1,4 +1,4 @@
-package pl.lodz.p.it.tks.dto;
+package pl.lodz.p.it.tks.dto.room;
 
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;

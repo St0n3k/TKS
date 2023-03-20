@@ -1,4 +1,4 @@
-package pl.lodz.p.it.tks.dto;
+package pl.lodz.p.it.tks.dto.user;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

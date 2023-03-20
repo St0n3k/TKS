@@ -1,6 +1,5 @@
-package pl.lodz.p.it.tks.dto;
+package pl.lodz.p.it.tks.dto.user;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterClientDTO {
+public class RegisterEmployeeDTO {
 
     @NotNull
     private String username;
@@ -22,22 +21,6 @@ public class RegisterClientDTO {
     @NotNull
     @Pattern(regexp = "[^\\d\\s!?_#$%^&*()@=+,.|/~`'\"\\\\]+")
     private String lastName;
-
-    @NotNull
-    @Pattern(regexp = "[0-9]+")
-    private String personalID;
-
-    @NotNull
-    @Pattern(regexp = "[^\\d\\s!?_#$%^&*()@=+,.|/~`'\"\\\\]+")
-    private String city;
-
-    @NotNull
-    @Pattern(regexp = "[^\\d\\s!?_#$%^&*()@=+,.|/~`'\"\\\\]+")
-    private String street;
-
-    @NotNull
-    @Min(0)
-    private Integer number;
 
     @NotNull
     private String password;

@@ -1,19 +1,20 @@
-package pl.lodz.p.it.tks.dto;
+package pl.lodz.p.it.tks.model;
 
+import jakarta.xml.bind.annotation.XmlType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.lodz.p.it.tks.model.Apartment;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApartmentDTO extends RoomDTO {
-
+@XmlType(name = "Apartment")
+public class ApartmentSoapDTO extends RoomSoapDTO {
     private Double balconyArea;
 
-    public ApartmentDTO(Apartment apartment) {
+    public ApartmentSoapDTO(Apartment apartment) {
         super(apartment);
         balconyArea = apartment.getBalconyArea();
     }
 }
+

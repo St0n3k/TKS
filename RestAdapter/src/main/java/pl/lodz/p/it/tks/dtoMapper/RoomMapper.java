@@ -1,8 +1,8 @@
 package pl.lodz.p.it.tks.dtoMapper;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import pl.lodz.p.it.tks.dto.ApartmentDTO;
-import pl.lodz.p.it.tks.dto.RoomDTO;
+import pl.lodz.p.it.tks.dto.room.ApartmentDTO;
+import pl.lodz.p.it.tks.dto.room.RoomDTO;
 import pl.lodz.p.it.tks.model.Apartment;
 import pl.lodz.p.it.tks.model.Room;
 

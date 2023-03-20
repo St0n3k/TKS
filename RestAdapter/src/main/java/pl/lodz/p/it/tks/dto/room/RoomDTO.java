@@ -1,8 +1,9 @@
-package pl.lodz.p.it.tks.dto;
+package pl.lodz.p.it.tks.dto.room;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.lodz.p.it.tks.dto.AbstractDTO;
 import pl.lodz.p.it.tks.model.Room;
 
 @Data

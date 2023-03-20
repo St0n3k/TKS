@@ -1,7 +1,10 @@
-package pl.lodz.p.it.tks.dto;
+package pl.lodz.p.it.tks.dto.rent;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.lodz.p.it.tks.dto.AbstractDTO;
+import pl.lodz.p.it.tks.dto.room.RoomDTO;
+import pl.lodz.p.it.tks.dto.user.ClientDTO;
 import pl.lodz.p.it.tks.model.Rent;
 
 import java.time.LocalDateTime;

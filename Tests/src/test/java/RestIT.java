@@ -1,9 +1,16 @@
-import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
-import static io.restassured.RestAssured.with;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import jakarta.ws.rs.core.Response.Status;
+import org.json.JSONObject;
+import org.junit.jupiter.api.Test;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import pl.lodz.p.it.tks.dto.rent.CreateRentDTO;
+import pl.lodz.p.it.tks.dto.rent.RentRoomForSelfDTO;
+import pl.lodz.p.it.tks.dto.room.UpdateRoomDTO;
+import pl.lodz.p.it.tks.dto.user.RegisterClientDTO;
+import pl.lodz.p.it.tks.dto.user.RegisterEmployeeDTO;
+import pl.lodz.p.it.tks.dto.user.UpdateClientDTO;
+import pl.lodz.p.it.tks.model.Room;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,19 +19,11 @@ import java.util.UUID;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
-import jakarta.ws.rs.core.Response.Status;
-import org.json.JSONObject;
-import org.junit.jupiter.api.Test;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import pl.lodz.p.it.tks.dto.CreateRentDTO;
-import pl.lodz.p.it.tks.dto.RegisterClientDTO;
-import pl.lodz.p.it.tks.dto.RegisterEmployeeDTO;
-import pl.lodz.p.it.tks.dto.RentRoomForSelfDTO;
-import pl.lodz.p.it.tks.dto.UpdateClientDTO;
-import pl.lodz.p.it.tks.dto.UpdateRoomDTO;
-import pl.lodz.p.it.tks.model.Room;
+
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @Testcontainers

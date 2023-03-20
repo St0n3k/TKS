@@ -1,10 +1,10 @@
 package pl.lodz.p.it.tks.dtoMapper;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import pl.lodz.p.it.tks.dto.AdminDTO;
-import pl.lodz.p.it.tks.dto.ClientDTO;
-import pl.lodz.p.it.tks.dto.EmployeeDTO;
-import pl.lodz.p.it.tks.dto.UserDTO;
+import pl.lodz.p.it.tks.dto.user.AdminDTO;
+import pl.lodz.p.it.tks.dto.user.ClientDTO;
+import pl.lodz.p.it.tks.dto.user.EmployeeDTO;
+import pl.lodz.p.it.tks.dto.user.UserDTO;
 import pl.lodz.p.it.tks.exception.shared.ConstructorArgumentException;
 import pl.lodz.p.it.tks.model.user.Admin;
 import pl.lodz.p.it.tks.model.user.Client;
