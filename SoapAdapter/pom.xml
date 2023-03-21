@@ -61,6 +61,60 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>4.0.1</version>
+                <executions>
+                    <execution>
+                        <id>wsgen</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>wsgen-test</goal>
+                        </goals>
+                        <configuration>
+                            <sei>pl.lodz.p.it.tks.service.RoomSoapServiceImpl</sei>
+                            <genWsdl>true</genWsdl>
+                            <resourceDestDir>target/generated-test-sources/test-wsdl</resourceDestDir>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlDirectory>target/generated-test-sources/test-wsdl</wsdlDirectory>
+                            <!-- <destDir>target/generated-test-classes/wsdl</destDir> -->
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>jakarta.xml.ws</groupId>
+                        <artifactId>jakarta.xml.ws-api</artifactId>
+                        <version>4.0.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
