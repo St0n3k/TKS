@@ -17,11 +17,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import static io.restassured.RestAssured.given;
-
 
 @Testcontainers
-public abstract class TestcontainersSetup {
+public abstract class RestTestcontainersSetup {
 
     protected static RequestSpecification clientSpec;
     protected static RequestSpecification employeeSpec;
@@ -79,7 +77,7 @@ public abstract class TestcontainersSetup {
         clientCredentials.put("username", "client");
         clientCredentials.put("password", "password");
 
-        String clientJwt = given().body(clientCredentials.toString())
+        String clientJwt = RestAssured.given().body(clientCredentials.toString())
                 .contentType(ContentType.JSON)
                 .when()
                 .post("/api/login")
@@ -97,7 +95,7 @@ public abstract class TestcontainersSetup {
         employeeCredentials.put("username", "employee");
         employeeCredentials.put("password", "password");
 
-        String employeeJwt = given().body(employeeCredentials.toString())
+        String employeeJwt = RestAssured.given().body(employeeCredentials.toString())
                 .contentType(ContentType.JSON)
                 .when()
                 .post("/api/login")
@@ -115,7 +113,7 @@ public abstract class TestcontainersSetup {
         adminCredentials.put("username", "admin");
         adminCredentials.put("password", "password");
 
-        String adminJwt = given().body(adminCredentials.toString())
+        String adminJwt = RestAssured.given().body(adminCredentials.toString())
                 .contentType(ContentType.JSON)
                 .when()
                 .post("/api/login")

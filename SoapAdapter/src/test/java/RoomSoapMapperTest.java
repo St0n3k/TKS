@@ -1,12 +1,13 @@
-package pl.lodz.p.it.tks.mapper;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
+import pl.lodz.p.it.tks.mapper.RoomSoapMapper;
 import pl.lodz.p.it.tks.model.Apartment;
 import pl.lodz.p.it.tks.model.ApartmentSoapDTO;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.model.RoomSoapDTO;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RoomSoapMapperTest {
 

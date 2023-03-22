@@ -1,7 +1,10 @@
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import jakarta.ws.rs.core.Response.Status;
+import org.hamcrest.Matchers;
 import org.json.JSONObject;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.it.tks.dto.rent.CreateRentDTO;
@@ -20,31 +23,26 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 @Testcontainers
-public class RestIT extends TestcontainersSetup {
+public class RestIT extends RestTestcontainersSetup {
 
     //region RoomTests
     @Test
     void shouldReturnRoomWithStatusCode200() {
-        given().spec(clientSpec)
+        RestAssured.given().spec(clientSpec)
                .when().get("/api/rooms/9acac245-25b3-492d-a742-4c69bfcb90cf")
                .then()
                .assertThat().statusCode(Status.OK.getStatusCode())
                .assertThat().contentType(ContentType.JSON)
-               .assertThat().body("roomNumber", equalTo(643))
-               .assertThat().body("price", equalTo(250.0F))
-               .assertThat().body("size", equalTo(6));
+               .assertThat().body("roomNumber", Matchers.equalTo(643))
+               .assertThat().body("price", Matchers.equalTo(250.0F))
+               .assertThat().body("size", Matchers.equalTo(6));
     }
 
     @Test
     void shouldReturnListOfRoomsWithStatusCode200() {
-        when().get("/api/rooms")
+        RestAssured.when().get("/api/rooms")
               .then()
               .assertThat().statusCode(Status.OK.getStatusCode())
               .assertThat().contentType(ContentType.JSON);
@@ -56,7 +54,7 @@ public class RestIT extends TestcontainersSetup {
         Room room = new Room(1, 600.0, 1);
 
         JSONObject req = new JSONObject(room);
-        UUID id = given().spec(employeeSpec).contentType(ContentType.JSON)
+        UUID id = RestAssured.given().spec(employeeSpec).contentType(ContentType.JSON)
                          .body(req.toString())
                          .when()
                          .post("/api/rooms")
@@ -64,13 +62,13 @@ public class RestIT extends TestcontainersSetup {
                          .statusCode(Status.CREATED.getStatusCode())
                          .extract().jsonPath().getUUID("id");
 
-        when().get("api/rooms/" + id)
+        RestAssured.when().get("api/rooms/" + id)
               .then()
               .statusCode(Status.OK.getStatusCode())
               .contentType(ContentType.JSON)
-              .body("id", equalTo(id.toString()),
-                    "price", equalTo(600.0f),
-                    "size", equalTo(1));
+              .body("id", Matchers.equalTo(id.toString()),
+                    "price", Matchers.equalTo(600.0f),
+                    "size", Matchers.equalTo(1));
     }
 
     @Test
@@ -78,7 +76,7 @@ public class RestIT extends TestcontainersSetup {
         Room room = new Room(643, 200.0, 10);
 
         JSONObject req = new JSONObject(room);
-        given().spec(employeeSpec).contentType(ContentType.JSON)
+        RestAssured.given().spec(employeeSpec).contentType(ContentType.JSON)
                .body(req.toString())
                .when()
                .post("/api/rooms")
@@ -91,14 +89,14 @@ public class RestIT extends TestcontainersSetup {
         Room room = new Room(643, 200.0, 10);
 
         JSONObject req = new JSONObject(room);
-        given().contentType(ContentType.JSON)
+        RestAssured.given().contentType(ContentType.JSON)
                .body(req.toString())
                .when()
                .post("/api/rooms")
                .then()
                .statusCode(Status.FORBIDDEN.getStatusCode());
 
-        given().spec(clientSpec).contentType(ContentType.JSON)
+        RestAssured.given().spec(clientSpec).contentType(ContentType.JSON)
                .body(req.toString())
                .when()
                .post("/api/rooms")
@@ -108,20 +106,20 @@ public class RestIT extends TestcontainersSetup {
 
     @Test
     void shouldGetRoomByIdWithStatusCode200() {
-        given().when()
+        RestAssured.given().when()
                .get("/api/rooms/dba673f8-0526-4cea-941e-3c8ddd5e4f92")
                .then()
                .statusCode(Status.OK.getStatusCode())
                .contentType(ContentType.JSON)
-               .body("id", equalTo("dba673f8-0526-4cea-941e-3c8ddd5e4f92"),
-                     "price", equalTo(707.19F),
-                     "roomNumber", equalTo(836),
-                     "size", equalTo(1));
+               .body("id", Matchers.equalTo("dba673f8-0526-4cea-941e-3c8ddd5e4f92"),
+                     "price", Matchers.equalTo(707.19F),
+                     "roomNumber", Matchers.equalTo(836),
+                     "size", Matchers.equalTo(1));
     }
 
     @Test
     void shouldGetRoomByIdFailWithStatusCode404() {
-        given().when()
+        RestAssured.given().when()
                .get("/api/rooms/dba537f8-0526-4cea-941e-3c8ddd5e4f92")
                .then()
                .statusCode(Status.NOT_FOUND.getStatusCode());
@@ -129,22 +127,22 @@ public class RestIT extends TestcontainersSetup {
 
     @Test
     void shouldFindPastRentsForRoomWithStatusCode200() {
-        given().spec(employeeSpec).param("past", true)
+        RestAssured.given().spec(employeeSpec).param("past", true)
                .when().get("/api/rooms/66208864-7b61-4e6e-8573-53863bd93b35/rents")
                .then()
                .statusCode(Status.OK.getStatusCode())
                .contentType(ContentType.JSON)
-               .body("size()", equalTo(1));
+               .body("size()", Matchers.equalTo(1));
     }
 
     @Test
     void shouldFindActiveRentsForRoomWithStatusCode200() {
-        given().spec(employeeSpec).param("past", false)
+        RestAssured.given().spec(employeeSpec).param("past", false)
                .when().get("/api/rooms/66208864-7b61-4e6e-8573-53863bd93b35/rents")
                .then()
                .statusCode(Status.OK.getStatusCode())
                .contentType(ContentType.JSON)
-               .body("size()", equalTo(2));
+               .body("size()", Matchers.equalTo(2));
     }
 
     @Test
@@ -152,21 +150,21 @@ public class RestIT extends TestcontainersSetup {
         UpdateRoomDTO dto = new UpdateRoomDTO(1934, null, 199.99);
         JSONObject req = new JSONObject(dto);
 
-        given().spec(employeeSpec).when().get("/api/rooms/b9573aa2-42fa-43cb-baa1-42d06e1bdc8d")
+        RestAssured.given().spec(employeeSpec).when().get("/api/rooms/b9573aa2-42fa-43cb-baa1-42d06e1bdc8d")
                .then()
                .assertThat().statusCode(Status.OK.getStatusCode())
-               .assertThat().body("price", equalTo(1396.79F))
-               .assertThat().body("size", equalTo(9))
-               .assertThat().body("roomNumber", equalTo(392));
+               .assertThat().body("price", Matchers.equalTo(1396.79F))
+               .assertThat().body("size", Matchers.equalTo(9))
+               .assertThat().body("roomNumber", Matchers.equalTo(392));
 
 
-        given().spec(employeeSpec).contentType(ContentType.JSON)
+        RestAssured.given().spec(employeeSpec).contentType(ContentType.JSON)
                .body(req.toString())
                .when().put("/api/rooms/b9573aa2-42fa-43cb-baa1-42d06e1bdc8d")
                .then().assertThat().statusCode(Status.OK.getStatusCode())
-               .assertThat().body("price", equalTo(199.99F))
-               .assertThat().body("size", equalTo(9))
-               .assertThat().body("roomNumber", equalTo(1934));
+               .assertThat().body("price", Matchers.equalTo(199.99F))
+               .assertThat().body("size", Matchers.equalTo(9))
+               .assertThat().body("roomNumber", Matchers.equalTo(1934));
     }
 
     @Test
@@ -174,13 +172,13 @@ public class RestIT extends TestcontainersSetup {
         UpdateRoomDTO dto = new UpdateRoomDTO(836, null, null);
         JSONObject req = new JSONObject(dto);
 
-        when().get("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
+        RestAssured.when().get("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
               .then()
               .assertThat().statusCode(Status.OK.getStatusCode())
-              .assertThat().body("roomNumber", equalTo(244));
+              .assertThat().body("roomNumber", Matchers.equalTo(244));
 
 
-        given().spec(employeeSpec).contentType(ContentType.JSON)
+        RestAssured.given().spec(employeeSpec).contentType(ContentType.JSON)
                .body(req.toString())
                .when().put("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
                .then().assertThat().statusCode(Status.CONFLICT.getStatusCode());
@@ -191,17 +189,17 @@ public class RestIT extends TestcontainersSetup {
         UpdateRoomDTO dto = new UpdateRoomDTO(836, null, null);
         JSONObject req = new JSONObject(dto);
 
-        when().get("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
+        RestAssured.when().get("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
               .then()
               .assertThat().statusCode(Status.OK.getStatusCode())
-              .assertThat().body("roomNumber", equalTo(244));
+              .assertThat().body("roomNumber", Matchers.equalTo(244));
 
-        given().contentType(ContentType.JSON)
+        RestAssured.given().contentType(ContentType.JSON)
                .body(req.toString())
                .when().put("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
                .then().assertThat().statusCode(Status.FORBIDDEN.getStatusCode());
 
-        given().spec(clientSpec).contentType(ContentType.JSON)
+        RestAssured.given().spec(clientSpec).contentType(ContentType.JSON)
                .body(req.toString())
                .when().put("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
                .then().assertThat().statusCode(Status.FORBIDDEN.getStatusCode());
@@ -212,17 +210,17 @@ public class RestIT extends TestcontainersSetup {
     void shouldRemoveRoomWithStatusCode204() {
         Room room = new Room(1234321, 200.0, 4);
         JSONObject json = new JSONObject(room);
-        Room addedRoom = given().spec(adminSpec).body(json.toString())
+        Room addedRoom = RestAssured.given().spec(adminSpec).body(json.toString())
                                 .contentType(ContentType.JSON)
                                 .when().post("/api/rooms")
                                 .getBody().as(Room.class);
 
-        given().spec(adminSpec).contentType(ContentType.JSON)
+        RestAssured.given().spec(adminSpec).contentType(ContentType.JSON)
                .when().delete("/api/rooms/" + addedRoom.getId())
                .then()
                .statusCode(Status.NO_CONTENT.getStatusCode());
 
-        when().get("/api/rooms/" + addedRoom.getId())
+        RestAssured.when().get("/api/rooms/" + addedRoom.getId())
               .then()
               .statusCode(Status.NOT_FOUND.getStatusCode());
     }
@@ -231,17 +229,17 @@ public class RestIT extends TestcontainersSetup {
     void shouldFailRemovingRoomWithStatusCode403() {
         Room room = new Room(1234, 200.0, 4);
         JSONObject json = new JSONObject(room);
-        Room addedRoom = given().spec(adminSpec).body(json.toString())
+        Room addedRoom = RestAssured.given().spec(adminSpec).body(json.toString())
                                 .contentType(ContentType.JSON)
                                 .when().post("/api/rooms")
                                 .getBody().as(Room.class);
 
-        given().contentType(ContentType.JSON)
+        RestAssured.given().contentType(ContentType.JSON)
                .when().delete("/api/rooms/" + addedRoom.getId())
                .then()
                .statusCode(Status.FORBIDDEN.getStatusCode());
 
-        given().spec(clientSpec).contentType(ContentType.JSON)
+        RestAssured.given().spec(clientSpec).contentType(ContentType.JSON)
                .when().delete("/api/rooms/" + addedRoom.getId())
                .then()
                .statusCode(Status.FORBIDDEN.getStatusCode());
@@ -252,7 +250,7 @@ public class RestIT extends TestcontainersSetup {
         Room room = new Room(4321, 200.0, 4);
         JSONObject json = new JSONObject(room);
 
-        Room addedRoom = given().spec(employeeSpec).body(json.toString())
+        Room addedRoom = RestAssured.given().spec(employeeSpec).body(json.toString())
                                 .contentType(ContentType.JSON)
                                 .when().post("/api/rooms")
                                 .getBody().as(Room.class);
@@ -265,7 +263,7 @@ public class RestIT extends TestcontainersSetup {
                                               addedRoom.getId());
         JSONObject body = new JSONObject(dto);
 
-        given().spec(employeeSpec).contentType(ContentType.JSON)
+        RestAssured.given().spec(employeeSpec).contentType(ContentType.JSON)
                .body(body.toString())
                .when()
                .post("/api/rents")
@@ -273,7 +271,7 @@ public class RestIT extends TestcontainersSetup {
                .statusCode(Status.CREATED.getStatusCode());
 
 
-        given().spec(employeeSpec).contentType(ContentType.JSON)
+        RestAssured.given().spec(employeeSpec).contentType(ContentType.JSON)
                .when().delete("/api/rooms/" + addedRoom.getId())
                .then()
                .statusCode(Status.CONFLICT.getStatusCode());
@@ -283,7 +281,7 @@ public class RestIT extends TestcontainersSetup {
     void shouldFailWhileUpdatingRoomWithInvalidAttributes() {
         UpdateRoomDTO roomDTO = new UpdateRoomDTO(75, 0, -1.);
         JSONObject json = new JSONObject(roomDTO);
-        given().spec(employeeSpec).body(json.toString())
+        RestAssured.given().spec(employeeSpec).body(json.toString())
                .contentType(ContentType.JSON)
                .when()
                .put("/api/rooms/8378b753-6d05-454b-8447-efb125846fc7")
@@ -301,7 +299,7 @@ public class RestIT extends TestcontainersSetup {
                                                         LocalDateTime.now().plusDays(13), false);
 
         JSONObject req = new JSONObject(dto);
-        UUID id = given().spec(clientSpec).contentType(ContentType.JSON)
+        UUID id = RestAssured.given().spec(clientSpec).contentType(ContentType.JSON)
                          .body(req.toString())
                          .when()
                          .post("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
@@ -309,11 +307,11 @@ public class RestIT extends TestcontainersSetup {
                          .statusCode(Status.CREATED.getStatusCode())
                          .extract().jsonPath().getUUID("id");
 
-        when().get("api/rents/" + id)
+        RestAssured.when().get("api/rents/" + id)
               .then()
               .statusCode(Status.OK.getStatusCode())
               .contentType(ContentType.JSON)
-              .body("id", equalTo(id.toString()));
+              .body("id", Matchers.equalTo(id.toString()));
     }
 
     @Test
@@ -323,14 +321,14 @@ public class RestIT extends TestcontainersSetup {
                                                         LocalDateTime.now().plusDays(13), false);
 
         JSONObject req = new JSONObject(dto);
-        given().spec(employeeSpec).contentType(ContentType.JSON)
+        RestAssured.given().spec(employeeSpec).contentType(ContentType.JSON)
                .body(req.toString())
                .when()
                .post("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
                .then()
                .statusCode(Status.FORBIDDEN.getStatusCode());
 
-        given().spec(adminSpec).contentType(ContentType.JSON)
+        RestAssured.given().spec(adminSpec).contentType(ContentType.JSON)
                .body(req.toString())
                .when()
                .post("/api/rooms/a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9")
@@ -341,32 +339,32 @@ public class RestIT extends TestcontainersSetup {
 
     @Test
     void shouldReturnRentWithStatusCode200() {
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .when().get("/api/rents/22208864-7b61-4e6e-8573-53863bd93b35")
                .then()
                .statusCode(Status.OK.getStatusCode())
                .contentType(ContentType.JSON)
-               .body("id", equalTo("22208864-7b61-4e6e-8573-53863bd93b35"),
-                     "board", equalTo(true),
-                     "client.id", equalTo("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
-                     "room.id", equalTo("9acac245-25b3-492d-a742-4c69bfcb90cf"));
+               .body("id", Matchers.equalTo("22208864-7b61-4e6e-8573-53863bd93b35"),
+                     "board", Matchers.equalTo(true),
+                     "client.id", Matchers.equalTo("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                     "room.id", Matchers.equalTo("9acac245-25b3-492d-a742-4c69bfcb90cf"));
     }
 
     @Test
     void shouldFailReturningNoExistingRentWithStatusCode404() {
-        given().spec(employeeSpec).when().get("/api/rents/bb6be8cd-6a18-4b24-ac81-90539f86b284")
+        RestAssured.given().spec(employeeSpec).when().get("/api/rents/bb6be8cd-6a18-4b24-ac81-90539f86b284")
                .then()
                .statusCode(Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
     void shouldRemoveRentWithStatusCode204() {
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .when().delete("/api/rents/32208864-7b61-4e6e-8573-53863bd93b35")
                .then()
                .statusCode(Status.NO_CONTENT.getStatusCode());
 
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .when().get("/api/rents/32208864-7b61-4e6e-8573-53863bd93b35")
                .then()
                .statusCode(Status.NOT_FOUND.getStatusCode());
@@ -374,12 +372,12 @@ public class RestIT extends TestcontainersSetup {
 
     @Test
     void shouldReturnStatusCode204WhenRemovingNonExistingRent() {
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .when().delete("/api/rents/bb6be8cd-6a18-4b24-ac81-90539f86b284")
                .then()
                .statusCode(Status.NO_CONTENT.getStatusCode());
 
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .when().get("/api/rents/bb6be8cd-6a18-4b24-ac81-90539f86b284")
                .then()
                .statusCode(Status.NOT_FOUND.getStatusCode());
@@ -398,7 +396,7 @@ public class RestIT extends TestcontainersSetup {
             UUID.fromString("9acac245-25b3-492d-a742-4c69bfcb90cf"));
         JSONObject body = new JSONObject(dto);
 
-        String id = given().spec(employeeSpec)
+        String id = RestAssured.given().spec(employeeSpec)
                            .contentType(ContentType.JSON)
                            .body(body.toString())
                            .when()
@@ -406,22 +404,22 @@ public class RestIT extends TestcontainersSetup {
                            .then()
                            .statusCode(Status.CREATED.getStatusCode())
                            .contentType(ContentType.JSON)
-                           .body("board", equalTo(true),
-                                 "client.id", equalTo("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
-                                 "room.id", equalTo("9acac245-25b3-492d-a742-4c69bfcb90cf"))
+                           .body("board", Matchers.equalTo(true),
+                                 "client.id", Matchers.equalTo("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                                 "room.id", Matchers.equalTo("9acac245-25b3-492d-a742-4c69bfcb90cf"))
                            .extract()
                            .response()
                            .path("id");
 
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .when().get("api/rents/" + id)
                .then()
                .statusCode(Status.OK.getStatusCode())
                .contentType(ContentType.JSON)
-               .body("id", equalTo(id),
-                     "board", equalTo(true),
-                     "client.id", equalTo("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
-                     "room.id", equalTo("9acac245-25b3-492d-a742-4c69bfcb90cf"));
+               .body("id", Matchers.equalTo(id),
+                     "board", Matchers.equalTo(true),
+                     "client.id", Matchers.equalTo("bdbe2fcf-6203-47d6-8908-ca65b9689396"),
+                     "room.id", Matchers.equalTo("9acac245-25b3-492d-a742-4c69bfcb90cf"));
 
     }
 
@@ -438,7 +436,7 @@ public class RestIT extends TestcontainersSetup {
 
         JSONObject body = new JSONObject(dto);
 
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .contentType(ContentType.JSON)
                .body(body.toString())
                .when()
@@ -460,7 +458,7 @@ public class RestIT extends TestcontainersSetup {
 
         JSONObject body = new JSONObject(dto);
 
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .contentType(ContentType.JSON)
                .body(body.toString())
                .when()
@@ -482,7 +480,7 @@ public class RestIT extends TestcontainersSetup {
 
         JSONObject json = new JSONObject(dto);
 
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .contentType(ContentType.JSON)
                .body(json.toString())
                .when()
@@ -504,7 +502,7 @@ public class RestIT extends TestcontainersSetup {
 
         JSONObject json = new JSONObject(dto);
 
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .contentType(ContentType.JSON)
                .body(json.toString())
                .when()
@@ -526,7 +524,7 @@ public class RestIT extends TestcontainersSetup {
 
         JSONObject json = new JSONObject(dto);
 
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .contentType(ContentType.JSON)
                .body(json.toString())
                .when()
@@ -560,7 +558,7 @@ public class RestIT extends TestcontainersSetup {
 
                 JSONObject json = new JSONObject(dto);
 
-                given().spec(employeeSpec)
+                RestAssured.given().spec(employeeSpec)
                        .contentType(ContentType.JSON)
                        .body(json.toString())
                        .when()
@@ -576,13 +574,13 @@ public class RestIT extends TestcontainersSetup {
         while (numberFinished.get() != threadNumber) {
         }
 
-        Response response = when().get("/api/rooms/b9573aa2-42fa-43cb-baa1-42d06e1bdc8d/rents")
+        Response response = RestAssured.when().get("/api/rooms/b9573aa2-42fa-43cb-baa1-42d06e1bdc8d/rents")
                                   .then()
                                   .assertThat().statusCode(Status.OK.getStatusCode())
                                   .assertThat().contentType(ContentType.JSON)
                                   .extract().response();
         List<String> jsonResponse = response.jsonPath().getList("$");
-        assertEquals(1, jsonResponse.size());
+        Assertions.assertEquals(1, jsonResponse.size());
     }
 
     @Test
@@ -610,7 +608,7 @@ public class RestIT extends TestcontainersSetup {
                     UUID.fromString("b0f9495e-13a7-4da1-989c-c403ece4e22d"));
                 JSONObject json = new JSONObject(dto);
 
-                given().spec(employeeSpec)
+                RestAssured.given().spec(employeeSpec)
                        .contentType(ContentType.JSON)
                        .body(json.toString())
                        .when()
@@ -624,17 +622,17 @@ public class RestIT extends TestcontainersSetup {
         while (numberFinished.get() != threadNumber) {
         }
 
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .when().get("/api/rooms/b0f9495e-13a7-4da1-989c-c403ece4e22d/rents")
                .then()
                .statusCode(Status.OK.getStatusCode())
                .contentType(ContentType.JSON)
-               .body("size()", equalTo(2));
+               .body("size()", Matchers.equalTo(2));
     }
 
     @Test
     void shouldFailWithStatusCode404WhenGettingRentsOfNonExistentRoom() {
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .when().get("/api/rooms/bb6be8cd-6a18-4b24-ac81-90539f86b284/rents")
                .then()
                .statusCode(Status.NOT_FOUND.getStatusCode());
@@ -642,11 +640,11 @@ public class RestIT extends TestcontainersSetup {
 
     @Test
     void shouldGetEmptyArrayWithStatusCode200() {
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .when().get("/api/rooms/0533a035-22de-45e8-b922-5fa8b103b1a2/rents")
                .then()
                .statusCode(Status.OK.getStatusCode())
-               .body("$", empty());
+               .body("$", Matchers.empty());
     }
 
     @Test
@@ -654,17 +652,17 @@ public class RestIT extends TestcontainersSetup {
         JSONObject reqFalse = new JSONObject();
         reqFalse.put("board", false);
 
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .when().get("/api/rents/42208864-7b61-4e6e-8573-53863bd93b35")
                .then()
                .statusCode(Status.OK.getStatusCode())
                .contentType(ContentType.JSON)
-               .body("id", equalTo("42208864-7b61-4e6e-8573-53863bd93b35"),
-                     "board", equalTo(true),
-                     "finalCost", equalTo(3000.0F));
+               .body("id", Matchers.equalTo("42208864-7b61-4e6e-8573-53863bd93b35"),
+                     "board", Matchers.equalTo(true),
+                     "finalCost", Matchers.equalTo(3000.0F));
 
 
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .contentType(ContentType.JSON)
                .body(reqFalse.toString())
                .when()
@@ -672,24 +670,24 @@ public class RestIT extends TestcontainersSetup {
                .then()
                .statusCode(Status.OK.getStatusCode())
                .body(
-                   "board", equalTo(false),
-                   "finalCost", equalTo(2500.0F));
+                   "board", Matchers.equalTo(false),
+                   "finalCost", Matchers.equalTo(2500.0F));
 
         // perform GET request to verify changes
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .when().get("/api/rents/42208864-7b61-4e6e-8573-53863bd93b35")
                .then()
                .statusCode(Status.OK.getStatusCode())
                .contentType(ContentType.JSON)
-               .body("id", equalTo("42208864-7b61-4e6e-8573-53863bd93b35"),
-                     "board", equalTo(false),
-                     "finalCost", equalTo(2500.0F));
+               .body("id", Matchers.equalTo("42208864-7b61-4e6e-8573-53863bd93b35"),
+                     "board", Matchers.equalTo(false),
+                     "finalCost", Matchers.equalTo(2500.0F));
 
         JSONObject reqTrue = new JSONObject();
         reqTrue.put("board", true);
 
         // update board once again
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .contentType(ContentType.JSON)
                .body(reqTrue.toString())
                .when()
@@ -697,18 +695,18 @@ public class RestIT extends TestcontainersSetup {
                .then()
                .statusCode(Status.OK.getStatusCode())
                .contentType(ContentType.JSON)
-               .body("board", equalTo(true),
-                     "finalCost", equalTo(3000.0F));
+               .body("board", Matchers.equalTo(true),
+                     "finalCost", Matchers.equalTo(3000.0F));
 
         // perform GET request to verify changes
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .when().get("/api/rents/42208864-7b61-4e6e-8573-53863bd93b35")
                .then()
                .statusCode(Status.OK.getStatusCode())
                .contentType(ContentType.JSON)
-               .body("id", equalTo("42208864-7b61-4e6e-8573-53863bd93b35"),
-                     "board", equalTo(true),
-                     "finalCost", equalTo(3000.0F));
+               .body("id", Matchers.equalTo("42208864-7b61-4e6e-8573-53863bd93b35"),
+                     "board", Matchers.equalTo(true),
+                     "finalCost", Matchers.equalTo(3000.0F));
 
     }
 
@@ -725,7 +723,7 @@ public class RestIT extends TestcontainersSetup {
             UUID.fromString("a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9"));
         JSONObject requestBody = new JSONObject(dto);
 
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .contentType(ContentType.JSON)
                .body(requestBody.toString())
                .when().post("api/rents")
@@ -746,7 +744,7 @@ public class RestIT extends TestcontainersSetup {
             UUID.fromString("a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9"));
         JSONObject requestBody = new JSONObject(dto);
 
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .contentType(ContentType.JSON)
                .body(requestBody.toString())
                .when().post("api/rents")
@@ -767,7 +765,7 @@ public class RestIT extends TestcontainersSetup {
             UUID.fromString("a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9"));
         JSONObject requestBody = new JSONObject(dto);
 
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .contentType(ContentType.JSON)
                .body(requestBody.toString())
                .when().post("api/rents")
@@ -777,7 +775,7 @@ public class RestIT extends TestcontainersSetup {
 
     @Test
     void shouldFailWithStatusCode409WhenRemovingAnActiveRent() {
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .when().delete("/api/rents/6ddee1ee-9eba-4222-a031-463a849e1886")
                .then()
                .statusCode(409);
@@ -786,7 +784,7 @@ public class RestIT extends TestcontainersSetup {
     @Test
     void shouldFailCreatingRentForInactiveUserWithStatusCode401() {
         UUID clientId =
-            given().spec(adminSpec)
+            RestAssured.given().spec(adminSpec)
                    .when().get("/api/users/search/jakub3")
                    .then()
                    .extract().jsonPath().getUUID("id");
@@ -802,7 +800,7 @@ public class RestIT extends TestcontainersSetup {
             UUID.fromString("0533a035-22de-45e8-b922-5fa8b103b1a2"));
         JSONObject body = new JSONObject(dto);
 
-        given().spec(employeeSpec)
+        RestAssured.given().spec(employeeSpec)
                .contentType(ContentType.JSON)
                .body(body.toString())
                .when()
@@ -824,7 +822,7 @@ public class RestIT extends TestcontainersSetup {
             UUID.fromString("9acac245-25b3-492d-a742-4c69bfcb90cf"));
         JSONObject body = new JSONObject(dto);
 
-        given().spec(clientSpec)
+        RestAssured.given().spec(clientSpec)
                .contentType(ContentType.JSON)
                .body(body.toString())
                .when()
@@ -835,7 +833,7 @@ public class RestIT extends TestcontainersSetup {
 
     @Test
     void shouldFailGettingAllRentsAsClientWithStatusCode403() {
-        given().spec(clientSpec)
+        RestAssured.given().spec(clientSpec)
                .contentType(ContentType.JSON)
                .when()
                .get("/api/rents")
@@ -845,7 +843,7 @@ public class RestIT extends TestcontainersSetup {
 
     @Test
     void shouldFailRemovingRentAsClientWithStatusCode403() {
-        given().spec(clientSpec)
+        RestAssured.given().spec(clientSpec)
                .when().delete("/api/rents/32208864-7b61-4e6e-8573-53863bd93b35")
                .then()
                .statusCode(Status.FORBIDDEN.getStatusCode());
@@ -856,7 +854,7 @@ public class RestIT extends TestcontainersSetup {
         JSONObject reqFalse = new JSONObject();
         reqFalse.put("board", false);
 
-        given().spec(clientSpec)
+        RestAssured.given().spec(clientSpec)
                .contentType(ContentType.JSON)
                .body(reqFalse.toString())
                .when()
@@ -873,7 +871,7 @@ public class RestIT extends TestcontainersSetup {
 
         JSONObject req = new JSONObject(dto);
 
-        String id = with().spec(adminSpec)
+        String id = RestAssured.with().spec(adminSpec)
                           .given()
                           .contentType(ContentType.JSON)
                           .body(req.toString())
@@ -885,16 +883,16 @@ public class RestIT extends TestcontainersSetup {
                           .jsonPath()
                           .getString("id");
 
-        with().spec(adminSpec)
+        RestAssured.with().spec(adminSpec)
               .when()
               .get("/api/users/" + id)
               .then()
               .statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
               .contentType(ContentType.JSON)
-              .body("id", equalTo(id),
-                    "username", equalTo("jacek1"),
-                    "firstName", equalTo("Jacek"),
-                    "lastName", equalTo("Murański"));
+              .body("id", Matchers.equalTo(id),
+                    "username", Matchers.equalTo("jacek1"),
+                    "firstName", Matchers.equalTo("Jacek"),
+                    "lastName", Matchers.equalTo("Murański"));
     }
 
     @Test
@@ -904,51 +902,51 @@ public class RestIT extends TestcontainersSetup {
 
         JSONObject req = new JSONObject(dto);
 
-        String id = with().spec(employeeSpec)
+        String id = RestAssured.with().spec(employeeSpec)
                           .given().contentType(ContentType.JSON)
                           .body(req.toString())
                           .when().post("/api/users/clients")
                           .then().assertThat().statusCode(jakarta.ws.rs.core.Response.Status.CREATED.getStatusCode())
                           .extract().jsonPath().getString("id");
 
-        with().spec(employeeSpec)
+        RestAssured.with().spec(employeeSpec)
               .when().get("/api/users/" + id)
               .then()
               .statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
               .contentType(ContentType.JSON)
-              .body("id", equalTo(id),
-                    "username", equalTo("marek347"),
-                    "firstName", equalTo("Mariusz"),
-                    "lastName", equalTo("Pasek"),
-                    "personalId", equalTo("0124738"),
-                    "city", equalTo("Łódź"),
-                    "street", equalTo("Wesoła"),
-                    "houseNumber", equalTo(7));
+              .body("id", Matchers.equalTo(id),
+                    "username", Matchers.equalTo("marek347"),
+                    "firstName", Matchers.equalTo("Mariusz"),
+                    "lastName", Matchers.equalTo("Pasek"),
+                    "personalId", Matchers.equalTo("0124738"),
+                    "city", Matchers.equalTo("Łódź"),
+                    "street", Matchers.equalTo("Wesoła"),
+                    "houseNumber", Matchers.equalTo(7));
     }
 
     @Test
     void shouldReturnUserListWithStatusCode200() {
-        with().spec(adminSpec)
+        RestAssured.with().spec(adminSpec)
               .when().get("/api/users")
               .then().assertThat().statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
               .assertThat().contentType(ContentType.JSON)
-              .assertThat().body("$.size()", equalTo(6));
+              .assertThat().body("$.size()", Matchers.equalTo(6));
     }
 
     @Test
     void shouldReturnUserByUsername() {
-        with().spec(adminSpec)
+        RestAssured.with().spec(adminSpec)
               .when().get("/api/users/search/admin")
               .then()
               .assertThat().statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
-              .assertThat().body("username", equalTo("admin"))
-              .assertThat().body("role", equalTo("ADMIN"))
-              .assertThat().body("active", equalTo(true));
+              .assertThat().body("username", Matchers.equalTo("admin"))
+              .assertThat().body("role", Matchers.equalTo("ADMIN"))
+              .assertThat().body("active", Matchers.equalTo(true));
     }
 
     @Test
     void shouldReturnNotFoundStatusWhenSearchingNonExistingUsername() {
-        with().spec(adminSpec)
+        RestAssured.with().spec(adminSpec)
               .when().get("/api/users/search/random_user")
               .then()
               .assertThat().statusCode(jakarta.ws.rs.core.Response.Status.NOT_FOUND.getStatusCode());
@@ -962,78 +960,78 @@ public class RestIT extends TestcontainersSetup {
         JSONObject req = new JSONObject(dto);
         String id = "a524d75e-927a-4a10-8c46-6321fff6979e";
 
-        with().spec(adminSpec)
+        RestAssured.with().spec(adminSpec)
               .when().get("/api/users/" + id)
               .then()
               .statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
-              .body("firstName", equalTo("Jakub"),
-                    "lastName", equalTo("Bukaj"),
-                    "personalId", equalTo("3584873"),
-                    "city", equalTo("Krakow"),
-                    "street", equalTo("Smutna"),
-                    "houseNumber", equalTo(13));
+              .body("firstName", Matchers.equalTo("Jakub"),
+                    "lastName", Matchers.equalTo("Bukaj"),
+                    "personalId", Matchers.equalTo("3584873"),
+                    "city", Matchers.equalTo("Krakow"),
+                    "street", Matchers.equalTo("Smutna"),
+                    "houseNumber", Matchers.equalTo(13));
 
 
-        with().spec(adminSpec)
+        RestAssured.with().spec(adminSpec)
               .given().contentType(ContentType.JSON)
               .body(req.toString())
               .when().put("/api/users/clients/" + id)
               .then()
               .assertThat()
               .statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
-              .body("firstName", equalTo("Franciszek"),
-                    "lastName", equalTo("Bukaj"),
-                    "personalId", equalTo("3584873"),
-                    "city", equalTo("Krakow"),
-                    "street", equalTo("Wesoła"),
-                    "houseNumber", equalTo(13));
+              .body("firstName", Matchers.equalTo("Franciszek"),
+                    "lastName", Matchers.equalTo("Bukaj"),
+                    "personalId", Matchers.equalTo("3584873"),
+                    "city", Matchers.equalTo("Krakow"),
+                    "street", Matchers.equalTo("Wesoła"),
+                    "houseNumber", Matchers.equalTo(13));
 
-        with().spec(adminSpec)
+        RestAssured.with().spec(adminSpec)
               .when().get("/api/users/" + id)
               .then()
               .statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
-              .body("firstName", equalTo("Franciszek"))
-              .body("lastName", equalTo("Bukaj"))
-              .body("personalId", equalTo("3584873"))
-              .body("city", equalTo("Krakow"))
-              .body("street", equalTo("Wesoła"))
-              .body("houseNumber", equalTo(13));
+              .body("firstName", Matchers.equalTo("Franciszek"))
+              .body("lastName", Matchers.equalTo("Bukaj"))
+              .body("personalId", Matchers.equalTo("3584873"))
+              .body("city", Matchers.equalTo("Krakow"))
+              .body("street", Matchers.equalTo("Wesoła"))
+              .body("houseNumber", Matchers.equalTo(13));
     }
 
     @Test
     void shouldActivateUserWithStatusCode200() {
         String id = "a524d75e-927a-4a10-8c46-6321fff6979e";
-        with().spec(employeeSpec)
+        RestAssured.with().spec(employeeSpec)
               .when().put("/api/users/" + id + "/activate")
               .then()
               .assertThat().statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
-              .assertThat().body("active", equalTo(true));
+              .assertThat().body("active", Matchers.equalTo(true));
 
-        with().spec(employeeSpec)
+        RestAssured.with().spec(employeeSpec)
               .when().get("/api/users/" + id)
               .then()
               .statusCode(Status.OK.getStatusCode())
               .contentType(ContentType.JSON)
-              .body("active", equalTo(true));
+              .body("active", Matchers.equalTo(true));
     }
 
     @Test
     void shouldDeactivateUserWithStatusCode200() {
         String id = "a524d75e-927a-4a10-8c46-6321fff6979e";
-        with().spec(employeeSpec)
+        RestAssured.with().spec(employeeSpec)
               .when()
               .put("/api/users/" + id + "/deactivate")
               .then()
               .assertThat().statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
-              .assertThat().body("active", equalTo(false));
+              .assertThat().body("active", Matchers.equalTo(false));
 
-        with().spec(employeeSpec)
+        RestAssured.with().spec(employeeSpec)
               .when()
               .get("/api/users/" + id)
               .then()
               .statusCode(Status.OK.getStatusCode())
               .contentType(ContentType.JSON)
-              .body("active", equalTo(false));
+              .body("active", Matchers.equalTo(false));
     }
 
     @Test
@@ -1042,7 +1040,7 @@ public class RestIT extends TestcontainersSetup {
                                                             "777999", "Łódź", "Piotrkowska", 20, "f23ttD");
         JSONObject json = new JSONObject(clientDTO);
 
-        with().spec(employeeSpec)
+        RestAssured.with().spec(employeeSpec)
               .given().contentType(ContentType.JSON)
               .body(json.toString())
               .when()
@@ -1050,7 +1048,7 @@ public class RestIT extends TestcontainersSetup {
               .then()
               .statusCode(jakarta.ws.rs.core.Response.Status.CREATED.getStatusCode());
 
-        with().spec(employeeSpec)
+        RestAssured.with().spec(employeeSpec)
               .given().contentType(ContentType.JSON)
               .body(json.toString())
               .when()
@@ -1064,7 +1062,7 @@ public class RestIT extends TestcontainersSetup {
         RegisterClientDTO clientDTO = new RegisterClientDTO("Wicher2022", "Mariusz!", "Pasek?",
                                                             "0124a738", "Łódź!", "Wesoła@`'", -1, "432423rcf");
         JSONObject json = new JSONObject(clientDTO);
-        with().spec(employeeSpec)
+        RestAssured.with().spec(employeeSpec)
               .given().body(json.toString())
               .contentType(ContentType.JSON)
               .when()
