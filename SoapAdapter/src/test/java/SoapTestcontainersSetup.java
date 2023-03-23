@@ -39,18 +39,18 @@ public abstract class SoapTestcontainersSetup {
                 .withReuse(true);
 
         payaraContainer = new GenericContainer("payara/server-full:6.2023.2-jdk17")
-                .withExposedPorts(8181)
+                .withExposedPorts(8080)
                 .dependsOn(postgresContainer)
                 .withNetwork(network)
                 .withNetworkAliases("payara")
                 .withCopyFileToContainer(warFile, "/opt/payara/deployments/SoapAdapter-1.0.war")
-                .waitingFor(Wait.forHttps("/soap/roomAPI?wsdl").allowInsecure())
+                .waitingFor(Wait.forHttp("/soap/roomAPI?wsdl"))
                 .withReuse(true);
 
         postgresContainer.start();
         payaraContainer.start();
 
-        payaraPort = payaraContainer.getMappedPort(8181);
+        payaraPort = payaraContainer.getMappedPort(8080);
     }
 
     @AfterAll
