@@ -3,7 +3,6 @@ package pl.lodz.p.it.tks.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.lodz.p.it.tks.exception.shared.ConstructorArgumentException;
 
 import java.util.UUID;
 
@@ -21,9 +20,6 @@ public class Room extends AbstractModel {
 
     public Room(UUID id, Integer roomNumber, Double price, Integer size, long version) {
         super(id, version);
-        if (roomNumber < 1 || price < 1 || size < 1) {
-            throw new ConstructorArgumentException();
-        }
         this.roomNumber = roomNumber;
         this.price = price;
         this.size = size;

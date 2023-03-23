@@ -16,7 +16,6 @@
         <module>ApplicationPorts</module>
         <module>RestAdapter</module>
         <module>Security</module>
-        <module>Tests</module>
         <module>SoapAdapter</module>
         <module>UIAdapters</module>
     </modules>
@@ -222,7 +221,7 @@
             <dependency>
                 <groupId>com.sun.xml.ws</groupId>
                 <artifactId>jaxws-rt</artifactId>
-                <version>3.0.0</version>
+                <version>4.0.1</version>
                 <scope>runtime</scope>
             </dependency>
         </dependencies>
@@ -267,6 +266,11 @@
                         <source>17</source>
                         <target>17</target>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.sun.xml.ws</groupId>
+                    <artifactId>jaxws-maven-plugin</artifactId>
+                    <version>4.0.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>

@@ -1,14 +1,9 @@
 package pl.lodz.p.it.tks.service;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
 import jakarta.validation.Valid;
-import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.exception.room.CreateRoomException;
 import pl.lodz.p.it.tks.exception.room.RoomHasActiveReservationsException;
 import pl.lodz.p.it.tks.exception.room.RoomNotFoundException;
@@ -26,9 +21,11 @@ import pl.lodz.p.it.tks.model.UpdateRoomSoapDTO;
 import pl.lodz.p.it.tks.ui.command.RoomCommandUseCase;
 import pl.lodz.p.it.tks.ui.query.RoomQueryUseCase;
 
-@WebService(serviceName = "roomAPI")//, endpointInterface = "pl.lodz.p.it.tks.service.RoomSoapService")
-@RequestScoped
-@NoArgsConstructor
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@WebService(name = "RoomSOAP", serviceName = "roomAPI") //, endpointInterface = "pl.lodz.p.it.tks.service.RoomSoapService")
 public class RoomSoapServiceImpl implements RoomSoapService {
 
     @Inject

@@ -2,7 +2,6 @@ package pl.lodz.p.it.tks.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.lodz.p.it.tks.exception.shared.ConstructorArgumentException;
 
 import java.util.UUID;
 
@@ -17,9 +16,6 @@ public abstract class AbstractModel {
     }
 
     public AbstractModel(UUID id, long version) {
-        if (version < 0) {
-            throw new ConstructorArgumentException();
-        }
         this.id = id;
         this.version = version;
     }
