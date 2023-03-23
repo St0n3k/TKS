@@ -88,9 +88,7 @@
         </dependency>
         <dependency>
             <groupId>com.sun.xml.ws</groupId>
-            <artifactId>rt</artifactId>
-            <version>4.0.1</version>
-            <scope>test</scope>
+            <artifactId>jaxws-rt</artifactId>
         </dependency>
     </dependencies>
 
@@ -107,7 +105,6 @@
             <plugin>
                 <groupId>com.sun.xml.ws</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
-                <version>4.0.1</version>
                 <executions>
                     <execution>
                         <id>wsgen</id>

@@ -3,7 +3,6 @@ package pl.lodz.p.it.tks.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.lodz.p.it.tks.exception.shared.ConstructorArgumentException;
 
 import java.util.UUID;
 
@@ -16,9 +15,6 @@ public class Apartment extends Room {
 
     public Apartment(UUID id, Integer roomNumber, Double price, Integer size, Double balconyArea, long version) {
         super(id, roomNumber, price, size, version);
-        if (balconyArea < 0) {
-            throw new ConstructorArgumentException();
-        }
         this.balconyArea = balconyArea;
     }
 

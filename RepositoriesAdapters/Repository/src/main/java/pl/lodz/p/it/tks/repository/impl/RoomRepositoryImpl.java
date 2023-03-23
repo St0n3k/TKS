@@ -4,6 +4,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.model.RoomEntity;
 import pl.lodz.p.it.tks.repository.RoomRepository;
 
@@ -13,6 +15,8 @@ import java.util.UUID;
 
 @ApplicationScoped
 @Transactional
+@AllArgsConstructor
+@NoArgsConstructor
 public class RoomRepositoryImpl implements RoomRepository {
 
     @PersistenceContext

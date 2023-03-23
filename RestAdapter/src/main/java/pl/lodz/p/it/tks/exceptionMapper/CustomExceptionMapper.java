@@ -20,7 +20,7 @@ import pl.lodz.p.it.tks.exception.user.UpdateUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 
 @Provider
-public class CheckedExceptionMapper implements ExceptionMapper<BaseApplicationException> {
+public class CustomExceptionMapper implements ExceptionMapper<BaseApplicationException> {
     @Override
     public Response toResponse(BaseApplicationException e) {
         if (e.getClass() == UserNotFoundException.class
