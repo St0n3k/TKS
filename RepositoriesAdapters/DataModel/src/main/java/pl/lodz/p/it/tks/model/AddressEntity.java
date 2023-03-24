@@ -8,11 +8,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Embeddable
 @Access(AccessType.FIELD)
 @Data
 @NoArgsConstructor
-public class AddressEntity {
+public class AddressEntity implements Serializable {
     @NotNull
     @Column
     private String city;
