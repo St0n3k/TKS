@@ -35,8 +35,7 @@ public class RentRepositoryImpl implements RentRepository {
         Optional<RoomEntity> room = Optional.ofNullable(em.find(RoomEntity.class, rent.getRoom().getId()));
 
         if (room.isEmpty()) {
-            throw new RuntimeException("Room not found");
-            //FIXME
+            return null;
         }
 
         em.lock(room.get(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
