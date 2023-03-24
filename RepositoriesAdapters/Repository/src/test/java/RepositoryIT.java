@@ -16,7 +16,7 @@ import pl.lodz.p.it.tks.repository.impl.RoomRepositoryImpl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(ArquillianExtension.class)
-public class RepositoryTest {
+public class RepositoryIT {
 
     @Deployment
     public static Archive<?> createDeployment() {
