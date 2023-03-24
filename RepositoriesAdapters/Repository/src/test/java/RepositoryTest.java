@@ -25,9 +25,10 @@ public class RepositoryTest {
                 .addPackage(RoomRepositoryImpl.class.getPackage())
                 .addPackage(AbstractEntity.class.getPackage())
                 .addPackage(UserEntity.class.getPackage())
-                .addAsLibraries("postgresql-42.5.4.jar")
-                .addAsResource("initial_data.sql", "META-INF/sql/initial_data.sql")
-                .addAsResource("persistence.xml", "META-INF/persistence.xml")
+                .addAsResource("test-initial_data.sql", "META-INF/sql/initial_data.sql")
+                .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
+                .addAsWebInfResource("test-web.xml", "web.xml")
+
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
         return war;
