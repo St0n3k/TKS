@@ -7,7 +7,10 @@ import java.util.UUID;
 
 public interface RentCommandPort {
     Rent add(Rent rent);
+
     void remove(Rent rent);
+
     Optional<Rent> update(Rent rent);
+
     boolean removeById(UUID rentId);
 }

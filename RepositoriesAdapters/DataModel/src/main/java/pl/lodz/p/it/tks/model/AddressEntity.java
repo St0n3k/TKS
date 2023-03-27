@@ -39,7 +39,7 @@ public class AddressEntity implements Serializable {
         this.houseNumber = address.getHouseNumber();
     }
 
-    public Address mapToAddress(){
+    public Address mapToAddress() {
         return new Address(this.getCity(), this.getStreet(), this.getHouseNumber());
     }
 }

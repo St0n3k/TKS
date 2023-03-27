@@ -39,12 +39,15 @@ public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
 
 
     /**
-     * Method used to save room to database, room number has to be unique, otherwise method will throw exception
+     * Method used to save room to database, room number has to be unique, otherwise method will throw exception.
      *
      * @param room room to be saved
+     *
      * @return status code
-     * 201(CREATED) if room was successfully saved,
-     * 409(CONFLICT) if room was not saved due to constraints(room id / room number)
+     *     <ul>
+     *         <li>201(CREATED) if room was successfully saved,</li>
+     *         <li>409(CONFLICT) if room was not saved due to constraints(room id / room number)</li>
+     *     </ul>
      */
     @Override
     public Room addRoom(Room room) throws CreateRoomException {
@@ -57,12 +60,13 @@ public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
 
     /**
      * Method used to get all saved rooms if param number is not set,
-     * otherwise it will return room with given room number
+     * otherwise it will return room with given room number.
      *
-     * @return status code
-     * 200(OK) and list of all rooms
-     * 200(OK) if number parameter was set and room was found
-     * 404(NOT_FOUND) if number parameter was set, but room was not found
+     * @return status code <ul>
+     *     <li>200(OK) and list of all rooms</li>
+     *     <li>200(OK) if number parameter was set and room was found</li>
+     *     <li>404(NOT_FOUND) if number parameter was set, but room was not found</li>
+     *     </ul>
      */
     @Override
     public List<Room> getAllRooms() {
@@ -73,22 +77,23 @@ public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
     @Override
     public Room getRoomById(UUID id) throws RoomNotFoundException {
         return roomQueryPort.getById(id)
-                .orElseThrow(RoomNotFoundException::new);
+            .orElseThrow(RoomNotFoundException::new);
     }
 
 
     @Override
     public Room getRoomByNumber(int number) throws RoomNotFoundException {
         return roomQueryPort.getByNumber(number)
-                .orElseThrow(RoomNotFoundException::new);
+            .orElseThrow(RoomNotFoundException::new);
     }
 
     /**
-     * Method which returns list of rents of given room
+     * Method which returns list of rents of given room.
      *
      * @param roomId room id
      * @param past flag which indicates if the result will be list of past rents or future rents.
-     * If this parameter is not set, the result of the method will be list of all rents of given room
+     *     If this parameter is not set, the result of the method will be list of all rents of given room
+     *
      * @return list of rents that meet given criteria
      */
     @Override
@@ -108,7 +113,7 @@ public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
 
 
     /**
-     * Method used to update room properties
+     * Method used to update room properties.
      *
      * @param id id of room to be updated
      * @param room object containing new properties of existing room
@@ -116,7 +121,7 @@ public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
     @Override
     public Room updateRoom(UUID id, Room room) throws RoomNotFoundException, UpdateRoomException {
         Room existingRoom = roomQueryPort.getById(id)
-                .orElseThrow(RoomNotFoundException::new);
+            .orElseThrow(RoomNotFoundException::new);
 
         existingRoom.setPrice(room.getPrice() == null ? existingRoom.getPrice() : room.getPrice());
         existingRoom.setSize(room.getSize() == null ? existingRoom.getSize() : room.getSize());
@@ -125,10 +130,10 @@ public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
         try {
             if (existingRoom instanceof Apartment apartment) {
                 return roomCommandPort.updateApartment(apartment)
-                        .orElseThrow(UpdateRoomException::new);
+                    .orElseThrow(UpdateRoomException::new);
             }
             return roomCommandPort.updateRoom(existingRoom)
-                    .orElseThrow(UpdateRoomException::new);
+                .orElseThrow(UpdateRoomException::new);
         } catch (Exception e) {
             throw new UpdateRoomException();
         }
@@ -139,9 +144,6 @@ public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
      * Endpoint for removing room from database. Room can be removed only if there are no current or future rents
      *
      * @param id id of the room to be removed
-     * @return status code
-     * 204(NO_CONTENT) if room was removed or was not found
-     * 409(CONFLICT) if there are current or future rents for room with given id
      */
     @Override
     public void removeRoom(UUID id) throws RoomHasActiveReservationsException {
@@ -169,9 +171,10 @@ public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
     }
 
     @Override
-    public Apartment updateApartment(UUID id, Apartment apartment) throws RoomNotFoundException, UpdateRoomException, InvalidInputException {
+    public Apartment updateApartment(UUID id, Apartment apartment)
+        throws RoomNotFoundException, UpdateRoomException, InvalidInputException {
         Room existingRoom = roomQueryPort.getById(id)
-                .orElseThrow(RoomNotFoundException::new);
+            .orElseThrow(RoomNotFoundException::new);
 
         if (!(existingRoom instanceof Apartment existingApartment)) {
             throw new InvalidInputException();
@@ -179,12 +182,14 @@ public class RoomService implements RoomQueryUseCase, RoomCommandUseCase {
 
         existingApartment.setPrice(apartment.getPrice() == null ? existingApartment.getPrice() : apartment.getPrice());
         existingApartment.setSize(apartment.getSize() == null ? existingApartment.getSize() : apartment.getSize());
-        existingApartment.setRoomNumber(apartment.getRoomNumber() == null ? existingApartment.getRoomNumber() : apartment.getRoomNumber());
-        existingApartment.setBalconyArea(apartment.getBalconyArea() == null ? existingApartment.getBalconyArea() : apartment.getBalconyArea());
+        existingApartment.setRoomNumber(
+            apartment.getRoomNumber() == null ? existingApartment.getRoomNumber() : apartment.getRoomNumber());
+        existingApartment.setBalconyArea(
+            apartment.getBalconyArea() == null ? existingApartment.getBalconyArea() : apartment.getBalconyArea());
 
         try {
             return roomCommandPort.updateApartment(existingApartment)
-                    .orElseThrow(UpdateRoomException::new);
+                .orElseThrow(UpdateRoomException::new);
         } catch (Exception e) {
             throw new UpdateRoomException();
         }

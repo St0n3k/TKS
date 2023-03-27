@@ -3,7 +3,11 @@ package pl.lodz.p.it.tks.controller;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.tks.dto.auth.ChangePasswordDTO;
@@ -27,7 +31,7 @@ public class AuthController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/login")
     public LoginResponse login(@Valid LoginDTO loginDTO)
-            throws AuthenticationException, InactiveUserException {
+        throws AuthenticationException, InactiveUserException {
         String jwt = authService.login(loginDTO.getUsername(), loginDTO.getPassword());
         return new LoginResponse(jwt);
     }
@@ -37,7 +41,7 @@ public class AuthController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/changePassword")
     public Response changePassword(@Valid ChangePasswordDTO dto)
-            throws UserNotFoundException, InvalidInputException {
+        throws UserNotFoundException, InvalidInputException {
         authService.changePassword(dto.getOldPassword(), dto.getNewPassword());
         return Response.ok().build();
     }

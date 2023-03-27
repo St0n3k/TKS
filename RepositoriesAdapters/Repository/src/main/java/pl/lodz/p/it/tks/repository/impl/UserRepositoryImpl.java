@@ -19,9 +19,10 @@ public class UserRepositoryImpl implements UserRepository {
     EntityManager em;
 
     /**
-     * Method which saves user to database, username of user has to be unique, otherwise exception will be thrown
+     * Method which saves user with unique username to database.
      *
      * @param user user to be saved
+     *
      * @return saved user
      */
     @Override
@@ -48,9 +49,9 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<UserEntity> getUserByUsername(String username) {
         List<UserEntity> result = em
-                                .createNamedQuery("User.getByUsername", UserEntity.class)
-                                .setParameter("username", username)
-                                .getResultList();
+            .createNamedQuery("User.getByUsername", UserEntity.class)
+            .setParameter("username", username)
+            .getResultList();
         if (result.isEmpty()) {
             return Optional.empty();
         }
@@ -58,22 +59,25 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     /**
+     * Returns users whose username contains given phrase.
+     *
      * @param phrase phrase to be matched among usernames
+     *
      * @return list of users, whose usernames contain given phrase
      */
     @Override
     public List<UserEntity> matchUserByUsername(String phrase) {
         return em.createNamedQuery("User.matchByUsername", UserEntity.class)
-                 .setParameter("username", '%' + phrase + '%')
-                 .getResultList();
+            .setParameter("username", '%' + phrase + '%')
+            .getResultList();
 
     }
 
     @Override
     public List<UserEntity> getUsersByRole(String role) {
         return em.createNamedQuery("User.getByRole", UserEntity.class)
-                 .setParameter("role", '%' + role + '%')
-                 .getResultList();
+            .setParameter("role", '%' + role + '%')
+            .getResultList();
 
     }
 
@@ -90,8 +94,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<UserEntity> getUsersByRoleAndMatchingUsername(String role, String username) {
         return em.createNamedQuery("User.getByRoleMatchingName", UserEntity.class)
-                 .setParameter("role", "%" + role + "%")
-                 .setParameter("username", "%" + username + "%")
-                 .getResultList();
+            .setParameter("role", "%" + role + "%")
+            .setParameter("username", "%" + username + "%")
+            .getResultList();
     }
 }

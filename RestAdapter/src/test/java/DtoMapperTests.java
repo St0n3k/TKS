@@ -7,8 +7,8 @@ import pl.lodz.p.it.tks.dto.user.AdminDTO;
 import pl.lodz.p.it.tks.dto.user.ClientDTO;
 import pl.lodz.p.it.tks.dto.user.EmployeeDTO;
 import pl.lodz.p.it.tks.dto.user.UserDTO;
-import pl.lodz.p.it.tks.dtoMapper.RoomMapper;
-import pl.lodz.p.it.tks.dtoMapper.UserMapper;
+import pl.lodz.p.it.tks.mapper.RoomMapper;
+import pl.lodz.p.it.tks.mapper.UserMapper;
 import pl.lodz.p.it.tks.model.Address;
 import pl.lodz.p.it.tks.model.Apartment;
 import pl.lodz.p.it.tks.model.Rent;
@@ -23,7 +23,7 @@ import java.util.UUID;
 public class DtoMapperTests {
 
     @Test
-    void RoomMapperTest() {
+    void roomMapperTest() {
         RoomMapper roomMapper = new RoomMapper();
 
         Room room = new Room(UUID.randomUUID(), 1, 2.0, 3, 2);
@@ -51,10 +51,12 @@ public class DtoMapperTests {
     }
 
     @Test
-    void RentMapperTest() {
+    void rentMapperTest() {
         Room room = new Room(UUID.randomUUID(), 1, 2.0, 3, 3);
         Client client = new Client(UUID.randomUUID(), 0, "x", true, "a", "b", "c", "f", new Address("d", "f", 1));
-        Rent rent = new Rent(UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now().plusDays(10), false, 100, client, room, 3);
+        Rent rent =
+            new Rent(UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now().plusDays(10), false, 100, client, room,
+                3);
 
         RentDTO rentDTO = new RentDTO(rent);
 
@@ -66,7 +68,7 @@ public class DtoMapperTests {
     }
 
     @Test
-    void UserMapperTest() {
+    void userMapperTest() {
         UserMapper userMapper = new UserMapper();
 
         Client client = new Client(UUID.randomUUID(), 0, "x", true, "a", "b", "c", "f", new Address("d", "f", 1));

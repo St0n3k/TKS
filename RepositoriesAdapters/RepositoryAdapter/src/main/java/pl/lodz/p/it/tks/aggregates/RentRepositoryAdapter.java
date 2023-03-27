@@ -26,9 +26,9 @@ public class RentRepositoryAdapter implements RentQueryPort, RentCommandPort {
     @Override
     public List<Rent> getAll() {
         return rentRepository.getAll()
-                .stream()
-                .map(RentEntity::mapToRent)
-                .collect(Collectors.toList());
+            .stream()
+            .map(RentEntity::mapToRent)
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -38,7 +38,8 @@ public class RentRepositoryAdapter implements RentQueryPort, RentCommandPort {
 
     @Override
     public List<Rent> getByClientUsername(String username) {
-        return rentRepository.getByClientUsername(username).stream().map(RentEntity::mapToRent).collect(Collectors.toList());
+        return rentRepository.getByClientUsername(username).stream().map(RentEntity::mapToRent)
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -48,12 +49,14 @@ public class RentRepositoryAdapter implements RentQueryPort, RentCommandPort {
 
     @Override
     public List<Rent> findByRoomAndStatus(UUID roomId, boolean past) {
-        return rentRepository.findByRoomAndStatus(roomId, past).stream().map(RentEntity::mapToRent).collect(Collectors.toList());
+        return rentRepository.findByRoomAndStatus(roomId, past).stream().map(RentEntity::mapToRent)
+            .collect(Collectors.toList());
     }
 
     @Override
     public List<Rent> findByClientAndStatus(UUID clientId, boolean past) {
-        return rentRepository.findByClientAndStatus(clientId, past).stream().map(RentEntity::mapToRent).collect(Collectors.toList());
+        return rentRepository.findByClientAndStatus(clientId, past).stream().map(RentEntity::mapToRent)
+            .collect(Collectors.toList());
     }
 
     @Override

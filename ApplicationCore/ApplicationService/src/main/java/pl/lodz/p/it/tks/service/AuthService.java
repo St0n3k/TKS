@@ -36,7 +36,7 @@ public class AuthService implements AuthUseCase {
     public String login(String username, String password)
         throws AuthenticationException, InactiveUserException {
         User user = userQueryPort.getUserByUsername(username)
-                                 .orElseThrow(AuthenticationException::new);
+            .orElseThrow(AuthenticationException::new);
 
         if (!Objects.equals(user.getPassword(), password)) {
             throw new AuthenticationException();

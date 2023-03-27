@@ -1,13 +1,13 @@
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 import pl.lodz.p.it.tks.mapper.RoomSoapMapper;
 import pl.lodz.p.it.tks.model.Apartment;
 import pl.lodz.p.it.tks.model.ApartmentSoapDTO;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.model.RoomSoapDTO;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RoomSoapMapperTest {
 
@@ -31,11 +31,11 @@ class RoomSoapMapperTest {
         RoomSoapDTO dto = mapper.mapToDto(room);
         assertNotNull(dto);
         assertTrue(dto instanceof ApartmentSoapDTO);
-
-        ApartmentSoapDTO apartmentSoapDTO = (ApartmentSoapDTO) dto;
         assertEquals(2, dto.getRoomNumber());
         assertEquals(58.1, dto.getPrice(), 0.01);
         assertEquals(3, dto.getSize());
+
+        ApartmentSoapDTO apartmentSoapDTO = (ApartmentSoapDTO) dto;
         assertEquals(34.34, apartmentSoapDTO.getBalconyArea(), 0.01);
     }
 }

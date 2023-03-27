@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@WebService(name = "RoomSOAP", serviceName = "roomAPI") //, endpointInterface = "pl.lodz.p.it.tks.service.RoomSoapService")
+@WebService(name = "RoomSOAP", serviceName = "roomAPI")
 public class RoomSoapServiceImpl implements RoomSoapService {
 
     @Inject
@@ -40,8 +40,8 @@ public class RoomSoapServiceImpl implements RoomSoapService {
     @Override
     public List<RoomSoapDTO> getAllRooms() {
         return roomQueryUseCase.getAllRooms()
-                               .stream().map(room -> roomSoapMapper.mapToDto(room))
-                               .collect(Collectors.toList());
+            .stream().map(room -> roomSoapMapper.mapToDto(room))
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -93,8 +93,8 @@ public class RoomSoapServiceImpl implements RoomSoapService {
         @Valid @WebParam(name = "dto", mode = WebParam.Mode.IN) UpdateApartmentSoapDTO dto)
         throws InvalidInputException, RoomNotFoundException, UpdateRoomException {
         Apartment apartment = roomCommandUseCase.updateApartment(id, new Apartment(dto.getRoomNumber(), dto.getPrice(),
-                                                                                   dto.getSize(),
-                                                                                   dto.getBalconyArea()));
+            dto.getSize(),
+            dto.getBalconyArea()));
         return new ApartmentSoapDTO(apartment);
     }
 

@@ -20,15 +20,16 @@ public class AdminEntity extends UserEntity {
     }
 
     public AdminEntity(Admin admin) {
-        super(admin.getVersion(), admin.getId(), admin.getUsername(), admin.isActive(), admin.getRole(), admin.getPassword());
+        super(admin.getVersion(), admin.getId(), admin.getUsername(), admin.isActive(), admin.getRole(),
+            admin.getPassword());
     }
 
     @Override
     public User mapToUser() {
         return new Admin(this.getId(),
-                         this.getVersion(),
-                         this.getUsername(),
-                         this.isActive(),
-                         this.getPassword());
+            this.getVersion(),
+            this.getUsername(),
+            this.isActive(),
+            this.getPassword());
     }
 }

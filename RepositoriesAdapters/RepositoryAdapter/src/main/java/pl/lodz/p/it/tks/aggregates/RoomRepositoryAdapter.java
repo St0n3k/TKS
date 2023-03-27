@@ -29,7 +29,7 @@ public class RoomRepositoryAdapter implements RoomQueryPort, RoomCommandPort {
     @Override
     public Optional<Room> updateRoom(Room room) {
         return roomRepository.update(new RoomEntity(room))
-                .map(RoomEntity::mapToRoom);
+            .map(RoomEntity::mapToRoom);
     }
 
     @Override
@@ -49,15 +49,15 @@ public class RoomRepositoryAdapter implements RoomQueryPort, RoomCommandPort {
     @Override
     public Optional<Apartment> updateApartment(Apartment apartment) {
         return roomRepository.update(new ApartmentEntity(apartment))
-                .map(roomEntity -> (Apartment) roomEntity.mapToRoom());
+            .map(roomEntity -> (Apartment) roomEntity.mapToRoom());
     }
 
     @Override
     public List<Room> getAllRooms() {
         return roomRepository.getAll()
-                .stream()
-                .map(RoomEntity::mapToRoom)
-                .collect(Collectors.toList());
+            .stream()
+            .map(RoomEntity::mapToRoom)
+            .collect(Collectors.toList());
     }
 
     @Override

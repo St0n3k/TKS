@@ -8,9 +8,14 @@ import java.util.UUID;
 
 public interface UserQueryPort {
     Optional<User> getById(UUID id);
+
     List<User> getAll();
+
     Optional<User> getUserByUsername(String username);
+
     List<User> matchUserByUsername(String phrase);
+
     List<User> getUsersByRole(String role);
+
     List<User> getUsersByRoleAndMatchingUsername(String role, String username);
 }

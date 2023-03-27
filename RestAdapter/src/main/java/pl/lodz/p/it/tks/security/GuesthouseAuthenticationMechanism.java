@@ -27,7 +27,9 @@ public class GuesthouseAuthenticationMechanism implements HttpAuthenticationMech
     private UserQueryUseCase userQueryUseCase;
 
     @Override
-    public AuthenticationStatus validateRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, HttpMessageContext httpMessageContext) {
+    public AuthenticationStatus validateRequest(HttpServletRequest httpServletRequest,
+                                                HttpServletResponse httpServletResponse,
+                                                HttpMessageContext httpMessageContext) {
         String jwt = getToken(httpServletRequest);
         if (jwt == null || !jwtUseCase.validateToken(jwt)) {
             return loginAnonymous(httpMessageContext);
@@ -37,7 +39,7 @@ public class GuesthouseAuthenticationMechanism implements HttpAuthenticationMech
         try {
             subject = jwtUseCase.getSubject(jwt);
             role = jwtUseCase.getRole(jwt);
-        } catch(JwtException e) {
+        } catch (JwtException e) {
             return loginAnonymous(httpMessageContext);
         }
 
@@ -51,9 +53,10 @@ public class GuesthouseAuthenticationMechanism implements HttpAuthenticationMech
         return httpMessageContext.notifyContainerAboutLogin(user, Collections.singleton(role));
     }
 
-    private AuthenticationStatus loginAnonymous(HttpMessageContext httpMessageContext){
+    private AuthenticationStatus loginAnonymous(HttpMessageContext httpMessageContext) {
         return httpMessageContext.notifyContainerAboutLogin("anonymous", new HashSet<>(Collections.singleton("GUEST")));
     }
+
     private String getToken(HttpServletRequest request) {
 
         String authHeader = request.getHeader("Authorization");

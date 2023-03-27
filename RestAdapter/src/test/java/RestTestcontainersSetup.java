@@ -35,24 +35,24 @@ public abstract class RestTestcontainersSetup {
         String warFilePath = "../RestAdapter/target/RestAdapter-1.0.war";
 
         warFile = MountableFile.forHostPath(
-                Paths.get(new File(warFilePath).getCanonicalPath()).toAbsolutePath(), 0777);
+            Paths.get(new File(warFilePath).getCanonicalPath()).toAbsolutePath(), 0777);
 
         postgresContainer = new PostgreSQLContainer(DockerImageName.parse("postgres:latest"))
-                .withDatabaseName("pas")
-                .withUsername("pas")
-                .withPassword("pas")
-                .withNetwork(network)
-                .withNetworkAliases("db")
-                .withReuse(true);
+            .withDatabaseName("pas")
+            .withUsername("pas")
+            .withPassword("pas")
+            .withNetwork(network)
+            .withNetworkAliases("db")
+            .withReuse(true);
 
         payaraContainer = new GenericContainer("payara/server-full:6.2023.2-jdk17")
-                .withExposedPorts(8181)
-                .dependsOn(postgresContainer)
-                .withNetwork(network)
-                .withNetworkAliases("payara")
-                .withCopyFileToContainer(warFile, "/opt/payara/deployments/RestAdapter-1.0.war")
-                .waitingFor(Wait.forHttps("/api/rooms").allowInsecure())
-                .withReuse(true);
+            .withExposedPorts(8181)
+            .dependsOn(postgresContainer)
+            .withNetwork(network)
+            .withNetworkAliases("payara")
+            .withCopyFileToContainer(warFile, "/opt/payara/deployments/RestAdapter-1.0.war")
+            .waitingFor(Wait.forHttps("/api/rooms").allowInsecure())
+            .withReuse(true);
 
         postgresContainer.start();
         payaraContainer.start();
@@ -78,11 +78,11 @@ public abstract class RestTestcontainersSetup {
         clientCredentials.put("password", "password");
 
         String clientJwt = RestAssured.given().body(clientCredentials.toString())
-                .contentType(ContentType.JSON)
-                .when()
-                .post("/api/login")
-                .jsonPath()
-                .get("jwt");
+            .contentType(ContentType.JSON)
+            .when()
+            .post("/api/login")
+            .jsonPath()
+            .get("jwt");
 
         RequestSpecBuilder builder = new RequestSpecBuilder();
 
@@ -96,11 +96,11 @@ public abstract class RestTestcontainersSetup {
         employeeCredentials.put("password", "password");
 
         String employeeJwt = RestAssured.given().body(employeeCredentials.toString())
-                .contentType(ContentType.JSON)
-                .when()
-                .post("/api/login")
-                .jsonPath()
-                .get("jwt");
+            .contentType(ContentType.JSON)
+            .when()
+            .post("/api/login")
+            .jsonPath()
+            .get("jwt");
 
         RequestSpecBuilder builder = new RequestSpecBuilder();
 
@@ -114,11 +114,11 @@ public abstract class RestTestcontainersSetup {
         adminCredentials.put("password", "password");
 
         String adminJwt = RestAssured.given().body(adminCredentials.toString())
-                .contentType(ContentType.JSON)
-                .when()
-                .post("/api/login")
-                .jsonPath()
-                .get("jwt");
+            .contentType(ContentType.JSON)
+            .when()
+            .post("/api/login")
+            .jsonPath()
+            .get("jwt");
 
         RequestSpecBuilder builder = new RequestSpecBuilder();
 

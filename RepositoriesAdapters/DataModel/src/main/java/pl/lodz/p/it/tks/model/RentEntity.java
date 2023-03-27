@@ -1,6 +1,12 @@
 package pl.lodz.p.it.tks.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
@@ -15,33 +21,33 @@ import java.time.LocalDateTime;
 @Table(name = "rent")
 @NamedQueries({
     @NamedQuery(name = "Rent.getAll",
-                query = "SELECT r FROM RentEntity r"),
+        query = "SELECT r FROM RentEntity r"),
     @NamedQuery(name = "Rent.getByRoomId",
-                query = "SELECT r FROM RentEntity r WHERE r.room.id = :roomId"),
+        query = "SELECT r FROM RentEntity r WHERE r.room.id = :roomId"),
     @NamedQuery(name = "Rent.getByClientPersonalId",
-                query = "SELECT r FROM RentEntity r WHERE r.client.personalId = :personalId"),
+        query = "SELECT r FROM RentEntity r WHERE r.client.personalId = :personalId"),
     @NamedQuery(name = "Rent.getRentsColliding",
-                query = """
-                    SELECT r FROM RentEntity r
-                    WHERE r.room.roomNumber = :roomNumber
-                          AND ((:beginDate BETWEEN r.beginTime AND r.endTime)
-                          OR (:endDate BETWEEN r.beginTime AND r.endTime)
-                          OR (r.beginTime between :beginDate and :endDate)
-                          OR (r.endTime BETWEEN :beginDate AND :endDate))"""),
+        query = """
+            SELECT r FROM RentEntity r
+            WHERE r.room.roomNumber = :roomNumber
+                  AND ((:beginDate BETWEEN r.beginTime AND r.endTime)
+                  OR (:endDate BETWEEN r.beginTime AND r.endTime)
+                  OR (r.beginTime between :beginDate and :endDate)
+                  OR (r.endTime BETWEEN :beginDate AND :endDate))"""),
     @NamedQuery(name = "Rent.removeById",
-                query = "DELETE FROM RentEntity r WHERE r.id = :id"),
+        query = "DELETE FROM RentEntity r WHERE r.id = :id"),
     @NamedQuery(name = "Rent.getByClientUsername",
-                query = "SELECT r FROM RentEntity r WHERE r.client.username = :username"),
+        query = "SELECT r FROM RentEntity r WHERE r.client.username = :username"),
     @NamedQuery(name = "Rent.getByClientId",
-                query = "SELECT r FROM RentEntity r WHERE r.client.id = :id"),
+        query = "SELECT r FROM RentEntity r WHERE r.client.id = :id"),
     @NamedQuery(name = "Rent.getPastRentsByRoom",
-                query = "SELECT r from RentEntity r WHERE (r.endTime < CURRENT_TIMESTAMP) AND r.room.id = :id"),
+        query = "SELECT r from RentEntity r WHERE (r.endTime < CURRENT_TIMESTAMP) AND r.room.id = :id"),
     @NamedQuery(name = "Rent.getActiveRentsByRoom",
-                query = "SELECT r from RentEntity r WHERE (r.endTime > CURRENT_TIMESTAMP) AND r.room.id = :id"),
+        query = "SELECT r from RentEntity r WHERE (r.endTime > CURRENT_TIMESTAMP) AND r.room.id = :id"),
     @NamedQuery(name = "Rent.getPastRentsByClient",
-                query = "SELECT r from RentEntity r WHERE (r.endTime < CURRENT_TIMESTAMP) AND r.client.id = :id"),
+        query = "SELECT r from RentEntity r WHERE (r.endTime < CURRENT_TIMESTAMP) AND r.client.id = :id"),
     @NamedQuery(name = "Rent.getActiveRentsByClient",
-                query = "SELECT r from RentEntity r WHERE (r.endTime > CURRENT_TIMESTAMP) AND r.client.id = :id")
+        query = "SELECT r from RentEntity r WHERE (r.endTime > CURRENT_TIMESTAMP) AND r.client.id = :id")
 })
 @Data
 @NoArgsConstructor
@@ -77,7 +83,8 @@ public class RentEntity extends AbstractEntity {
     @JoinColumn(name = "room_id")
     private RoomEntity room;
 
-    public RentEntity(LocalDateTime beginTime, LocalDateTime endTime, boolean board, double finalCost, ClientEntity client,
+    public RentEntity(LocalDateTime beginTime, LocalDateTime endTime, boolean board, double finalCost,
+                      ClientEntity client,
                       RoomEntity roomEntity) {
         this.beginTime = beginTime;
         this.endTime = endTime;
@@ -97,15 +104,15 @@ public class RentEntity extends AbstractEntity {
         this.room = new RoomEntity(rent.getRoom());
     }
 
-    public Rent mapToRent(){
+    public Rent mapToRent() {
         return new Rent(this.getId(),
-                this.getBeginTime(),
-                this.getEndTime(),
-                this.isBoard(),
-                this.getFinalCost(),
-                this.getClient().mapToClient(),
-                this.getRoom().mapToRoom(),
-                this.getVersion());
+            this.getBeginTime(),
+            this.getEndTime(),
+            this.isBoard(),
+            this.getFinalCost(),
+            this.getClient().mapToClient(),
+            this.getRoom().mapToRoom(),
+            this.getVersion());
     }
 
     @AssertTrue

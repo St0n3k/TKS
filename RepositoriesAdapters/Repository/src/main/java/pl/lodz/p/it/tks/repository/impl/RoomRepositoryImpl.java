@@ -24,9 +24,10 @@ public class RoomRepositoryImpl implements RoomRepository {
 
 
     /**
-     * Method which saved room to database, room number has to be unique, otherwise method will throw exception
+     * Method which saved room to database, room number has to be unique, otherwise method will throw exception.
      *
      * @param room room to be saved
+     *
      * @return saved room
      */
     @Override
@@ -58,8 +59,8 @@ public class RoomRepositoryImpl implements RoomRepository {
     @Override
     public Optional<RoomEntity> getByRoomNumber(int roomNumber) {
         List<RoomEntity> result = em.createNamedQuery("Room.getByRoomNumber", RoomEntity.class)
-                              .setParameter("roomNumber", roomNumber)
-                              .getResultList();
+            .setParameter("roomNumber", roomNumber)
+            .getResultList();
         if (result.isEmpty()) {
             return Optional.empty();
         }
@@ -67,7 +68,10 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     /**
+     * Checks if room with given id exists.
+     *
      * @param id id to be checked among rooms
+     *
      * @return true if a room with given id exists
      */
     @Override

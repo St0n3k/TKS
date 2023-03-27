@@ -19,5 +19,6 @@ public interface RoomCommandUseCase {
 
     Apartment addApartment(Apartment apartment) throws CreateRoomException;
 
-    Apartment updateApartment(UUID id, Apartment apartment) throws RoomNotFoundException, UpdateRoomException, InvalidInputException;
+    Apartment updateApartment(UUID id, Apartment apartment)
+        throws RoomNotFoundException, UpdateRoomException, InvalidInputException;
 }

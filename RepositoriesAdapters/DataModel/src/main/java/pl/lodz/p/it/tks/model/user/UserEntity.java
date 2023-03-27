@@ -3,9 +3,6 @@ package pl.lodz.p.it.tks.model.user;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.NamedQueries;
@@ -24,20 +21,20 @@ import java.util.UUID;
 @DiscriminatorColumn(name = "type")
 @NamedQueries({
     @NamedQuery(name = "User.getAll",
-                query = "SELECT u FROM UserEntity u"),
+        query = "SELECT u FROM UserEntity u"),
     @NamedQuery(name = "User.getByUserId",
-                query = "SELECT u FROM UserEntity u WHERE u.id = :userId"),
+        query = "SELECT u FROM UserEntity u WHERE u.id = :userId"),
     @NamedQuery(name = "User.getByUsername",
-                query = "SELECT u FROM UserEntity u WHERE u.username = :username"),
+        query = "SELECT u FROM UserEntity u WHERE u.username = :username"),
     @NamedQuery(name = "User.matchByUsername",
-                query = "SELECT u FROM UserEntity u WHERE u.username LIKE :username"),
+        query = "SELECT u FROM UserEntity u WHERE u.username LIKE :username"),
     @NamedQuery(name = "User.getByRole",
-                query = "SELECT u FROM UserEntity u WHERE u.role LIKE :role ORDER BY u.id"),
+        query = "SELECT u FROM UserEntity u WHERE u.role LIKE :role ORDER BY u.id"),
     @NamedQuery(name = "User.getByRoleMatchingName",
-                query = """
-                    SELECT u FROM UserEntity u
-                    WHERE u.role LIKE :role AND u.username LIKE :username
-                    ORDER BY u.id""")
+        query = """
+            SELECT u FROM UserEntity u
+            WHERE u.role LIKE :role AND u.username LIKE :username
+            ORDER BY u.id""")
 })
 
 @Data

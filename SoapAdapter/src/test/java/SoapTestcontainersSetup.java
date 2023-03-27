@@ -28,24 +28,24 @@ public abstract class SoapTestcontainersSetup {
         String warFilePath = "../SoapAdapter/target/SoapAdapter-1.0.war";
 
         warFile = MountableFile.forHostPath(
-                Paths.get(new File(warFilePath).getCanonicalPath()).toAbsolutePath(), 0777);
+            Paths.get(new File(warFilePath).getCanonicalPath()).toAbsolutePath(), 0777);
 
         postgresContainer = new PostgreSQLContainer(DockerImageName.parse("postgres:latest"))
-                .withDatabaseName("pas")
-                .withUsername("pas")
-                .withPassword("pas")
-                .withNetwork(network)
-                .withNetworkAliases("db")
-                .withReuse(true);
+            .withDatabaseName("pas")
+            .withUsername("pas")
+            .withPassword("pas")
+            .withNetwork(network)
+            .withNetworkAliases("db")
+            .withReuse(true);
 
         payaraContainer = new GenericContainer("payara/server-full:6.2023.2-jdk17")
-                .withExposedPorts(8080)
-                .dependsOn(postgresContainer)
-                .withNetwork(network)
-                .withNetworkAliases("payara")
-                .withCopyFileToContainer(warFile, "/opt/payara/deployments/SoapAdapter-1.0.war")
-                .waitingFor(Wait.forHttp("/soap/roomAPI?wsdl"))
-                .withReuse(true);
+            .withExposedPorts(8080)
+            .dependsOn(postgresContainer)
+            .withNetwork(network)
+            .withNetworkAliases("payara")
+            .withCopyFileToContainer(warFile, "/opt/payara/deployments/SoapAdapter-1.0.war")
+            .waitingFor(Wait.forHttp("/soap/roomAPI?wsdl"))
+            .withReuse(true);
 
         postgresContainer.start();
         payaraContainer.start();

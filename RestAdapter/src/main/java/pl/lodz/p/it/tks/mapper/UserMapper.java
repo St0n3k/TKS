@@ -1,4 +1,4 @@
-package pl.lodz.p.it.tks.dtoMapper;
+package pl.lodz.p.it.tks.mapper;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import pl.lodz.p.it.tks.dto.user.AdminDTO;
@@ -17,7 +17,7 @@ public class UserMapper {
         if (user instanceof Client client) {
             return new ClientDTO(client);
         } else if (user instanceof Employee employee) {
-            return  new EmployeeDTO(employee);
+            return new EmployeeDTO(employee);
         } else {
             return new AdminDTO((Admin) user);
         }

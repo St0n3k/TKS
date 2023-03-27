@@ -1,6 +1,14 @@
 package pl.lodz.p.it.tks.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,9 +19,9 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("Room")
 @NamedQueries({
     @NamedQuery(name = "Room.getAll",
-                query = "SELECT r FROM RoomEntity r"),
+        query = "SELECT r FROM RoomEntity r"),
     @NamedQuery(name = "Room.getByRoomNumber",
-                query = "SELECT r FROM RoomEntity r WHERE r.roomNumber = :roomNumber")
+        query = "SELECT r FROM RoomEntity r WHERE r.roomNumber = :roomNumber")
 })
 @Data
 

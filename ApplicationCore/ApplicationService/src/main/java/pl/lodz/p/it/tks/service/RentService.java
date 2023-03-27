@@ -48,17 +48,19 @@ public class RentService implements RentQueryUseCase, RentCommandUseCase {
      * is not colliding with existing rents.
      *
      * @param tempRent object containing information about rent which creation will be attempted.
+     *
      * @return
+     *
      * @throws UserNotFoundException if user was not found
      * @throws RoomNotFoundException if room was not found
      * @throws InactiveUserException if user is inactive
      */
     @Override
     public Rent rentRoom(Rent tempRent, UUID clientId, UUID roomId) throws
-            UserNotFoundException,
-            RoomNotFoundException,
-            InactiveUserException,
-            CreateRentException {
+        UserNotFoundException,
+        RoomNotFoundException,
+        InactiveUserException,
+        CreateRentException {
         Optional<User> optionalUser = userQueryPort.getById(clientId);
         Optional<Room> optionalRoom = roomQueryPort.getById(roomId);
 
@@ -78,11 +80,11 @@ public class RentService implements RentQueryUseCase, RentCommandUseCase {
         }
 
         double finalCost = calculateTotalCost(tempRent.getBeginTime(), tempRent.getEndTime(),
-                                              room.getPrice(), tempRent.isBoard());
+            room.getPrice(), tempRent.isBoard());
         Rent rent = new Rent(tempRent.getBeginTime(), tempRent.getEndTime(), tempRent.isBoard(),
-                             finalCost, client, room);
+            finalCost, client, room);
 
-        try{
+        try {
             return rentCommandPort.add(rent);
         } catch (Exception e) {
             throw new CreateRentException();
@@ -91,10 +93,12 @@ public class RentService implements RentQueryUseCase, RentCommandUseCase {
 
 
     /**
-     * Method used to find rent by id
+     * Method used to find rent by id.
      *
      * @param id id of rent
+     *
      * @return rent
+     *
      * @throws RentNotFoundException if rent with given id was not found
      */
     @Override
@@ -109,7 +113,9 @@ public class RentService implements RentQueryUseCase, RentCommandUseCase {
 
 
     /**
-     * @return list of all rents in the database
+     * Returns all rents.
+     *
+     * @return list of all rents in the database.
      */
     @Override
     public List<Rent> getAllRents() {
@@ -118,11 +124,13 @@ public class RentService implements RentQueryUseCase, RentCommandUseCase {
 
 
     /**
-     * Method used to change board option for given rent, cost is recalculated before saving to database
+     * Method used to change board option for given rent, cost is recalculated before saving to database.
      *
      * @param id id of the rent to be updated
      * @param board object containing the choice of board option (true/false)
+     *
      * @return status 200 (OK) if rent was updated, 409 (CONFLICT) otherwise
+     *
      * @throws InvalidInputException if user input is invalid
      * @throws RentNotFoundException if rent with given id does not exist
      */
@@ -143,9 +151,9 @@ public class RentService implements RentQueryUseCase, RentCommandUseCase {
 
         rentToModify.setBoard(board);
         double newCost = calculateTotalCost(rentToModify.getBeginTime(),
-                                            rentToModify.getEndTime(),
-                                            rentToModify.getRoom().getPrice(),
-                                            rentToModify.isBoard());
+            rentToModify.getEndTime(),
+            rentToModify.getRoom().getPrice(),
+            rentToModify.isBoard());
         rentToModify.setFinalCost(newCost);
 
         Optional<Rent> updatedRent = rentCommandPort.update(rentToModify);
@@ -156,10 +164,11 @@ public class RentService implements RentQueryUseCase, RentCommandUseCase {
     }
 
     /**
-     * Method for removing future rents, archived rent will not be removed
+     * Method for removing future rents, archived rent will not be removed.
      *
      * @param rentId id of the rent to be removed
-     * @return void
+     *
+     * @throws RemoveRentException if rent is already in progress.
      */
     @Override
     public void removeRent(UUID rentId) throws RemoveRentException {
@@ -178,15 +187,17 @@ public class RentService implements RentQueryUseCase, RentCommandUseCase {
     }
 
     /**
-     * Private method used to calculate total cost of rent on creation or on board option update
+     * Private method used to calculate total cost of rent on creation or on board option update.
      *
      * @param beginTime begin date of the rent
      * @param endTime end date of the rent
      * @param costPerDay room price per day
      * @param board determines if board option is chosen
+     *
      * @return total cost
      */
-    private double calculateTotalCost(LocalDateTime beginTime, LocalDateTime endTime, double costPerDay, boolean board) {
+    private double calculateTotalCost(LocalDateTime beginTime, LocalDateTime endTime, double costPerDay,
+                                      boolean board) {
         Duration duration = Duration.between(beginTime, endTime);
         if (board) {
             costPerDay += 50; //Daily board is worth 50

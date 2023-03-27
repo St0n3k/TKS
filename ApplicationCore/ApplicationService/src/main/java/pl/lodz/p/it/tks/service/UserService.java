@@ -107,29 +107,29 @@ public class UserService implements UserQueryUseCase, UserCommandUseCase {
     public List<Client> getClients(String username) {
         if (username != null) {
             return userQueryPort.getUsersByRoleAndMatchingUsername("CLIENT", username)
-                                .stream().map(u -> (Client) u)
-                                .toList();
+                .stream().map(u -> (Client) u)
+                .toList();
         }
         return userQueryPort.getUsersByRole("CLIENT")
-                            .stream()
-                            .map(user -> (Client) user)
-                            .collect(Collectors.toList());
+            .stream()
+            .map(user -> (Client) user)
+            .collect(Collectors.toList());
     }
 
     @Override
     public List<Employee> getEmployees() {
         return userQueryPort.getUsersByRole("EMPLOYEE")
-                            .stream()
-                            .map(user -> (Employee) user)
-                            .collect(Collectors.toList());
+            .stream()
+            .map(user -> (Employee) user)
+            .collect(Collectors.toList());
     }
 
     @Override
     public List<Admin> getAdmins() {
         return userQueryPort.getUsersByRole("ADMIN")
-                            .stream()
-                            .map(user -> (Admin) user)
-                            .collect(Collectors.toList());
+            .stream()
+            .map(user -> (Admin) user)
+            .collect(Collectors.toList());
     }
 
     public List<Rent> getAllRentsOfClient(UUID clientId, Boolean past) throws UserNotFoundException {
@@ -148,7 +148,7 @@ public class UserService implements UserQueryUseCase, UserCommandUseCase {
     @Override
     public User updateUser(UUID id, User newUser) throws UserNotFoundException, UpdateUserException {
         User user = userQueryPort.getById(id)
-                                 .orElseThrow(UserNotFoundException::new);
+            .orElseThrow(UserNotFoundException::new);
 
         if (!user.getClass().equals(newUser.getClass())) {
             throw new UpdateUserException();
@@ -198,7 +198,7 @@ public class UserService implements UserQueryUseCase, UserCommandUseCase {
         }
 
         return userCommandPort.update(user)
-                              .orElseThrow(UpdateUserException::new);
+            .orElseThrow(UpdateUserException::new);
     }
 
     @Override

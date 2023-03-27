@@ -35,14 +35,14 @@ public class ClientEntity extends UserEntity {
 
     public ClientEntity(Client client) {
         this(client.getVersion(),
-             client.getId(),
-             client.getUsername(),
-             client.isActive(),
-             client.getPassword(),
-             client.getFirstName(),
-             client.getLastName(),
-             client.getPersonalId(),
-             new AddressEntity(client.getAddress()));
+            client.getId(),
+            client.getUsername(),
+            client.isActive(),
+            client.getPassword(),
+            client.getFirstName(),
+            client.getLastName(),
+            client.getPersonalId(),
+            new AddressEntity(client.getAddress()));
     }
 
     public ClientEntity(long version,
@@ -79,14 +79,14 @@ public class ClientEntity extends UserEntity {
     @Override
     public User mapToUser() {
         return new Client(this.getId(),
-                          this.getVersion(),
-                          this.getUsername(),
-                          this.isActive(),
-                          this.getPassword(),
-                          this.firstName,
-                          this.lastName,
-                          this.personalId,
-                          this.address.mapToAddress());
+            this.getVersion(),
+            this.getUsername(),
+            this.isActive(),
+            this.getPassword(),
+            this.firstName,
+            this.lastName,
+            this.personalId,
+            this.address.mapToAddress());
     }
 
     public Client mapToClient() {

@@ -1,4 +1,8 @@
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.it.tks.service.CreateRoomException_Exception;
@@ -31,7 +35,7 @@ public class SoapIT extends SoapTestcontainersSetup {
     @Test
     void shouldReturnListOfRooms() {
         List<Room> allRooms = roomSOAP.getAllRooms();
-        Assertions.assertFalse(allRooms.isEmpty());
+        assertFalse(allRooms.isEmpty());
     }
 
     @Test
@@ -45,18 +49,18 @@ public class SoapIT extends SoapTestcontainersSetup {
 
         Room room = roomSOAP.getRoomByRoomNumber(123456);
 
-        Assertions.assertEquals(123456, room.getRoomNumber());
-        Assertions.assertEquals(1, room.getPrice());
-        Assertions.assertEquals(3, room.getSize());
+        assertEquals(123456, room.getRoomNumber());
+        assertEquals(1, room.getPrice());
+        assertEquals(3, room.getSize());
     }
 
     @Test
     void shouldGetRoomById() throws RoomNotFoundException_Exception {
         Room room = roomSOAP.getRoomById("9acac245-25b3-492d-a742-4c69bfcb90cf");
 
-        Assertions.assertEquals(643, room.getRoomNumber());
-        Assertions.assertEquals(250.0F, room.getPrice());
-        Assertions.assertEquals(6, room.getSize());
+        assertEquals(643, room.getRoomNumber());
+        assertEquals(250.0F, room.getPrice());
+        assertEquals(6, room.getSize());
     }
 
     @Test
@@ -66,18 +70,20 @@ public class SoapIT extends SoapTestcontainersSetup {
         dto.setRoomNumber(643);
         dto.setSize(3);
 
-        Assertions.assertThrows(CreateRoomException_Exception.class, () -> roomSOAP.addRoom(dto));
+        assertThrows(CreateRoomException_Exception.class, () -> roomSOAP.addRoom(dto));
     }
 
     @Test
     void shouldGetRoomByIdFail() {
-        Assertions.assertThrows(RoomNotFoundException_Exception.class,
-                () -> roomSOAP.getRoomById("dba537f8-0526-4cea-941e-3c8ddd5e4f92"));
+        assertThrows(RoomNotFoundException_Exception.class,
+            () -> roomSOAP.getRoomById("dba537f8-0526-4cea-941e-3c8ddd5e4f92"));
     }
 
     @Test
     void shouldUpdateRoom() throws RoomNotFoundException_Exception, UpdateRoomException_Exception {
         Room originalRoom = roomSOAP.getRoomById("b9573aa2-42fa-43cb-baa1-42d06e1bdc8d");
+
+        assertNotNull(originalRoom);
 
         UpdateRoomSoapDTO dto = new UpdateRoomSoapDTO();
         dto.setPrice(6.0);
@@ -87,9 +93,9 @@ public class SoapIT extends SoapTestcontainersSetup {
 
         Room room = roomSOAP.getRoomById("b9573aa2-42fa-43cb-baa1-42d06e1bdc8d");
 
-        Assertions.assertEquals(9876, room.getRoomNumber());
-        Assertions.assertEquals(6.0F, room.getPrice());
-        Assertions.assertEquals(originalRoom.getSize(), room.getSize());
+        assertEquals(9876, room.getRoomNumber());
+        assertEquals(6.0F, room.getPrice());
+        assertEquals(originalRoom.getSize(), room.getSize());
     }
 
     @Test
@@ -97,12 +103,13 @@ public class SoapIT extends SoapTestcontainersSetup {
         UpdateRoomSoapDTO dto = new UpdateRoomSoapDTO();
         dto.setRoomNumber(836);
 
-        Assertions.assertThrows(UpdateRoomException_Exception.class,
-                () -> roomSOAP.updateRoom("a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9", dto));
+        assertThrows(UpdateRoomException_Exception.class,
+            () -> roomSOAP.updateRoom("a8f3eebe-df0f-48e5-a6c9-3bf1a914b3b9", dto));
     }
 
     @Test
-    void shouldRemoveRoom() throws CreateRoomException_Exception, RoomNotFoundException_Exception, RoomHasActiveReservationsException_Exception {
+    void shouldRemoveRoom() throws CreateRoomException_Exception, RoomNotFoundException_Exception,
+        RoomHasActiveReservationsException_Exception {
         CreateRoomSoapDTO dto = new CreateRoomSoapDTO();
         dto.setPrice(1);
         dto.setRoomNumber(45612);
@@ -114,15 +121,15 @@ public class SoapIT extends SoapTestcontainersSetup {
 
         roomSOAP.removeRoom(room.getId());
 
-        Assertions.assertThrows(RoomNotFoundException_Exception.class,
-                () -> roomSOAP.getRoomById(room.getId()));
+        assertThrows(RoomNotFoundException_Exception.class,
+            () -> roomSOAP.getRoomById(room.getId()));
     }
 
     @Test
     void shouldFailRemoveRoomWhenThereAreActiveRentsForIt() throws RoomNotFoundException_Exception {
         Room room = roomSOAP.getRoomById("9acac245-25b3-492d-a742-4c69bfcb90cf");
 
-        Assertions.assertThrows(RoomHasActiveReservationsException_Exception.class,
-                () -> roomSOAP.removeRoom(room.getId()));
+        assertThrows(RoomHasActiveReservationsException_Exception.class,
+            () -> roomSOAP.removeRoom(room.getId()));
     }
 }

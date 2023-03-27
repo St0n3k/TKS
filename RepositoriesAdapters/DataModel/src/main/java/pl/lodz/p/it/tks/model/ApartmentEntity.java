@@ -28,6 +28,7 @@ public class ApartmentEntity extends RoomEntity {
 
     @Override
     public Room mapToRoom() {
-        return new Apartment(this.getId(), this.getRoomNumber(), this.getPrice(), this.getSize(), this.getBalconyArea(), this.getVersion());
+        return new Apartment(this.getId(), this.getRoomNumber(), this.getPrice(), this.getSize(), this.getBalconyArea(),
+            this.getVersion());
     }
 }

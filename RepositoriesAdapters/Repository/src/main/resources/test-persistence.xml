@@ -11,9 +11,9 @@
             <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
             <property name="jakarta.persistence.sql-load-script-source"
                       value="META-INF/sql/initial_data.sql"/>
-            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:pas" />
-            <property name="javax.persistence.jdbc.user" value="sa" />
+            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:pas"/>
+            <property name="javax.persistence.jdbc.user" value="sa"/>
             <property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.H2Platform"/>
         </properties>
     </persistence-unit>

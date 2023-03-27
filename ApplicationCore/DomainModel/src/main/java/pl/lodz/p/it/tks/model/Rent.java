@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-public class Rent extends AbstractModel{
+public class Rent extends AbstractModel {
 
     private LocalDateTime beginTime;
 

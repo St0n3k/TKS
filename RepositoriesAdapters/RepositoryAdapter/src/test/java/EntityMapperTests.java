@@ -18,11 +18,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 
-
 public class EntityMapperTests {
 
     @Test
-    void RoomMapperTest() {
+    void roomMapperTest() {
         Room room = new Room(UUID.randomUUID(), 1, 2.0, 3, 2);
         Apartment apartment = new Apartment(UUID.randomUUID(), 1, 2.0, 3, 2.5, 43);
 
@@ -50,10 +49,12 @@ public class EntityMapperTests {
     }
 
     @Test
-    void RentMapperTest() {
+    void rentMapperTest() {
         Room room = new Room(UUID.randomUUID(), 1, 2.0, 3, 3);
         Client client = new Client(UUID.randomUUID(), 0, "x", true, "a", "b", "c", "f", new Address("d", "f", 1));
-        Rent rent = new Rent(UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now().plusDays(10), false, 100, client, room, 3);
+        Rent rent =
+            new Rent(UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now().plusDays(10), false, 100, client, room,
+                3);
 
         RentEntity rentEntity = new RentEntity(rent);
 
@@ -69,7 +70,7 @@ public class EntityMapperTests {
     }
 
     @Test
-    void UserMapperTest() {
+    void userMapperTest() {
         Client client = new Client(UUID.randomUUID(), 0, "x", true, "a", "b", "c", "f", new Address("d", "f", 1));
         Employee employee = new Employee(UUID.randomUUID(), 4, "x", true, "a", "b", "c");
         Admin admin = new Admin(UUID.randomUUID(), 3, "x", true, "a");

@@ -1,4 +1,4 @@
-package pl.lodz.p.it.tks.exceptionMapper;
+package pl.lodz.p.it.tks.exception.mapper;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -24,19 +24,19 @@ public class CustomExceptionMapper implements ExceptionMapper<BaseApplicationExc
     @Override
     public Response toResponse(BaseApplicationException e) {
         if (e.getClass() == UserNotFoundException.class
-                || e.getClass() == RoomNotFoundException.class
-                || e.getClass() == RentNotFoundException.class) {
+            || e.getClass() == RoomNotFoundException.class
+            || e.getClass() == RentNotFoundException.class) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
         if (e.getClass() == CreateRoomException.class
-                || e.getClass() == RoomHasActiveReservationsException.class
-                || e.getClass() == UpdateRoomException.class
-                || e.getClass() == CreateRentException.class
-                || e.getClass() == UpdateRentException.class
-                || e.getClass() == RemoveRentException.class
-                || e.getClass() == CreateUserException.class
-                || e.getClass() == UpdateUserException.class) {
+            || e.getClass() == RoomHasActiveReservationsException.class
+            || e.getClass() == UpdateRoomException.class
+            || e.getClass() == CreateRentException.class
+            || e.getClass() == UpdateRentException.class
+            || e.getClass() == RemoveRentException.class
+            || e.getClass() == CreateUserException.class
+            || e.getClass() == UpdateUserException.class) {
             return Response.status(Response.Status.CONFLICT).build();
         }
 
@@ -45,7 +45,7 @@ public class CustomExceptionMapper implements ExceptionMapper<BaseApplicationExc
         }
 
         if (e.getClass() == InactiveUserException.class
-                || e.getClass() == AuthenticationException.class) {
+            || e.getClass() == AuthenticationException.class) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

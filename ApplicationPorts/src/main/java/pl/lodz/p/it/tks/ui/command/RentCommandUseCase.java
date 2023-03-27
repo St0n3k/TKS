@@ -14,10 +14,10 @@ import java.util.UUID;
 
 public interface RentCommandUseCase {
     Rent rentRoom(Rent tempRent, UUID clientId, UUID roomId) throws
-            UserNotFoundException,
-            RoomNotFoundException,
-            InactiveUserException,
-            CreateRentException;
+        UserNotFoundException,
+        RoomNotFoundException,
+        InactiveUserException,
+        CreateRentException;
 
     Rent updateRentBoard(UUID id, Boolean board) throws InvalidInputException, RentNotFoundException;
 

@@ -4,7 +4,7 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
     <persistence-unit name="guesthouse" transaction-type="JTA">
-<!--        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>-->
+        <!-- <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider> -->
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <jta-data-source>java:global/jdbc/guesthouse</jta-data-source>
         <jar-file>lib/DataModel-1.0.jar</jar-file>
