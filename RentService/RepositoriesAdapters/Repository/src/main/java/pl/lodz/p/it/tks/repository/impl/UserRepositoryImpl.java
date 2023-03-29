@@ -4,7 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import pl.lodz.p.it.tks.model.user.UserEntity;
+import pl.lodz.p.it.tks.model.users.UserEntity;
 import pl.lodz.p.it.tks.repository.UserRepository;
 
 import java.util.List;

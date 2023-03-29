@@ -15,7 +15,7 @@
 
     <parent>
         <artifactId>UserService</artifactId>
-        <groupId>pl.lodz.p.it.tks</groupId>
+        <groupId>pl.lodz.p.it.tks.user</groupId>
         <version>1.0</version>
     </parent>
 </project>

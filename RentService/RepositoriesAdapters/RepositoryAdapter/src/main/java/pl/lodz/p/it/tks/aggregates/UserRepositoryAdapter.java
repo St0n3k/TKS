@@ -5,13 +5,13 @@ import jakarta.inject.Inject;
 import pl.lodz.p.it.tks.infrastructure.command.UserCommandPort;
 import pl.lodz.p.it.tks.infrastructure.query.UserQueryPort;
 import pl.lodz.p.it.tks.model.user.Admin;
-import pl.lodz.p.it.tks.model.user.AdminEntity;
 import pl.lodz.p.it.tks.model.user.Client;
-import pl.lodz.p.it.tks.model.user.ClientEntity;
 import pl.lodz.p.it.tks.model.user.Employee;
-import pl.lodz.p.it.tks.model.user.EmployeeEntity;
 import pl.lodz.p.it.tks.model.user.User;
-import pl.lodz.p.it.tks.model.user.UserEntity;
+import pl.lodz.p.it.tks.model.users.AdminEntity;
+import pl.lodz.p.it.tks.model.users.ClientEntity;
+import pl.lodz.p.it.tks.model.users.EmployeeEntity;
+import pl.lodz.p.it.tks.model.users.UserEntity;
 import pl.lodz.p.it.tks.repository.UserRepository;
 
 import java.util.List;

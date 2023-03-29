@@ -8,11 +8,11 @@ import pl.lodz.p.it.tks.model.RentEntity;
 import pl.lodz.p.it.tks.model.Room;
 import pl.lodz.p.it.tks.model.RoomEntity;
 import pl.lodz.p.it.tks.model.user.Admin;
-import pl.lodz.p.it.tks.model.user.AdminEntity;
 import pl.lodz.p.it.tks.model.user.Client;
-import pl.lodz.p.it.tks.model.user.ClientEntity;
 import pl.lodz.p.it.tks.model.user.Employee;
-import pl.lodz.p.it.tks.model.user.EmployeeEntity;
+import pl.lodz.p.it.tks.model.users.AdminEntity;
+import pl.lodz.p.it.tks.model.users.ClientEntity;
+import pl.lodz.p.it.tks.model.users.EmployeeEntity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

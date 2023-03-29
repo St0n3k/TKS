@@ -32,7 +32,7 @@ public abstract class RestTestcontainersSetup {
     public static void setup() throws IOException {
         Network network = Network.SHARED;
         MountableFile warFile;
-        String warFilePath = "../RestAdapter/target/RestAdapter-1.0.war";
+        String warFilePath = "../UserRestAdapter/target/UserRestAdapter-1.0.war";
 
         warFile = MountableFile.forHostPath(
             Paths.get(new File(warFilePath).getCanonicalPath()).toAbsolutePath(), 0777);
@@ -51,7 +51,7 @@ public abstract class RestTestcontainersSetup {
             .withNetwork(network)
             .withNetworkAliases("payara")
             .withCopyFileToContainer(warFile, "/opt/payara/deployments/RestAdapter-1.0.war")
-            .waitingFor(Wait.forHttps("/api/rooms").allowInsecure())
+            .waitingFor(Wait.forHttps("/api/ping").forStatusCode(204).allowInsecure())
             .withReuse(true);
 
         postgresContainer.start();

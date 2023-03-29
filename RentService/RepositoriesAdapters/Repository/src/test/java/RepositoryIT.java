@@ -1,9 +1,3 @@
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -20,10 +14,10 @@ import pl.lodz.p.it.tks.model.AbstractEntity;
 import pl.lodz.p.it.tks.model.AddressEntity;
 import pl.lodz.p.it.tks.model.RentEntity;
 import pl.lodz.p.it.tks.model.RoomEntity;
-import pl.lodz.p.it.tks.model.user.AdminEntity;
-import pl.lodz.p.it.tks.model.user.ClientEntity;
-import pl.lodz.p.it.tks.model.user.EmployeeEntity;
-import pl.lodz.p.it.tks.model.user.UserEntity;
+import pl.lodz.p.it.tks.model.users.AdminEntity;
+import pl.lodz.p.it.tks.model.users.ClientEntity;
+import pl.lodz.p.it.tks.model.users.EmployeeEntity;
+import pl.lodz.p.it.tks.model.users.UserEntity;
 import pl.lodz.p.it.tks.repository.RentRepository;
 import pl.lodz.p.it.tks.repository.RoomRepository;
 import pl.lodz.p.it.tks.repository.UserRepository;
@@ -34,6 +28,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(ArquillianExtension.class)
 @TestMethodOrder(OrderAnnotation.class)

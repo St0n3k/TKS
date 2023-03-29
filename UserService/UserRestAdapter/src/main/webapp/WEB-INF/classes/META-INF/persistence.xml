@@ -7,7 +7,7 @@
         <!-- <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider> -->
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <jta-data-source>java:global/jdbc/guesthouse</jta-data-source>
-        <jar-file>lib/DataModel-1.0.jar</jar-file>
+        <jar-file>lib/UserDataModel-1.0.jar</jar-file>
         <properties>
             <property name="eclipselink.target-database" value="PostgreSQL"/>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>

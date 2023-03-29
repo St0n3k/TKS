@@ -21,6 +21,7 @@
     <packaging>pom</packaging>
 
     <artifactId>UserService</artifactId>
+    <groupId>pl.lodz.p.it.tks.user</groupId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
