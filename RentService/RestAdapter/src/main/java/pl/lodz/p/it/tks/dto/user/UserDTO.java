@@ -19,7 +19,5 @@ public abstract class UserDTO extends AbstractDTO {
     public UserDTO(User user) {
         super(user.getId(), user.getVersion());
         username = user.getUsername();
-        active = user.isActive();
-        role = user.getRole();
     }
 }

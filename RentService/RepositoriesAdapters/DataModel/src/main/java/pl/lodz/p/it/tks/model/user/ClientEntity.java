@@ -1,4 +1,4 @@
-package pl.lodz.p.it.tks.model.users;
+package pl.lodz.p.it.tks.model.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -8,8 +8,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.model.AddressEntity;
-import pl.lodz.p.it.tks.model.user.Client;
-import pl.lodz.p.it.tks.model.user.User;
 
 import java.util.UUID;
 
@@ -39,8 +37,6 @@ public class ClientEntity extends UserEntity {
         this(client.getVersion(),
             client.getId(),
             client.getUsername(),
-            client.isActive(),
-            client.getPassword(),
             client.getFirstName(),
             client.getLastName(),
             client.getPersonalId(),
@@ -50,13 +46,11 @@ public class ClientEntity extends UserEntity {
     public ClientEntity(long version,
                         UUID id,
                         String username,
-                        boolean active,
-                        String password,
                         String firstName,
                         String lastName,
                         String personalId,
                         AddressEntity address) {
-        super(version, id, username, active, "CLIENT", password);
+        super(version, id, username);
         this.firstName = firstName;
         this.lastName = lastName;
         this.personalId = personalId;
@@ -65,13 +59,11 @@ public class ClientEntity extends UserEntity {
 
     public ClientEntity(UUID id,
                         String username,
-                        boolean active,
-                        String password,
                         String firstName,
                         String lastName,
                         String personalId,
                         AddressEntity address) {
-        super(id, username, active, "CLIENT", password);
+        super(id, username);
         this.firstName = firstName;
         this.lastName = lastName;
         this.personalId = personalId;
@@ -83,8 +75,6 @@ public class ClientEntity extends UserEntity {
         return new Client(this.getId(),
             this.getVersion(),
             this.getUsername(),
-            this.isActive(),
-            this.getPassword(),
             this.firstName,
             this.lastName,
             this.personalId,

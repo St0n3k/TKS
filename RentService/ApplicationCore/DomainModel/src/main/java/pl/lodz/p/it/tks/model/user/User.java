@@ -13,36 +13,22 @@ public abstract class User extends AbstractModel implements Principal {
 
     private String username;
 
-    private boolean active = true;
-
-    private String role = "CLIENT";
-
-    private String password;
-
     @Override
     public String getName() {
         return getUsername();
     }
 
-    public User(String username, String password, String role) {
+    public User(String username) {
         this.username = username;
-        this.password = password;
-        this.role = role;
     }
 
-    public User(UUID id, String username, boolean active, String role, String password) {
+    public User(UUID id, String username) {
         super(id);
         this.username = username;
-        this.active = active;
-        this.role = role;
-        this.password = password;
     }
 
-    public User(UUID id, long version, String username, boolean active, String role, String password) {
+    public User(UUID id, long version, String username) {
         super(id, version);
         this.username = username;
-        this.active = active;
-        this.role = role;
-        this.password = password;
     }
 }

@@ -4,14 +4,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import pl.lodz.p.it.tks.infrastructure.command.UserCommandPort;
 import pl.lodz.p.it.tks.infrastructure.query.UserQueryPort;
-import pl.lodz.p.it.tks.model.user.Admin;
 import pl.lodz.p.it.tks.model.user.Client;
-import pl.lodz.p.it.tks.model.user.Employee;
+import pl.lodz.p.it.tks.model.user.ClientEntity;
 import pl.lodz.p.it.tks.model.user.User;
-import pl.lodz.p.it.tks.model.users.AdminEntity;
-import pl.lodz.p.it.tks.model.users.ClientEntity;
-import pl.lodz.p.it.tks.model.users.EmployeeEntity;
-import pl.lodz.p.it.tks.model.users.UserEntity;
+import pl.lodz.p.it.tks.model.user.UserEntity;
 import pl.lodz.p.it.tks.repository.UserRepository;
 
 import java.util.List;
@@ -91,23 +87,7 @@ public class UserRepositoryAdapter implements UserCommandPort, UserQueryPort {
     //endregion
 
     private UserEntity mapToUserEntity(User user) {
-        if (user instanceof Admin admin) {
-            // TODO refactor by creating constructor with Admin param
-            return new AdminEntity(admin.getVersion(),
-                admin.getId(),
-                admin.getUsername(),
-                admin.isActive(),
-                admin.getPassword());
-        } else if (user instanceof Employee employee) {
-            // TODO refactor by creating constructor with Employee param
-            return new EmployeeEntity(employee.getVersion(),
-                employee.getId(),
-                employee.getUsername(),
-                employee.isActive(),
-                employee.getPassword(),
-                employee.getFirstName(),
-                employee.getLastName());
-        } else if (user instanceof Client client) {
+        if (user instanceof Client client) {
             return new ClientEntity(client);
         }
         return null;

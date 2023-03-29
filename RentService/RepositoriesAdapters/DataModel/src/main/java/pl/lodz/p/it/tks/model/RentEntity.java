@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.eclipse.persistence.annotations.CascadeOnDelete;
-import pl.lodz.p.it.tks.model.users.ClientEntity;
+import pl.lodz.p.it.tks.model.user.ClientEntity;
 
 import java.time.LocalDateTime;
 

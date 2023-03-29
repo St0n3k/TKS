@@ -23,20 +23,7 @@ public class Client extends User {
                   String lastName,
                   String personalId,
                   Address address) {
-        super(username, null, "CLIENT");
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.personalId = personalId;
-        this.address = address;
-    }
-
-    public Client(String username,
-                  String password,
-                  String firstName,
-                  String lastName,
-                  String personalId,
-                  Address address) {
-        super(username, password, "CLIENT");
+        super(username);
         this.firstName = firstName;
         this.lastName = lastName;
         this.personalId = personalId;
@@ -45,13 +32,11 @@ public class Client extends User {
 
     public Client(UUID id,
                   String username,
-                  boolean active,
-                  String password,
                   String firstName,
                   String lastName,
                   String personalId,
                   Address address) {
-        super(id, username, active, "CLIENT", password);
+        super(id, username);
         this.firstName = firstName;
         this.lastName = lastName;
         this.personalId = personalId;
@@ -61,13 +46,11 @@ public class Client extends User {
     public Client(UUID id,
                   long version,
                   String username,
-                  boolean active,
-                  String password,
                   String firstName,
                   String lastName,
                   String personalId,
                   Address address) {
-        super(id, version, username, active, "CLIENT", password);
+        super(id, version, username);
         this.firstName = firstName;
         this.lastName = lastName;
         this.personalId = personalId;

@@ -12,9 +12,7 @@ import pl.lodz.p.it.tks.infrastructure.query.RentQueryPort;
 import pl.lodz.p.it.tks.infrastructure.query.UserQueryPort;
 import pl.lodz.p.it.tks.model.Address;
 import pl.lodz.p.it.tks.model.Rent;
-import pl.lodz.p.it.tks.model.user.Admin;
 import pl.lodz.p.it.tks.model.user.Client;
-import pl.lodz.p.it.tks.model.user.Employee;
 import pl.lodz.p.it.tks.model.user.User;
 import pl.lodz.p.it.tks.ui.command.UserCommandUseCase;
 import pl.lodz.p.it.tks.ui.query.UserQueryUseCase;
@@ -48,28 +46,6 @@ public class UserService implements UserQueryUseCase, UserCommandUseCase {
             throw new CreateUserException();
         }
         return client;
-    }
-
-
-    @Override
-    public Employee registerEmployee(Employee employee) throws CreateUserException {
-        employee = (Employee) userCommandPort.add(employee);
-
-        if (employee == null) {
-            throw new CreateUserException();
-        }
-        return employee;
-    }
-
-    @Override
-    public Admin registerAdmin(Admin admin) throws CreateUserException {
-
-        admin = (Admin) userCommandPort.add(admin);
-
-        if (admin == null) {
-            throw new CreateUserException();
-        }
-        return admin;
     }
 
     @Override
@@ -113,22 +89,6 @@ public class UserService implements UserQueryUseCase, UserCommandUseCase {
         return userQueryPort.getUsersByRole("CLIENT")
             .stream()
             .map(user -> (Client) user)
-            .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Employee> getEmployees() {
-        return userQueryPort.getUsersByRole("EMPLOYEE")
-            .stream()
-            .map(user -> (Employee) user)
-            .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Admin> getAdmins() {
-        return userQueryPort.getUsersByRole("ADMIN")
-            .stream()
-            .map(user -> (Admin) user)
             .collect(Collectors.toList());
     }
 
@@ -185,56 +145,47 @@ public class UserService implements UserQueryUseCase, UserCommandUseCase {
             if (newAddress.getHouseNumber() > 0) {
                 address.setHouseNumber(newAddress.getHouseNumber());
             }
-        } else if (user instanceof Employee employee) {
-            Employee newEmployee = (Employee) newUser;
-
-            if (newEmployee.getFirstName() != null) {
-                employee.setFirstName(newEmployee.getFirstName());
-            }
-
-            if (newEmployee.getLastName() != null) {
-                employee.setLastName(newEmployee.getLastName());
-            }
         }
 
         return userCommandPort.update(user)
             .orElseThrow(UpdateUserException::new);
     }
 
-    @Override
-    public User activateUser(UUID id) throws UserNotFoundException, UpdateUserException {
-        Optional<User> optionalUser = userQueryPort.getById(id);
-
-        if (optionalUser.isEmpty()) {
-            throw new UserNotFoundException();
-        }
-        User user = optionalUser.get();
-        user.setActive(true);
-
-        optionalUser = userCommandPort.update(user);
-        if (optionalUser.isEmpty()) {
-            throw new UpdateUserException();
-        }
-        user = optionalUser.get();
-        return user;
-    }
-
-    @Override
-    public User deactivateUser(UUID id) throws UpdateUserException, UserNotFoundException {
-        Optional<User> optionalUser = userQueryPort.getById(id);
-
-        if (optionalUser.isEmpty()) {
-            throw new UserNotFoundException();
-        }
-        User user = optionalUser.get();
-        user.setActive(false);
-
-        optionalUser = userCommandPort.update(user);
-        if (optionalUser.isEmpty()) {
-            throw new UpdateUserException();
-        }
-        user = optionalUser.get();
-        return user;
-    }
+    //TODO
+    //    @Override
+    //    public User activateUser(UUID id) throws UserNotFoundException, UpdateUserException {
+    //        Optional<User> optionalUser = userQueryPort.getById(id);
+    //
+    //        if (optionalUser.isEmpty()) {
+    //            throw new UserNotFoundException();
+    //        }
+    //        User user = optionalUser.get();
+    //        user.setActive(true);
+    //
+    //        optionalUser = userCommandPort.update(user);
+    //        if (optionalUser.isEmpty()) {
+    //            throw new UpdateUserException();
+    //        }
+    //        user = optionalUser.get();
+    //        return user;
+    //    }
+    //
+    //    @Override
+    //    public User deactivateUser(UUID id) throws UpdateUserException, UserNotFoundException {
+    //        Optional<User> optionalUser = userQueryPort.getById(id);
+    //
+    //        if (optionalUser.isEmpty()) {
+    //            throw new UserNotFoundException();
+    //        }
+    //        User user = optionalUser.get();
+    //        user.setActive(false);
+    //
+    //        optionalUser = userCommandPort.update(user);
+    //        if (optionalUser.isEmpty()) {
+    //            throw new UpdateUserException();
+    //        }
+    //        user = optionalUser.get();
+    //        return user;
+    //    }
 
 }

@@ -75,9 +75,10 @@ public class RentService implements RentQueryUseCase, RentCommandUseCase {
         Client client = (Client) optionalUser.get();
         Room room = optionalRoom.get();
 
-        if (!client.isActive()) {
-            throw new InactiveUserException();
-        }
+        //FIXME
+        //        if (!client.isActive()) {
+        //            throw new InactiveUserException();
+        //        }
 
         double finalCost = calculateTotalCost(tempRent.getBeginTime(), tempRent.getEndTime(),
             room.getPrice(), tempRent.isBoard());

@@ -1,6 +1,6 @@
 package pl.lodz.p.it.tks.repository;
 
-import pl.lodz.p.it.tks.model.users.UserEntity;
+import pl.lodz.p.it.tks.model.user.UserEntity;
 
 import java.util.List;
 import java.util.Optional;

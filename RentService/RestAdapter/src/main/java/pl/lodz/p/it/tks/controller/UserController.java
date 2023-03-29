@@ -15,23 +15,16 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.tks.dto.rent.RentDTO;
-import pl.lodz.p.it.tks.dto.user.AdminDTO;
 import pl.lodz.p.it.tks.dto.user.ClientDTO;
-import pl.lodz.p.it.tks.dto.user.EmployeeDTO;
-import pl.lodz.p.it.tks.dto.user.RegisterAdminDTO;
 import pl.lodz.p.it.tks.dto.user.RegisterClientDTO;
-import pl.lodz.p.it.tks.dto.user.RegisterEmployeeDTO;
 import pl.lodz.p.it.tks.dto.user.UpdateClientDTO;
-import pl.lodz.p.it.tks.dto.user.UpdateEmployeeDTO;
 import pl.lodz.p.it.tks.dto.user.UserDTO;
 import pl.lodz.p.it.tks.exception.user.CreateUserException;
 import pl.lodz.p.it.tks.exception.user.UpdateUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.mapper.UserMapper;
 import pl.lodz.p.it.tks.model.Address;
-import pl.lodz.p.it.tks.model.user.Admin;
 import pl.lodz.p.it.tks.model.user.Client;
-import pl.lodz.p.it.tks.model.user.Employee;
 import pl.lodz.p.it.tks.model.user.User;
 import pl.lodz.p.it.tks.ui.command.UserCommandUseCase;
 import pl.lodz.p.it.tks.ui.query.UserQueryUseCase;
@@ -72,7 +65,6 @@ public class UserController {
         Address address = new Address(rcDTO.getCity(), rcDTO.getStreet(), rcDTO.getNumber());
 
         Client client = new Client(rcDTO.getUsername(),
-            rcDTO.getPassword(),
             rcDTO.getFirstName(),
             rcDTO.getLastName(),
             rcDTO.getPersonalID(),
@@ -81,45 +73,6 @@ public class UserController {
         Client registeredClient = userCommandUseCase.registerClient(client);
         return Response.status(Response.Status.CREATED)
             .entity(new ClientDTO(registeredClient))
-            .build();
-    }
-
-
-    /**
-     * Endpoint which is used to register new employee,
-     * username of employee has to be unique, otherwise exception will be thrown.
-     *
-     * @param reDTO object containing information of client
-     *
-     * @return status code
-     *     201(CREATED) + saved employee if registration was successful
-     *     409(CONFLICT) if registration attempt was unsuccessful (could be due to not unique username)
-     */
-    @POST
-    @Path("/employees")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN"})
-    public Response registerEmployee(@Valid RegisterEmployeeDTO reDTO) throws CreateUserException {
-        Employee employee = new Employee(reDTO.getUsername(),
-            reDTO.getFirstName(),
-            reDTO.getLastName(),
-            reDTO.getPassword());
-
-        Employee registeredEmployee = userCommandUseCase.registerEmployee(employee);
-        return Response.status(Response.Status.CREATED).entity(new EmployeeDTO(registeredEmployee)).build();
-    }
-
-    @POST
-    @Path("/admins")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN"})
-    public Response registerAdmin(@Valid RegisterAdminDTO raDto) throws CreateUserException {
-        Admin admin = new Admin(raDto.getUsername(), raDto.getPassword());
-        Admin registeredAdmin = userCommandUseCase.registerAdmin(admin);
-        return Response.status(Response.Status.CREATED)
-            .entity(new AdminDTO(registeredAdmin))
             .build();
     }
 
@@ -154,30 +107,6 @@ public class UserController {
             .map(ClientDTO::new)
             .collect(Collectors.toList());
         return Response.status(Response.Status.OK).entity(clients).build();
-    }
-
-    @GET
-    @Path("/employees")
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN"})
-    public Response getAllEmployees() {
-        List<EmployeeDTO> employees = userQueryUseCase.getEmployees()
-            .stream()
-            .map(EmployeeDTO::new)
-            .collect(Collectors.toList());
-        return Response.status(Response.Status.OK).entity(employees).build();
-    }
-
-    @GET
-    @Path("/admins")
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN"})
-    public Response getAllAdmins() {
-        List<AdminDTO> admins = userQueryUseCase.getAdmins()
-            .stream()
-            .map(AdminDTO::new)
-            .collect(Collectors.toList());
-        return Response.status(Response.Status.OK).entity(admins).build();
     }
 
     @GET
@@ -242,59 +171,45 @@ public class UserController {
         User updatedUser = userCommandUseCase.updateUser(id, user);
         return Response.status(Response.Status.OK).entity(userMapper.mapToDto(updatedUser)).build();
     }
-
-    @PUT
-    @Path("employees/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN", "EMPLOYEE"})
-    public Response updateEmployee(@PathParam("id") UUID id, @Valid UpdateEmployeeDTO dto)
-        throws UserNotFoundException, UpdateUserException {
-        User user = new Employee(dto.getFirstName(),
-            dto.getLastName());
-
-        User updatedUser = userCommandUseCase.updateUser(id, user);
-        return Response.status(Response.Status.OK).entity(userMapper.mapToDto(updatedUser)).build();
-    }
-
-    /**
-     * Endpoint used for activating given user.
-     *
-     * @param id id of the user
-     *
-     * @return status code
-     *     <ul>
-     *         <li>200(OK) if activation was successful</li>
-     *         <li>409(CONFLICT) if activation was unsuccessful</li>
-     *     </ul>
-     */
-    @PUT
-    @Path("/{id}/activate")
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN", "EMPLOYEE"})
-    public Response activateUser(@PathParam("id") UUID id) throws UserNotFoundException, UpdateUserException {
-        User user = userCommandUseCase.activateUser(id);
-        return Response.status(Response.Status.OK).entity(userMapper.mapToDto(user)).build();
-    }
-
-
-    /**
-     * Endpoint used for deactivating given user.
-     *
-     * @param id id of the user
-     *
-     * @return status code
-     *     <ul>
-     *         <li>200(OK) if deactivation was successful</li>
-     *         <li>409(CONFLICT) if deactivation was unsuccessful</li>
-     *     </ul>
-     */
-    @PUT
-    @Path("/{id}/deactivate")
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN", "EMPLOYEE"})
-    public Response deactivateUser(@PathParam("id") UUID id) throws UserNotFoundException, UpdateUserException {
-        User user = userCommandUseCase.deactivateUser(id);
-        return Response.status(Response.Status.OK).entity(userMapper.mapToDto(user)).build();
-    }
+    ///FIXME
+    //    /**
+    //     * Endpoint used for activating given user.
+    //     *
+    //     * @param id id of the user
+    //     *
+    //     * @return status code
+    //     *     <ul>
+    //     *         <li>200(OK) if activation was successful</li>
+    //     *         <li>409(CONFLICT) if activation was unsuccessful</li>
+    //     *     </ul>
+    //     */
+    //    @PUT
+    //    @Path("/{id}/activate")
+    //    @Produces(MediaType.APPLICATION_JSON)
+    //    @RolesAllowed({"ADMIN", "EMPLOYEE"})
+    //    public Response activateUser(@PathParam("id") UUID id) throws UserNotFoundException, UpdateUserException {
+    //        User user = userCommandUseCase.activateUser(id);
+    //        return Response.status(Response.Status.OK).entity(userMapper.mapToDto(user)).build();
+    //    }
+    //
+    //
+    //    /**
+    //     * Endpoint used for deactivating given user.
+    //     *
+    //     * @param id id of the user
+    //     *
+    //     * @return status code
+    //     *     <ul>
+    //     *         <li>200(OK) if deactivation was successful</li>
+    //     *         <li>409(CONFLICT) if deactivation was unsuccessful</li>
+    //     *     </ul>
+    //     */
+    //    @PUT
+    //    @Path("/{id}/deactivate")
+    //    @Produces(MediaType.APPLICATION_JSON)
+    //    @RolesAllowed({"ADMIN", "EMPLOYEE"})
+    //    public Response deactivateUser(@PathParam("id") UUID id) throws UserNotFoundException, UpdateUserException {
+    //        User user = userCommandUseCase.deactivateUser(id);
+    //        return Response.status(Response.Status.OK).entity(userMapper.mapToDto(user)).build();
+    //    }
 }
