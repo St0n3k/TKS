@@ -11,13 +11,8 @@
     <version>1.0</version>
 
     <modules>
-        <module>ApplicationCore</module>
-        <module>RepositoriesAdapters</module>
-        <module>ApplicationPorts</module>
-        <module>RestAdapter</module>
-        <module>Security</module>
-        <module>SoapAdapter</module>
-        <module>UIAdapters</module>
+        <module>RentService</module>
+        <module>UserService</module>
     </modules>
 
     <dependencyManagement>
@@ -75,6 +70,57 @@
                 <version>1.0</version>
                 <classifier>classes</classifier>
             </dependency>
+
+
+            <dependency>
+                <groupId>pl.lodz.p.it.tks</groupId>
+                <artifactId>UserApplicationService</artifactId>
+                <version>1.0</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>pl.lodz.p.it.tks</groupId>
+                <artifactId>UserDomainModel</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>pl.lodz.p.it.tks</groupId>
+                <artifactId>UserApplicationPorts</artifactId>
+                <version>1.0</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>pl.lodz.p.it.tks</groupId>
+                <artifactId>UserRepositoryAdapter</artifactId>
+                <version>1.0</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>pl.lodz.p.it.tks</groupId>
+                <artifactId>UserRepository</artifactId>
+                <version>1.0</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>pl.lodz.p.it.tks</groupId>
+                <artifactId>UserDataModel</artifactId>
+                <version>1.0</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>pl.lodz.p.it.tks</groupId>
+                <artifactId>UserSecurity</artifactId>
+                <version>1.0</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>pl.lodz.p.it.tks</groupId>
+                <artifactId>UserRestAdapter</artifactId>
+                <version>1.0</version>
+                <classifier>classes</classifier>
+            </dependency>
+
+
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
