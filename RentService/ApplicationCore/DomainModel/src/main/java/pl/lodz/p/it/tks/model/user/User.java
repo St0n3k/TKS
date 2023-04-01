@@ -4,19 +4,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.tks.model.AbstractModel;
 
-import java.security.Principal;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-public abstract class User extends AbstractModel implements Principal {
+public abstract class User extends AbstractModel {
 
     private String username;
-
-    @Override
-    public String getName() {
-        return getUsername();
-    }
 
     public User(String username) {
         this.username = username;

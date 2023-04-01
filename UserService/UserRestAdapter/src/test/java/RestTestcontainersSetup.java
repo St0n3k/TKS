@@ -38,9 +38,9 @@ public abstract class RestTestcontainersSetup {
             Paths.get(new File(warFilePath).getCanonicalPath()).toAbsolutePath(), 0777);
 
         postgresContainer = new PostgreSQLContainer(DockerImageName.parse("postgres:latest"))
-            .withDatabaseName("pas")
-            .withUsername("pas")
-            .withPassword("pas")
+            .withDatabaseName("userdb")
+            .withUsername("userr")
+            .withPassword("userr")
             .withNetwork(network)
             .withNetworkAliases("db")
             .withReuse(true);
@@ -50,8 +50,8 @@ public abstract class RestTestcontainersSetup {
             .dependsOn(postgresContainer)
             .withNetwork(network)
             .withNetworkAliases("payara")
-            .withCopyFileToContainer(warFile, "/opt/payara/deployments/RestAdapter-1.0.war")
-            .waitingFor(Wait.forHttps("/api/ping").forStatusCode(204).allowInsecure())
+            .withCopyFileToContainer(warFile, "/opt/payara/deployments/UserRestAdapter-1.0.war")
+            .waitingFor(Wait.forHttps("/user/ping").allowInsecure())
             .withReuse(true);
 
         postgresContainer.start();
@@ -80,7 +80,7 @@ public abstract class RestTestcontainersSetup {
         String clientJwt = RestAssured.given().body(clientCredentials.toString())
             .contentType(ContentType.JSON)
             .when()
-            .post("/api/login")
+            .post("/user/login")
             .jsonPath()
             .get("jwt");
 
@@ -98,7 +98,7 @@ public abstract class RestTestcontainersSetup {
         String employeeJwt = RestAssured.given().body(employeeCredentials.toString())
             .contentType(ContentType.JSON)
             .when()
-            .post("/api/login")
+            .post("/user/login")
             .jsonPath()
             .get("jwt");
 
@@ -116,7 +116,7 @@ public abstract class RestTestcontainersSetup {
         String adminJwt = RestAssured.given().body(adminCredentials.toString())
             .contentType(ContentType.JSON)
             .when()
-            .post("/api/login")
+            .post("/user/login")
             .jsonPath()
             .get("jwt");
 

@@ -37,10 +37,11 @@ import pl.lodz.p.it.tks.mapper.RoomMapper;
 import pl.lodz.p.it.tks.model.Apartment;
 import pl.lodz.p.it.tks.model.Rent;
 import pl.lodz.p.it.tks.model.Room;
-import pl.lodz.p.it.tks.model.user.User;
+import pl.lodz.p.it.tks.model.user.Client;
 import pl.lodz.p.it.tks.ui.command.RentCommandUseCase;
 import pl.lodz.p.it.tks.ui.command.RoomCommandUseCase;
 import pl.lodz.p.it.tks.ui.query.RoomQueryUseCase;
+import pl.lodz.p.it.tks.ui.query.UserQueryUseCase;
 
 import java.security.Principal;
 import java.util.List;
@@ -59,6 +60,9 @@ public class RoomController {
 
     @Inject
     private RoomQueryUseCase roomQueryUseCase;
+
+    @Inject
+    private UserQueryUseCase userQueryUseCase;
 
     @Inject
     private RentCommandUseCase rentCommandUseCase;
@@ -103,14 +107,14 @@ public class RoomController {
     public Response rentRoomForSelf(@PathParam("id") UUID roomID, @Valid RentRoomForSelfDTO dto)
         throws UserNotFoundException, RoomNotFoundException, InactiveUserException, CreateRentException {
         Principal principal = securityContext.getUserPrincipal();
-        if (principal instanceof User user) {
-            UUID clientID = user.getId();
-            Rent rent = new Rent(dto.getBeginTime(), dto.getEndTime(), dto.isBoard(), 0, null, null);
 
-            rent = rentCommandUseCase.rentRoom(rent, clientID, roomID);
-            return Response.status(Response.Status.CREATED).entity(new RentDTO(rent)).build();
-        }
-        return Response.status(Response.Status.BAD_REQUEST).build();
+        Client client = (Client) userQueryUseCase.getUserByUsername(principal.getName());
+
+        UUID clientID = client.getId();
+        Rent rent = new Rent(dto.getBeginTime(), dto.getEndTime(), dto.isBoard(), 0, null, null);
+
+        rent = rentCommandUseCase.rentRoom(rent, clientID, roomID);
+        return Response.status(Response.Status.CREATED).entity(new RentDTO(rent)).build();
     }
 
 

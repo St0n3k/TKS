@@ -1,6 +1,6 @@
-INSERT INTO users (id, version, type, username, first_name, last_name, personal_id, city, street, house_number) VALUES ('bdbe2fcf-6203-47d6-8908-ca65b9689396', 0, 'Client', 'client', 'Mariusz', 'Pudzianowski', '54352353', 'Warszawa', 'Stalowa', 16);
-INSERT INTO users (id, version, type, username, first_name, last_name, personal_id, city, street, house_number) VALUES ('a524d75e-927a-4a10-8c46-6321fff6979e', 0, 'Client', 'jakub2', 'Jakub', 'Bukaj', '3584873', 'Krakow', 'Smutna', 13);
-INSERT INTO users (id, version, type, username, first_name, last_name, personal_id, city, street, house_number) VALUES ('dbc028ea-a233-4280-b953-564a69da1810', 0, 'Client', 'jakub3', 'Kuba', 'Bokaj', '3584173', 'Krakow', 'Smutna', 13);
+INSERT INTO clients (id, version, type, username, first_name, last_name, personal_id, city, street, house_number) VALUES ('bdbe2fcf-6203-47d6-8908-ca65b9689396', 0, 'Client', 'client', 'Mariusz', 'Pudzianowski', '54352353', 'Warszawa', 'Stalowa', 16);
+INSERT INTO clients (id, version, type, username, first_name, last_name, personal_id, city, street, house_number) VALUES ('a524d75e-927a-4a10-8c46-6321fff6979e', 0, 'Client', 'jakub2', 'Jakub', 'Bukaj', '3584873', 'Krakow', 'Smutna', 13);
+INSERT INTO clients (id, version, type, username, first_name, last_name, personal_id, city, street, house_number) VALUES ('dbc028ea-a233-4280-b953-564a69da1810', 0, 'Client', 'jakub3', 'Kuba', 'Bokaj', '3584173', 'Krakow', 'Smutna', 13);
 
 
 INSERT INTO room (id, version, price, room_number, size, type) VALUES ('9acac245-25b3-492d-a742-4c69bfcb90cf', 0, 250.00, 643, 6, 'Room');

@@ -171,45 +171,4 @@ public class UserController {
         User updatedUser = userCommandUseCase.updateUser(id, user);
         return Response.status(Response.Status.OK).entity(userMapper.mapToDto(updatedUser)).build();
     }
-    ///FIXME
-    //    /**
-    //     * Endpoint used for activating given user.
-    //     *
-    //     * @param id id of the user
-    //     *
-    //     * @return status code
-    //     *     <ul>
-    //     *         <li>200(OK) if activation was successful</li>
-    //     *         <li>409(CONFLICT) if activation was unsuccessful</li>
-    //     *     </ul>
-    //     */
-    //    @PUT
-    //    @Path("/{id}/activate")
-    //    @Produces(MediaType.APPLICATION_JSON)
-    //    @RolesAllowed({"ADMIN", "EMPLOYEE"})
-    //    public Response activateUser(@PathParam("id") UUID id) throws UserNotFoundException, UpdateUserException {
-    //        User user = userCommandUseCase.activateUser(id);
-    //        return Response.status(Response.Status.OK).entity(userMapper.mapToDto(user)).build();
-    //    }
-    //
-    //
-    //    /**
-    //     * Endpoint used for deactivating given user.
-    //     *
-    //     * @param id id of the user
-    //     *
-    //     * @return status code
-    //     *     <ul>
-    //     *         <li>200(OK) if deactivation was successful</li>
-    //     *         <li>409(CONFLICT) if deactivation was unsuccessful</li>
-    //     *     </ul>
-    //     */
-    //    @PUT
-    //    @Path("/{id}/deactivate")
-    //    @Produces(MediaType.APPLICATION_JSON)
-    //    @RolesAllowed({"ADMIN", "EMPLOYEE"})
-    //    public Response deactivateUser(@PathParam("id") UUID id) throws UserNotFoundException, UpdateUserException {
-    //        User user = userCommandUseCase.deactivateUser(id);
-    //        return Response.status(Response.Status.OK).entity(userMapper.mapToDto(user)).build();
-    //    }
 }

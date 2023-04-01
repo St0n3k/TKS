@@ -8,10 +8,7 @@ import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageCont
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import pl.lodz.p.it.tks.exception.security.JwtException;
-import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
-import pl.lodz.p.it.tks.model.user.User;
 import pl.lodz.p.it.tks.ui.JwtUseCase;
-import pl.lodz.p.it.tks.ui.query.UserQueryUseCase;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,8 +20,6 @@ public class GuesthouseAuthenticationMechanism implements HttpAuthenticationMech
     @Inject
     private JwtUseCase jwtUseCase;
 
-    @Inject
-    private UserQueryUseCase userQueryUseCase;
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest httpServletRequest,
@@ -43,14 +38,7 @@ public class GuesthouseAuthenticationMechanism implements HttpAuthenticationMech
             return loginAnonymous(httpMessageContext);
         }
 
-        User user;
-        try {
-            user = userQueryUseCase.getUserByUsername(subject);
-        } catch (UserNotFoundException e) {
-            return loginAnonymous(httpMessageContext);
-        }
-
-        return httpMessageContext.notifyContainerAboutLogin(user, Collections.singleton(role));
+        return httpMessageContext.notifyContainerAboutLogin(subject, Collections.singleton(role));
     }
 
     private AuthenticationStatus loginAnonymous(HttpMessageContext httpMessageContext) {

@@ -16,7 +16,7 @@ import pl.lodz.p.it.tks.model.AbstractEntity;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(name = "clients")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
 @NamedQueries({

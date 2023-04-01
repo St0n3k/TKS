@@ -31,16 +31,23 @@ public abstract class RestTestcontainersSetup {
     @BeforeAll
     public static void setup() throws IOException {
         Network network = Network.SHARED;
-        MountableFile warFile;
-        String warFilePath = "../RestAdapter/target/RestAdapter-1.0.war";
+        MountableFile rentWarFile;
+        MountableFile userWarFile;
 
-        warFile = MountableFile.forHostPath(
-            Paths.get(new File(warFilePath).getCanonicalPath()).toAbsolutePath(), 0777);
+        String rentWarPath = "../RestAdapter/target/RestAdapter-1.0.war";
+        String userWarPath = "../../UserService/UserRestAdapter/target/UserRestAdapter-1.0.war";
+
+        rentWarFile = MountableFile.forHostPath(
+            Paths.get(new File(rentWarPath).getCanonicalPath()).toAbsolutePath(), 0777);
+
+        userWarFile = MountableFile.forHostPath(
+                Paths.get(new File(userWarPath).getCanonicalPath()).toAbsolutePath(), 0777);
 
         postgresContainer = new PostgreSQLContainer(DockerImageName.parse("postgres:latest"))
-            .withDatabaseName("pas")
-            .withUsername("pas")
-            .withPassword("pas")
+            .withInitScript("create-db.sql")
+            .withDatabaseName("rentdb")
+            .withUsername("rent")
+            .withPassword("rent")
             .withNetwork(network)
             .withNetworkAliases("db")
             .withReuse(true);
@@ -50,8 +57,10 @@ public abstract class RestTestcontainersSetup {
             .dependsOn(postgresContainer)
             .withNetwork(network)
             .withNetworkAliases("payara")
-            .withCopyFileToContainer(warFile, "/opt/payara/deployments/RestAdapter-1.0.war")
-            .waitingFor(Wait.forHttps("/api/rooms").allowInsecure())
+            .withCopyFileToContainer(rentWarFile, "/opt/payara/deployments/RestAdapter-1.0.war")
+            .withCopyFileToContainer(userWarFile, "/opt/payara/deployments/UserRestAdapter-1.0.war")
+            .waitingFor(Wait.forHttps("/rent/rooms").allowInsecure())
+            .waitingFor(Wait.forHttps("/user/ping").allowInsecure())
             .withReuse(true);
 
         postgresContainer.start();
@@ -80,7 +89,7 @@ public abstract class RestTestcontainersSetup {
         String clientJwt = RestAssured.given().body(clientCredentials.toString())
             .contentType(ContentType.JSON)
             .when()
-            .post("/api/login")
+            .post("/user/login")
             .jsonPath()
             .get("jwt");
 
@@ -98,7 +107,7 @@ public abstract class RestTestcontainersSetup {
         String employeeJwt = RestAssured.given().body(employeeCredentials.toString())
             .contentType(ContentType.JSON)
             .when()
-            .post("/api/login")
+            .post("/user/login")
             .jsonPath()
             .get("jwt");
 
@@ -116,7 +125,7 @@ public abstract class RestTestcontainersSetup {
         String adminJwt = RestAssured.given().body(adminCredentials.toString())
             .contentType(ContentType.JSON)
             .when()
-            .post("/api/login")
+            .post("/user/login")
             .jsonPath()
             .get("jwt");
 

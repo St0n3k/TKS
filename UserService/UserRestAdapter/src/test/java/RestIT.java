@@ -25,7 +25,7 @@ public class RestIT extends RestTestcontainersSetup {
             .contentType(ContentType.JSON)
             .body(req.toString())
             .when()
-            .post("/api/users/employees")
+            .post("/user/users/employees")
             .then()
             .statusCode(Status.CREATED.getStatusCode())
             .extract()
@@ -34,7 +34,7 @@ public class RestIT extends RestTestcontainersSetup {
 
         RestAssured.with().spec(adminSpec)
             .when()
-            .get("/api/users/" + id)
+            .get("/user/users/" + id)
             .then()
             .statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
             .contentType(ContentType.JSON)
@@ -54,12 +54,12 @@ public class RestIT extends RestTestcontainersSetup {
         String id = RestAssured.with().spec(employeeSpec)
             .given().contentType(ContentType.JSON)
             .body(req.toString())
-            .when().post("/api/users/clients")
+            .when().post("/user/users/clients")
             .then().assertThat().statusCode(jakarta.ws.rs.core.Response.Status.CREATED.getStatusCode())
             .extract().jsonPath().getString("id");
 
         RestAssured.with().spec(employeeSpec)
-            .when().get("/api/users/" + id)
+            .when().get("/user/users/" + id)
             .then()
             .statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
             .contentType(ContentType.JSON)
@@ -76,7 +76,7 @@ public class RestIT extends RestTestcontainersSetup {
     @Test
     void shouldReturnUserListWithStatusCode200() {
         RestAssured.with().spec(adminSpec)
-            .when().get("/api/users")
+            .when().get("/user/users")
             .then().assertThat().statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
             .assertThat().contentType(ContentType.JSON)
             .assertThat().body("$.size()", Matchers.equalTo(6));
@@ -85,7 +85,7 @@ public class RestIT extends RestTestcontainersSetup {
     @Test
     void shouldReturnUserByUsername() {
         RestAssured.with().spec(adminSpec)
-            .when().get("/api/users/search/admin")
+            .when().get("/user/users/search/admin")
             .then()
             .assertThat().statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
             .assertThat().body("username", Matchers.equalTo("admin"))
@@ -96,7 +96,7 @@ public class RestIT extends RestTestcontainersSetup {
     @Test
     void shouldReturnNotFoundStatusWhenSearchingNonExistingUsername() {
         RestAssured.with().spec(adminSpec)
-            .when().get("/api/users/search/random_user")
+            .when().get("/user/users/search/random_user")
             .then()
             .assertThat().statusCode(jakarta.ws.rs.core.Response.Status.NOT_FOUND.getStatusCode());
     }
@@ -110,7 +110,7 @@ public class RestIT extends RestTestcontainersSetup {
         String id = "a524d75e-927a-4a10-8c46-6321fff6979e";
 
         RestAssured.with().spec(adminSpec)
-            .when().get("/api/users/" + id)
+            .when().get("/user/users/" + id)
             .then()
             .statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
             .body("firstName", Matchers.equalTo("Jakub"),
@@ -124,7 +124,7 @@ public class RestIT extends RestTestcontainersSetup {
         RestAssured.with().spec(adminSpec)
             .given().contentType(ContentType.JSON)
             .body(req.toString())
-            .when().put("/api/users/clients/" + id)
+            .when().put("/user/users/clients/" + id)
             .then()
             .assertThat()
             .statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
@@ -136,7 +136,7 @@ public class RestIT extends RestTestcontainersSetup {
                 "houseNumber", Matchers.equalTo(13));
 
         RestAssured.with().spec(adminSpec)
-            .when().get("/api/users/" + id)
+            .when().get("/user/users/" + id)
             .then()
             .statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
             .body("firstName", Matchers.equalTo("Franciszek"))
@@ -151,13 +151,13 @@ public class RestIT extends RestTestcontainersSetup {
     void shouldActivateUserWithStatusCode200() {
         String id = "a524d75e-927a-4a10-8c46-6321fff6979e";
         RestAssured.with().spec(employeeSpec)
-            .when().put("/api/users/" + id + "/activate")
+            .when().put("/user/users/" + id + "/activate")
             .then()
             .assertThat().statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
             .assertThat().body("active", Matchers.equalTo(true));
 
         RestAssured.with().spec(employeeSpec)
-            .when().get("/api/users/" + id)
+            .when().get("/user/users/" + id)
             .then()
             .statusCode(Status.OK.getStatusCode())
             .contentType(ContentType.JSON)
@@ -169,14 +169,14 @@ public class RestIT extends RestTestcontainersSetup {
         String id = "a524d75e-927a-4a10-8c46-6321fff6979e";
         RestAssured.with().spec(employeeSpec)
             .when()
-            .put("/api/users/" + id + "/deactivate")
+            .put("/user/users/" + id + "/deactivate")
             .then()
             .assertThat().statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
             .assertThat().body("active", Matchers.equalTo(false));
 
         RestAssured.with().spec(employeeSpec)
             .when()
-            .get("/api/users/" + id)
+            .get("/user/users/" + id)
             .then()
             .statusCode(Status.OK.getStatusCode())
             .contentType(ContentType.JSON)
@@ -193,7 +193,7 @@ public class RestIT extends RestTestcontainersSetup {
             .given().contentType(ContentType.JSON)
             .body(json.toString())
             .when()
-            .post("/api/users/clients")
+            .post("/user/users/clients")
             .then()
             .statusCode(jakarta.ws.rs.core.Response.Status.CREATED.getStatusCode());
 
@@ -201,7 +201,7 @@ public class RestIT extends RestTestcontainersSetup {
             .given().contentType(ContentType.JSON)
             .body(json.toString())
             .when()
-            .post("/api/users/clients")
+            .post("/user/users/clients")
             .then()
             .statusCode(jakarta.ws.rs.core.Response.Status.CONFLICT.getStatusCode());
     }
@@ -215,7 +215,7 @@ public class RestIT extends RestTestcontainersSetup {
             .given().body(json.toString())
             .contentType(ContentType.JSON)
             .when()
-            .post("/api/users/clients")
+            .post("/user/users/clients")
             .then()
             .assertThat().statusCode(jakarta.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
     }

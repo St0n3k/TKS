@@ -50,6 +50,6 @@ public class AuthController {
     @GET
     @Path("/ping")
     public Response ping() {
-        return Response.noContent().build();
+        return Response.ok().build();
     }
 }

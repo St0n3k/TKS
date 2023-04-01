@@ -31,9 +31,9 @@ public abstract class SoapTestcontainersSetup {
             Paths.get(new File(warFilePath).getCanonicalPath()).toAbsolutePath(), 0777);
 
         postgresContainer = new PostgreSQLContainer(DockerImageName.parse("postgres:latest"))
-            .withDatabaseName("pas")
-            .withUsername("pas")
-            .withPassword("pas")
+            .withDatabaseName("rentdb")
+            .withUsername("rent")
+            .withPassword("rent")
             .withNetwork(network)
             .withNetworkAliases("db")
             .withReuse(true);

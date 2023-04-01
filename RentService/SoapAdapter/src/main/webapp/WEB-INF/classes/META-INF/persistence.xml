@@ -6,7 +6,7 @@
     <persistence-unit name="guesthouse" transaction-type="JTA">
         <!--        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>-->
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>java:global/jdbc/guesthouse</jta-data-source>
+        <jta-data-source>java:global/jdbc/rent</jta-data-source>
         <jar-file>lib/DataModel-1.0.jar</jar-file>
         <properties>
             <property name="eclipselink.target-database" value="PostgreSQL"/>
@@ -14,9 +14,9 @@
             <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
             <property name="jakarta.persistence.sql-load-script-source"
                       value="META-INF/sql/initial_data.sql"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/pas"/>
-            <property name="jakarta.persistence.jdbc.user" value="pas"/>
-            <property name="jakarta.persistence.jdbc.password" value="pas"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/rentdb"/>
+            <property name="jakarta.persistence.jdbc.user" value="rent"/>
+            <property name="jakarta.persistence.jdbc.password" value="rent"/>
         </properties>
     </persistence-unit>
 </persistence>
