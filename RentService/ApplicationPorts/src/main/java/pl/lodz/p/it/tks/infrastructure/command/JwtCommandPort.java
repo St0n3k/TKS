@@ -3,7 +3,6 @@ package pl.lodz.p.it.tks.infrastructure.command;
 import pl.lodz.p.it.tks.exception.security.JwtException;
 
 public interface JwtCommandPort {
-    String generateJWT(String subject, String role);
 
     boolean validateToken(String jwt);
 
