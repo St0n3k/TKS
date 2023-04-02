@@ -16,6 +16,7 @@
         <module>ApplicationPorts</module>
         <module>RestAdapter</module>
         <module>SoapAdapter</module>
+        <module>Security</module>
         <module>UIAdapters</module>
     </modules>
 
