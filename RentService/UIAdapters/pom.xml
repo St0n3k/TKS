@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>pl.lodz.p.it.tks</groupId>
+        <artifactId>RentService</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <artifactId>UIAdapters</artifactId>
+    <packaging>war</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>pl.lodz.p.it.tks</groupId>
+            <artifactId>RestAdapter</artifactId>
+            <version>1.0</version>
+            <type>war</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>pl.lodz.p.it.tks</groupId>
+            <artifactId>SoapAdapter</artifactId>
+            <version>1.0</version>
+            <type>war</type>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.2</version>
+                <configuration>
+                    <attachClasses>true</attachClasses>
+                    <overlays>
+                        <overlay>
+                            <groupId>pl.lodz.p.it.tks</groupId>
+                            <artifactId>RestAdapter</artifactId>
+                        </overlay>
+                        <overlay>
+                            <groupId>pl.lodz.p.it.tks</groupId>
+                            <artifactId>SoapAdapter</artifactId>
+                        </overlay>
+                    </overlays>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+</project>

@@ -1,15 +1,18 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  pasDb:
-    image: postgres
-    environment:
-      POSTGRES_DB: pas
-      POSTGRES_USER: pas
-      POSTGRES_PASSWORD: pas
+  pg_tks:
+    build: .
+    image: tks_pg_custom
+    container_name: pg_tks
+    hostname: pg_tks
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_DB: rentdb
+      POSTGRES_USER: rent
+      POSTGRES_PASSWORD: rent
     volumes:
-      - pas:/var/lib/postgresql/data
+      - rent:/var/lib/postgresql/data
 volumes:
-  pas:
+  rent:
