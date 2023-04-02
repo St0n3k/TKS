@@ -11,8 +11,8 @@
     <version>1.0</version>
 
     <modules>
-        <module>RentService</module>
         <module>UserService</module>
+        <module>RentService</module>
     </modules>
 
     <dependencyManagement>
