@@ -13,6 +13,7 @@
         <module>UserApplicationCore</module>
         <module>UserRepositoriesAdapters</module>
         <module>UserApplicationPorts</module>
+        <module>UserRabbitMqAdapter</module>
         <module>UserRestAdapter</module>
         <module>UserSecurity</module>
     </modules>

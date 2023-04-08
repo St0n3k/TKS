@@ -115,6 +115,12 @@
             </dependency>
             <dependency>
                 <groupId>pl.lodz.p.it.tks.user</groupId>
+                <artifactId>UserRabbitMqAdapter</artifactId>
+                <version>1.0</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>pl.lodz.p.it.tks.user</groupId>
                 <artifactId>UserSecurity</artifactId>
                 <version>1.0</version>
                 <scope>compile</scope>
