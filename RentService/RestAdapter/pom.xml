@@ -38,6 +38,11 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>pl.lodz.p.it.tks</groupId>
+            <artifactId>RabbitMqAdapter</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
             <scope>test</scope>

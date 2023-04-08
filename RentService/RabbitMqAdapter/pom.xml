@@ -5,23 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>pl.lodz.p.it.tks</groupId>
-        <artifactId>Guesthouse</artifactId>
+        <artifactId>RentService</artifactId>
         <version>1.0</version>
     </parent>
-    <packaging>pom</packaging>
 
-    <modules>
-        <module>ApplicationCore</module>
-        <module>RepositoriesAdapters</module>
-        <module>ApplicationPorts</module>
-        <module>RabbitMqAdapter</module>
-        <module>RestAdapter</module>
-        <module>SoapAdapter</module>
-        <module>Security</module>
-        <module>UIAdapters</module>
-    </modules>
-
-    <artifactId>RentService</artifactId>
+    <artifactId>RabbitMqAdapter</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -29,4 +17,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-web-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-web-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 </project>

@@ -60,6 +60,12 @@
             </dependency>
             <dependency>
                 <groupId>pl.lodz.p.it.tks</groupId>
+                <artifactId>RabbitMqAdapter</artifactId>
+                <version>1.0</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>pl.lodz.p.it.tks</groupId>
                 <artifactId>RestAdapter</artifactId>
                 <version>1.0</version>
                 <classifier>classes</classifier>
@@ -287,6 +293,16 @@
                 <artifactId>arquillian-core</artifactId>
                 <version>1.5.0.0</version>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.rabbitmq</groupId>
+                <artifactId>amqp-client</artifactId>
+                <version>5.17.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rabbitmq.jms</groupId>
+                <artifactId>rabbitmq-jms</artifactId>
+                <version>3.1.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
