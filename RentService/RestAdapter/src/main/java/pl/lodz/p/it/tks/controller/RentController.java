@@ -14,6 +14,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import pl.lodz.p.it.tks.dto.rent.CreateRentDTO;
 import pl.lodz.p.it.tks.dto.rent.RentDTO;
 import pl.lodz.p.it.tks.dto.rent.UpdateRentBoardDTO;
@@ -90,6 +91,7 @@ public class RentController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"EMPLOYEE", "ADMIN"})
+    @Timed(name = "getAllRents", absolute = true)
     public Response getAllRents() {
         List<RentDTO> rents = rentQueryUseCase.getAllRents()
             .stream()

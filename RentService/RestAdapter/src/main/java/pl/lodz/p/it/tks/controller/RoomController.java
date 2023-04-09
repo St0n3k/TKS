@@ -17,6 +17,8 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import pl.lodz.p.it.tks.dto.rent.RentDTO;
 import pl.lodz.p.it.tks.dto.rent.RentRoomForSelfDTO;
 import pl.lodz.p.it.tks.dto.room.ApartmentDTO;
@@ -104,6 +106,11 @@ public class RoomController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"CLIENT"})
+    @Counted(
+        name = "rentRoomForSelf",
+        absolute = true,
+        description = "Metrics to show how many times clients tried to rent room"
+    )
     public Response rentRoomForSelf(@PathParam("id") UUID roomID, @Valid RentRoomForSelfDTO dto)
         throws UserNotFoundException, RoomNotFoundException, InactiveUserException, CreateRentException {
         Principal principal = securityContext.getUserPrincipal();
@@ -129,6 +136,7 @@ public class RoomController {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Timed(name = "getAllRooms", absolute = true)
     public Response getAllRooms() {
         List<RoomDTO> rooms = roomQueryUseCase.getAllRooms()
             .stream()
