@@ -7,17 +7,20 @@ import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import pl.lodz.p.it.tks.user.event.ClientCreatedEvent;
 
 import java.io.IOException;
 
 @ApplicationScoped
-public class CreateClientProducer {
+public class ClientProducer {
 
     @Inject
     private Channel channel;
 
-    private final String queueName = "CREATE_USER_QUEUE";
+    @Inject
+    @ConfigProperty(name = "user_queue_name", defaultValue = "USER_QUEUE")
+    private String queueName;
 
     public void produce(ClientCreatedEvent event) {
         if (channel == null) {

@@ -36,6 +36,12 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.eclipse.microprofile</groupId>
+            <artifactId>microprofile</artifactId>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>pl.lodz.p.it.tks.user</groupId>
             <artifactId>UserDomainModel</artifactId>
         </dependency>

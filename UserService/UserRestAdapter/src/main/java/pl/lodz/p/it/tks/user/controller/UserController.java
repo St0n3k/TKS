@@ -28,7 +28,7 @@ import pl.lodz.p.it.tks.user.exception.user.CreateUserException;
 import pl.lodz.p.it.tks.user.exception.user.UpdateUserException;
 import pl.lodz.p.it.tks.user.exception.user.UserNotFoundException;
 import pl.lodz.p.it.tks.user.mapper.UserMapper;
-import pl.lodz.p.it.tks.user.messaging.CreateClientProducer;
+import pl.lodz.p.it.tks.user.messaging.ClientProducer;
 import pl.lodz.p.it.tks.user.model.Address;
 import pl.lodz.p.it.tks.user.model.users.Admin;
 import pl.lodz.p.it.tks.user.model.users.Client;
@@ -55,7 +55,7 @@ public class UserController {
     private UserMapper userMapper;
 
     @Inject
-    private CreateClientProducer createClientProducer;
+    private ClientProducer clientProducer;
 
     /**
      * Endpoint which is used to register new client,
@@ -84,7 +84,7 @@ public class UserController {
 
         Client registeredClient = userCommandUseCase.registerClient(client);
 
-        createClientProducer.produce(new ClientCreatedEvent(registeredClient));
+        clientProducer.produce(new ClientCreatedEvent(registeredClient, false));
 
         return Response.status(Response.Status.CREATED)
             .entity(new ClientDTO(registeredClient))
@@ -225,6 +225,9 @@ public class UserController {
             address);
 
         User updatedUser = userCommandUseCase.updateUser(id, user);
+
+        clientProducer.produce(new ClientCreatedEvent((Client) updatedUser, true));
+
         return Response.status(Response.Status.OK).entity(userMapper.mapToDto(updatedUser)).build();
     }
 

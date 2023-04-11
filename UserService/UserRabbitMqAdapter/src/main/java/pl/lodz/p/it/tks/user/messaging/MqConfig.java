@@ -7,6 +7,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -16,6 +18,22 @@ import java.util.concurrent.TimeoutException;
 public class MqConfig {
 
     private Connection connection;
+
+    @Inject
+    @ConfigProperty(name = "mq_host")
+    private String mqHost;
+
+    @Inject
+    @ConfigProperty(name = "mq_port")
+    private Integer mqPort;
+
+    @Inject
+    @ConfigProperty(name = "mq_username")
+    private String mqUsername;
+
+    @Inject
+    @ConfigProperty(name = "mq_password")
+    private String mqPassword;
 
     @Produces
     public Channel getChannel() throws IOException {
@@ -30,11 +48,10 @@ public class MqConfig {
     void afterCreate() {
         ConnectionFactory connectionFactory = new ConnectionFactory();
 
-        //TODO get connection properties from microprofile config
-        connectionFactory.setHost("localhost");
-        connectionFactory.setPort(5672);
-        connectionFactory.setUsername("user");
-        connectionFactory.setPassword("password");
+        connectionFactory.setHost(mqHost);
+        connectionFactory.setPort(mqPort);
+        connectionFactory.setUsername(mqUsername);
+        connectionFactory.setPassword(mqPassword);
 
         try {
             connection = connectionFactory.newConnection();
