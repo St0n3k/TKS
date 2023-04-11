@@ -87,7 +87,6 @@ public class UserController {
     }
 
     @GET
-    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Response getAllUsers(@QueryParam("username") String username) {

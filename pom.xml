@@ -60,6 +60,12 @@
             </dependency>
             <dependency>
                 <groupId>pl.lodz.p.it.tks</groupId>
+                <artifactId>RabbitMqAdapter</artifactId>
+                <version>1.0</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>pl.lodz.p.it.tks</groupId>
                 <artifactId>RestAdapter</artifactId>
                 <version>1.0</version>
                 <classifier>classes</classifier>
@@ -104,6 +110,12 @@
             <dependency>
                 <groupId>pl.lodz.p.it.tks.user</groupId>
                 <artifactId>UserDataModel</artifactId>
+                <version>1.0</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>pl.lodz.p.it.tks.user</groupId>
+                <artifactId>UserRabbitMqAdapter</artifactId>
                 <version>1.0</version>
                 <scope>compile</scope>
             </dependency>
@@ -299,6 +311,16 @@
                 <artifactId>microprofile-metrics-api</artifactId>
                 <version>5.0.0</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.rabbitmq</groupId>
+                <artifactId>amqp-client</artifactId>
+                <version>5.17.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rabbitmq.jms</groupId>
+                <artifactId>rabbitmq-jms</artifactId>
+                <version>3.1.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
