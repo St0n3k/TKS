@@ -1,6 +1,6 @@
 package pl.lodz.p.it.tks.service;
 
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@RequestScoped
+@Dependent
 public class UserService implements UserQueryUseCase, UserCommandUseCase {
 
     @Inject

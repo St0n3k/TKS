@@ -5,6 +5,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
+import pl.lodz.p.it.tks.user.event.ClientCreatedEvent;
 
 import java.io.IOException;
 
@@ -16,11 +19,20 @@ public class CreateClientProducer {
 
     private final String queueName = "CREATE_USER_QUEUE";
 
-    public void produce(String message) {
+    public void produce(ClientCreatedEvent event) {
         if (channel == null) {
             System.out.println("Error during initializing consumer, connection is not established");
             return;
         }
+
+        String message;
+        try (Jsonb jsonb = JsonbBuilder.create()) {
+            message = jsonb.toJson(event);
+        } catch (Exception e) {
+            System.out.println("Invalid message format");
+            return;
+        }
+
         try {
             channel.basicPublish("", queueName, null, message.getBytes());
         } catch (IOException e) {

@@ -23,6 +23,7 @@ import pl.lodz.p.it.tks.user.dto.user.RegisterEmployeeDTO;
 import pl.lodz.p.it.tks.user.dto.user.UpdateClientDTO;
 import pl.lodz.p.it.tks.user.dto.user.UpdateEmployeeDTO;
 import pl.lodz.p.it.tks.user.dto.user.UserDTO;
+import pl.lodz.p.it.tks.user.event.ClientCreatedEvent;
 import pl.lodz.p.it.tks.user.exception.user.CreateUserException;
 import pl.lodz.p.it.tks.user.exception.user.UpdateUserException;
 import pl.lodz.p.it.tks.user.exception.user.UserNotFoundException;
@@ -83,7 +84,7 @@ public class UserController {
 
         Client registeredClient = userCommandUseCase.registerClient(client);
 
-        createClientProducer.produce(registeredClient.getUsername() + " has been registered.");
+        createClientProducer.produce(new ClientCreatedEvent(registeredClient));
 
         return Response.status(Response.Status.CREATED)
             .entity(new ClientDTO(registeredClient))

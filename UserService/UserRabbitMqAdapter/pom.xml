@@ -31,6 +31,14 @@
             <artifactId>jakarta.jakartaee-web-api</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>pl.lodz.p.it.tks.user</groupId>
+            <artifactId>UserDomainModel</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
