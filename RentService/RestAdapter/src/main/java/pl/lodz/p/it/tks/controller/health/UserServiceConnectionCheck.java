@@ -19,14 +19,14 @@ import java.net.http.HttpResponse;
 public class UserServiceConnectionCheck implements HealthCheck {
 
     @Inject
-    @ConfigProperty(name = "RENT_SERVICE_HOST", defaultValue = "localhost")
+    @ConfigProperty(name = "USER_SERVICE_HOST", defaultValue = "localhost")
     private String rentServiceHost;
     @Inject
-    @ConfigProperty(name = "RENT_SERVICE_PORT", defaultValue = "8181")
+    @ConfigProperty(name = "USER_SERVICE_PORT", defaultValue = "8181")
     private int rentServicePort;
 
     @Inject
-    @ConfigProperty(name = "RENT_SERVICE_PATH", defaultValue = "/user/ping")
+    @ConfigProperty(name = "USER_SERVICE_PATH", defaultValue = "/user/ping")
     private String rentServicePath;
 
     @Override
