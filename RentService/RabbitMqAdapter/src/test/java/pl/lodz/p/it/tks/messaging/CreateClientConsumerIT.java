@@ -105,7 +105,6 @@ class CreateClientConsumerIT {
             .post("/user/login")
             .jsonPath()
             .get("jwt");
-        System.out.println(adminToken);
 
         adminSpec = new RequestSpecBuilder()
             .addHeader("Authorization", "Bearer " + adminToken)
