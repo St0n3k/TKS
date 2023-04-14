@@ -46,7 +46,6 @@ public class MqConfig {
 
     @PostConstruct
     void afterCreate() {
-        System.out.printf("USER: %s; %d %s; %s", mqHost, mqPort, mqUsername, mqPassword);
         ConnectionFactory connectionFactory = new ConnectionFactory();
 
         connectionFactory.setHost(mqHost);
@@ -57,7 +56,6 @@ public class MqConfig {
         try {
             connection = connectionFactory.newConnection();
         } catch (IOException | TimeoutException ignored) {
-            ignored.printStackTrace();
             System.out.println("Error during establishing connection with RabbitMQ");
         }
     }
