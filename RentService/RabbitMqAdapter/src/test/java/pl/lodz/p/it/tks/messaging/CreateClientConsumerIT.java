@@ -39,8 +39,6 @@ class CreateClientConsumerIT {
 
     @BeforeAll
     static void init() {
-        Path initScriptPath = Path.of("..", "..", "createdb.sh").toAbsolutePath().normalize();
-
         Path userServiceWar = Path.of(
             "..", "..", "UserService", "UserRestAdapter", "target", "UserRestAdapter-1.0.war");
 
@@ -51,21 +49,18 @@ class CreateClientConsumerIT {
         assert Files.exists(rentServiceWar);
 
         db = new PostgreSQLContainer(DockerImageName.parse("postgres:15.2"))
+            .withInitScript("create-db.sql")
             .withDatabaseName("rentdb")
             .withUsername("rent")
             .withPassword("rent")
-            .withCopyFileToContainer(
-                MountableFile.forHostPath(initScriptPath),
-                "/docker-entrypoint-initdb.d/10-createdb.sh")
-            .withNetworkAliases("db")
             .withNetwork(network)
+            .withNetworkAliases("db")
             .withReuse(true);
 
         rabbitMq = new GenericContainer<>(DockerImageName.parse("bitnami/rabbitmq"))
             .withEnv(Map.of(
                 "RABBITMQ_DEFAULT_USER", "user",
                 "RABBITMQ_DEFAULT_PASS", "password"))
-            // .withExposedPorts(5672)
             .waitingFor(Wait.forLogMessage(".*Starting broker.*", 1))
             .withNetwork(network)
             .withNetworkAliases("rabbitMQ")
@@ -79,7 +74,6 @@ class CreateClientConsumerIT {
             .withExposedPorts(8181)
             .withEnv(Map.of(
                 "mq_host", "rabbitMQ",
-                // "mq_port", rabbitMq.getMappedPort(5672).toString(),
                 "mq_port", "5672",
                 "mq_username", "user",
                 "mq_password", "password"))
@@ -92,8 +86,8 @@ class CreateClientConsumerIT {
             .withCopyFileToContainer(
                 MountableFile.forHostPath(rentServiceWar),
                 "/opt/payara/deployments/RestAdapter-1.0.war")
-            .waitingFor(Wait.forHttps("/user/ping").allowInsecure())
             .waitingFor(Wait.forHttps("/rent/rooms").allowInsecure())
+            .waitingFor(Wait.forHttps("/user/ping").allowInsecure())
             .withReuse(true);
 
         payaraServer.start();
@@ -109,11 +103,9 @@ class CreateClientConsumerIT {
             .body(adminCredentials.toString())
             .when()
             .post("/user/login")
-            .then()
-            .extract()
-            .body()
             .jsonPath()
             .get("jwt");
+        System.out.println(adminToken);
 
         adminSpec = new RequestSpecBuilder()
             .addHeader("Authorization", "Bearer " + adminToken)
@@ -153,7 +145,6 @@ class CreateClientConsumerIT {
                 .when()
                 .post("/user/users/clients")
                 .then()
-                // .log().all()
                 .statusCode(201)
                 .contentType(ContentType.JSON)
                 .extract()
@@ -167,7 +158,6 @@ class CreateClientConsumerIT {
                 .when()
                 .get("rent/users/" + id)
                 .then()
-                .log().all()
                 .statusCode(200)
                 .body(
                     "username", equalTo("test-user"),
@@ -207,7 +197,6 @@ class CreateClientConsumerIT {
                 .when()
                 .get("rent/users/search/conflict")
                 .then()
-                .log().all()
                 .statusCode(404);
         }
     }
@@ -236,7 +225,6 @@ class CreateClientConsumerIT {
                 .when()
                 .put("user/users/clients/" + clientId)
                 .then()
-                // .log().all()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body(
