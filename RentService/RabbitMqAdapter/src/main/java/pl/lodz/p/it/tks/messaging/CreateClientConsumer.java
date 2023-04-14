@@ -9,7 +9,8 @@ import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import pl.lodz.p.it.tks.event.ClientEvent;
+import pl.lodz.p.it.tks.event.ClientCreatedEvent;
+import pl.lodz.p.it.tks.event.ClientRollbackEvent;
 import pl.lodz.p.it.tks.exception.user.CreateUserException;
 import pl.lodz.p.it.tks.exception.user.UpdateUserException;
 import pl.lodz.p.it.tks.exception.user.UserNotFoundException;
@@ -26,6 +27,9 @@ public class CreateClientConsumer {
 
     @Inject
     private UserCommandUseCase userCommandUseCase;
+
+    @Inject
+    private ClientProducer clientProducer;
 
     @Inject
     @ConfigProperty(name = "user_queue_name", defaultValue = "USER_QUEUE")
@@ -45,29 +49,31 @@ public class CreateClientConsumer {
         }
     }
 
-    void deliverCallback(String consumerTag, Delivery delivery) {
+    void deliverCallback(String consumerTag, Delivery delivery) throws IOException {
         String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
-        ClientEvent clientEvent;
+        ClientCreatedEvent clientCreatedEvent;
 
         try (Jsonb jsonb = JsonbBuilder.create()) {
-            clientEvent = jsonb.fromJson(message, ClientEvent.class);
+            clientCreatedEvent = jsonb.fromJson(message, ClientCreatedEvent.class);
         } catch (Exception e) {
             System.out.println("Invalid message format");
             return;
         }
 
-        if (clientEvent.isEditEvent()) {
+        if (clientCreatedEvent.isEditEvent()) {
             try {
-                userCommandUseCase.updateUser(clientEvent.getId(), clientEvent.toClient());
+                userCommandUseCase.updateUser(clientCreatedEvent.getId(), clientCreatedEvent.toClient());
             } catch (UpdateUserException | UserNotFoundException e) {
                 System.out.println("Error during updating client");
+                channel.basicReject(delivery.getEnvelope().getDeliveryTag(), true);
             }
 
         } else {
             try {
-                userCommandUseCase.registerClient(clientEvent.toClient());
+                userCommandUseCase.registerClient(clientCreatedEvent.toClient());
             } catch (CreateUserException e) {
                 System.out.println("Error during saving client to database");
+                clientProducer.produce(new ClientRollbackEvent(clientCreatedEvent.getId()));
             }
         }
     }

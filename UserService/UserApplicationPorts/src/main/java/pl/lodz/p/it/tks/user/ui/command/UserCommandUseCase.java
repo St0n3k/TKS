@@ -22,4 +22,6 @@ public interface UserCommandUseCase {
     User activateUser(UUID id) throws UserNotFoundException, UpdateUserException;
 
     User deactivateUser(UUID id) throws UpdateUserException, UserNotFoundException;
+
+    void deleteUser(UUID id) throws UserNotFoundException;
 }

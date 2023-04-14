@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Testcontainers
-class CreateClientConsumerIT {
+class ClientResponseConsumerIT {
     private static final Network network = Network.SHARED; //Network.newNetwork();
 
     private static GenericContainer<?> db;

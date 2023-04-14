@@ -1,4 +1,4 @@
-package pl.lodz.p.it.tks.user.messaging;
+package pl.lodz.p.it.tks.messaging;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
@@ -9,7 +9,7 @@ import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import pl.lodz.p.it.tks.user.event.ClientCreatedEvent;
+import pl.lodz.p.it.tks.event.ClientRollbackEvent;
 
 import java.io.IOException;
 
@@ -20,14 +20,14 @@ public class ClientProducer {
     private Channel channel;
 
     @Inject
-    @ConfigProperty(name = "user_queue_name", defaultValue = "USER_QUEUE")
-    private String queueName;
+    @ConfigProperty(name = "user_response_queue_name", defaultValue = "USER_RESPONSE_QUEUE")
+    private String responseQueueName;
 
     @Inject
     @ConfigProperty(name = "user_exchange_name", defaultValue = "USER_EXCHANGE")
     private String exchangeName;
 
-    public void produce(ClientCreatedEvent event) {
+    public void produce(ClientRollbackEvent event) {
         if (channel == null) {
             System.out.println("Error during initializing consumer, connection is not established");
             return;
@@ -42,7 +42,7 @@ public class ClientProducer {
         }
 
         try {
-            channel.basicPublish(exchangeName, queueName, null, message.getBytes());
+            channel.basicPublish(exchangeName, responseQueueName, null, message.getBytes());
         } catch (IOException e) {
             System.out.println("Error during producing message, connection is not established");
         }
@@ -56,8 +56,8 @@ public class ClientProducer {
 
         try {
             channel.exchangeDeclare(exchangeName, BuiltinExchangeType.DIRECT, true);
-            channel.queueDeclare(queueName, true, false, false, null);
-            channel.queueBind(queueName, exchangeName, queueName);
+            channel.queueDeclare(responseQueueName, true, false, false, null);
+            channel.queueBind(responseQueueName, exchangeName, responseQueueName);
         } catch (IOException ignored) {
             System.out.println("Error during connecting to queue");
         }

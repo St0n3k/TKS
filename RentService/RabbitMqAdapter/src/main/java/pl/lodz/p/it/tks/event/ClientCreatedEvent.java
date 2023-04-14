@@ -13,7 +13,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClientEvent {
+public class ClientCreatedEvent {
 
     private boolean isEditEvent;
 
@@ -38,7 +38,7 @@ public class ClientEvent {
     @NotNull
     private Address address;
 
-    public ClientEvent(Client client) {
+    public ClientCreatedEvent(Client client) {
         this.id = client.getId();
         this.username = client.getUsername();
         this.firstName = client.getFirstName();

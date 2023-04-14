@@ -1,6 +1,6 @@
 package pl.lodz.p.it.tks.user.service;
 
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@RequestScoped
+@Dependent
 public class UserService implements UserQueryUseCase, UserCommandUseCase {
 
     @Inject
@@ -217,6 +217,15 @@ public class UserService implements UserQueryUseCase, UserCommandUseCase {
         }
         user = optionalUser.get();
         return user;
+    }
+
+    @Override
+    public void deleteUser(UUID id) throws UserNotFoundException {
+        Optional<User> optionalUser = userQueryPort.getById(id);
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException();
+        }
+        userCommandPort.remove(optionalUser.get());
     }
 
 }

@@ -45,6 +45,14 @@
             <groupId>pl.lodz.p.it.tks.user</groupId>
             <artifactId>UserDomainModel</artifactId>
         </dependency>
+        <dependency>
+            <groupId>pl.lodz.p.it.tks.user</groupId>
+            <artifactId>UserApplicationService</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>pl.lodz.p.it.tks.user</groupId>
+            <artifactId>UserApplicationPorts</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
