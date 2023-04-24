@@ -39,10 +39,10 @@ Project for *Technologies of Network Components* at Lodz University of Technolog
 
 ## Modules
 
-### :office_worker: UserService
+### UserService
 
-This project contains logic for managing all types of accounts. It is also responsible for authentication, as well as it sends messages to [RentService](#rent) via a message broker (here RabbitMQ was used) when new client was registered.
+This project contains logic for managing all types of accounts. It is also responsible for authentication, as well as it sends messages to [RentService](#rentservice) via a message broker (here RabbitMQ was used) when new client was registered.
 
-### :hotel: RentService {#rent}
+### RentService
 
 This project contains all of the remaining bussiness logic: it manages rooms, reservations and contains partial data about clients.
